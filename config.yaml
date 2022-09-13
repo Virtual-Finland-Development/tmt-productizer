@@ -1,0 +1,4 @@
+packageName: "CodeGen.Api.TMT"
+packageGuid: "FAE04EC0-301F-11D3-BF4B-00C04F79EFBC"
+targetFramework: "net6.0"
+optionalProjectFile: "CodeGen.Api.TMT"
