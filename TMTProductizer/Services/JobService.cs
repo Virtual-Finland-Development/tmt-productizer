@@ -22,9 +22,17 @@ internal class JobService : IJobService
 
         jobs.AddRange(result.Ilmoitukset.Select(ilmoitus => new Job
         {
-            ApplicationUrl = ilmoitus.Hakeminen.HakemuksenUrl,
-            EmployerName = ilmoitus.IlmoittajanNimi.FirstOrDefault(x => x.KieliKoodi == "fi")?.Arvo.ToString(),
-            JobTitle = ilmoitus.Perustiedot.TyonOtsikko.FirstOrDefault(x => x.KieliKoodi == "fi")?.Arvo.ToString()
+            Employer = ilmoitus.IlmoittajanNimi.FirstOrDefault(x => x.KieliKoodi == "fi")?.Arvo.ToString(),
+            Location = new Location
+            {
+                City = ilmoitus.Sijainti.Toimipaikka.Postitoimipaikka.ToString()
+            },
+            BasicInfo = new BasicInfo
+            {
+                Title = ilmoitus.Perustiedot.TyonOtsikko.FirstOrDefault(x => x.KieliKoodi == "fi")?.Arvo.ToString(),
+                Description = ilmoitus.Perustiedot.TyonKuvaus.FirstOrDefault(x => x.KieliKoodi == "fi")?.Arvo.ToString()
+            },
+            PublishedAt = ilmoitus.Julkaisupvm
         }));
 
         return jobs;
