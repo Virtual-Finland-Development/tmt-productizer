@@ -1,18 +1,25 @@
 using CodeGen.Api.TMT.Model;
+using Microsoft.Extensions.Options;
+using TMTProductizer.Config;
 using TMTProductizer.Models;
 
 namespace TMTProductizer.Services;
 
 internal class JobService : IJobService
 {
-    private const string JobsEndpoint = "http://localhost:4010/api/v1/tyopaikat?sivu=0&maara=100";
+    private readonly string _endpoint;
+
+    public JobService(IOptions<TmtOptions> configuration)
+    {
+        _endpoint = configuration.Value.ApiEndpoint;
+    }
 
     public async Task<IReadOnlyList<Job>> Find()
     {
         var jobs = new List<Job>();
 
         var client = new HttpClient();
-        var response = await client.GetAsync(JobsEndpoint);
+        var response = await client.GetAsync(_endpoint + "?sivu=0&maara=10");
 
         if (!response.IsSuccessStatusCode) return jobs;
 

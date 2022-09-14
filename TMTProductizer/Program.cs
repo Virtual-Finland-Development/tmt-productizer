@@ -1,8 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
+using TMTProductizer.Config;
 using TMTProductizer.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSingleton<IJobService, JobService>();
+
+builder.Services.Configure<TmtOptions>(builder.Configuration.GetSection("TmtOptions"));
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
