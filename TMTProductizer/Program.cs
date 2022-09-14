@@ -20,9 +20,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.MapGet("/jobs", async ([FromServices] IJobService service) =>
+app.MapGet("/jobs", async (int? page, int? pageSize, [FromServices] IJobService service) =>
     {
-        var jobs = await service.Find();
+        var pageNumber = page ?? 0;
+        var pagerTake = pageSize ?? 10;
+
+        var jobs = await service.Find(pageNumber, pagerTake);
         return jobs;
     })
     .Produces(200);

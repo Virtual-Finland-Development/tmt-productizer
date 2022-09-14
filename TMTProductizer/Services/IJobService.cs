@@ -4,5 +4,5 @@ namespace TMTProductizer.Services;
 
 public interface IJobService
 {
-    Task<IReadOnlyList<Job>> Find();
+    Task<IReadOnlyList<Job>> Find(int pageNumber, int pagerTake);
 }

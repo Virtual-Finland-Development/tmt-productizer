@@ -14,15 +14,14 @@ internal class JobService : IJobService
         _endpoint = configuration.Value.ApiEndpoint;
     }
 
-    public async Task<IReadOnlyList<Job>> Find()
+    public async Task<IReadOnlyList<Job>> Find(int pageNumber, int pagerTake)
     {
         var jobs = new List<Job>();
 
         var client = new HttpClient();
-        var response = await client.GetAsync(_endpoint + "?sivu=0&maara=10");
+        var response = await client.GetAsync($"{_endpoint}?sivu={pageNumber}&maara={pagerTake}");
 
         if (!response.IsSuccessStatusCode) return jobs;
-
 
         var result = await response.Content.ReadFromJsonAsync<Hakutulos>();
         if (result == null) return jobs;
