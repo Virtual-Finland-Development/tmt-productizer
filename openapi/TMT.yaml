@@ -706,7 +706,109 @@ paths:
                               - arvo: string
                                 kieliKoodi: fi
                         tyollistaja: string
-                    ilmoituksienMaara: 0
+                      - hakeminen:
+                          hakemuksenUrl: 'http://www.akuankka.fi'
+                          hakuaikaPaattyy: '2022-05-10T12:00:00Z'
+                          hakuohjeet:
+                            - arvo: '# hakuohje'
+                              kieliKoodi: fi
+                          ilmoittajanYhteystiedot:
+                            puhelinNro: '+358123456789'
+                            sposti: some.one@somewhere.com
+                        ilmoittajanNimi:
+                          - arvo: Roope Setä
+                            kieliKoodi: fi
+                        ilmoittajanYTunnus: '# Y-Tunnus'
+                        ilmoituksenID: f5eb5e7f-8e27-4e6f-96fd-5317f74518ed
+                        ilmoituksenKielet:
+                          - fi
+                        ilmoituksenOhjaus: true
+                        julkaisupvm: '2022-05-02T12:06:55.818Z'
+                        kotisivut: 'http://www.akuankka.fi'
+                        kotitaloudenNimi: Roope Sedän Rahasäiliö
+                        luontipvm: '2022-05-02T12:06:55.818Z'
+                        markkinointikuvaus: Rahanpesijää etsitään
+                        muokattupvm: '2022-05-02T12:06:55.818Z'
+                        osaamisvaatimukset:
+                          ajokortti:
+                            ajokortinLisatieto:
+                              - arvo: '# ajokortinLisatieto'
+                                kieliKoodi: fi
+                            vaaditutAjokorttiluokat:
+                              - '# vaaditutAjokorttiluokat'
+                          ammatit:
+                            - luokiteltuArvo: 'http://data.europa.eu/esco/occupation/8d3e8aaa-791b-4c75-a465-f3f827028f50'
+                              luokittelunNimi: ESCO
+                          kielitaidot:
+                            - kielitaidonLisatieto:
+                                - arvo: string
+                                  kieliKoodi: fi
+                              kielitaidonTaso: L1
+                              kielitaito: 'http://data.europa.eu/esco/skill/0e3493f4-0cad-4fbc-8e02-025f169b8114'
+                          kortitJaLuvat:
+                            kortitJaLuvatLisatieto:
+                              - arvo: string
+                                kieliKoodi: fi
+                            lupaKoodit:
+                              - string
+                          koulutusaste: '31'
+                          osaamiset:
+                            - luokiteltuArvo: 'http://data.europa.eu/esco/occupation/8d3e8aaa-791b-4c75-a465-f3f827028f50'
+                              luokittelunNimi: ESCO
+                          rikosrekisteriote: true
+                        perustiedot:
+                          kutsutaanTarvittaessa: true
+                          kuuluuMatkustamista: true
+                          maaraaikaisuudenPaattymisPvm: '2022-12-31'
+                          maaraaikaisuudenSyy:
+                            - arvo: string
+                              kieliKoodi: fi
+                          paikkojenMaara: 1
+                          palkanLisatieto:
+                            - arvo: string
+                              kieliKoodi: fi
+                          palkanPeruste: '01'
+                          tyoAika: '02'
+                          tyoAlkaa: '02'
+                          tyoAlkaaLisatieto:
+                            - arvo: string
+                              kieliKoodi: fi
+                          tyoAlkaaPvm: '2022-06-01'
+                          tyoTunnitAjanjakso: '0201'
+                          tyoTunnitMaksimi: 0
+                          tyoTunnitMinimi: 0
+                          tyonJatkuvuus: '01'
+                          tyonKuvaus:
+                            - arvo: string
+                              kieliKoodi: fi
+                          tyonOtsikko:
+                            - arvo: string
+                              kieliKoodi: fi
+                          tyonTiivistelma:
+                            - arvo: string
+                              kieliKoodi: fi
+                          tyoskentely:
+                            tyoskentelyAika:
+                              - '01, 08'
+                            vuorotyo:
+                              - '0801, 0802'
+                        sijainti:
+                          kunta:
+                            - '062, 179, 698, 309'
+                          maa:
+                            - 'FI, SE'
+                          maakunta:
+                            - '06, 01, 02, 19'
+                          sijaintiJoustava: true
+                          toimipaikka:
+                            postinumero: string
+                            postiosoite: string
+                            postitoimipaikka: string
+                            toimipaikanNimi:
+                              - arvo: string
+                                kieliKoodi: fi
+                        tyollistaja: string
+                    ilmoituksienMaara: 2
                     sivutus:
                       maara: 0
                       sivu: 0
