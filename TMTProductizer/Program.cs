@@ -26,7 +26,7 @@ app.MapGet("/jobs", async (int? page, int? pageSize, [FromServices] IJobService 
         var pagerTake = pageSize ?? 10;
 
         var jobs = await service.Find(pageNumber, pagerTake);
-        return jobs;
+        return Results.Ok(jobs);
     })
     .Produces(200);
 
