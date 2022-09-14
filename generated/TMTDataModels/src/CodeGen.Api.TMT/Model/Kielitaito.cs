@@ -44,6 +44,10 @@ namespace CodeGen.Api.TMT.Model
             this._Kielitaito = kielitaito;
         }
 
+        public Kielitaito()
+        {
+        }
+
         /// <summary>
         /// **fi:** Kielitaidon lisätieto | **en:** Additional information for language
         /// </summary>

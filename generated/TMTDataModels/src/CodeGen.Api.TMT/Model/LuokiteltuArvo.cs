@@ -42,6 +42,10 @@ namespace CodeGen.Api.TMT.Model
             this.LuokittelunNimi = luokittelunNimi;
         }
 
+        public LuokiteltuArvo()
+        {
+        }
+
         /// <summary>
         /// **fi:** Luokittelun arvo | **en:** Value
         /// </summary>
