@@ -14,7 +14,7 @@ internal class JobService : IJobService
         _endpoint = configuration.Value.ApiEndpoint;
     }
 
-    public async Task<IReadOnlyList<Job>> Find(int pageNumber, int pagerTake)
+    public async Task<IReadOnlyList<Job>> Find(JobsRequest query, int pageNumber, int pagerTake)
     {
         var jobs = new List<Job>();
 
