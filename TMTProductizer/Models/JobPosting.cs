@@ -1,5 +1,3 @@
-using System.Text.Json.Serialization;
-
 namespace TMTProductizer.Models;
 
 public class Job
@@ -7,8 +5,6 @@ public class Job
     public string? Employer { get; set; }
     public Location Location { get; set; }
     public BasicInfo BasicInfo { get; set; }
-
-    [JsonPropertyName("published_at")] 
     public DateTime PublishedAt { get; set; }
 }
 

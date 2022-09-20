@@ -21,12 +21,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.MapPost("/jobs", async (JobsRequest requestModel, [FromQuery]int? page, [FromQuery]int? pageSize, [FromServices] IJobService service) =>
+app.MapPost("/jobs", async (JobsRequest requestModel, [FromServices] IJobService service) =>
     {
-        var pageNumber = page ?? 0;
-        var pagerTake = pageSize ?? 10;
-
-        var jobs = await service.Find(requestModel, pageNumber, pagerTake);
+        var jobs = await service.Find(requestModel);
         return Results.Ok(jobs);
     })
     .Produces(200);

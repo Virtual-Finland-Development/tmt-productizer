@@ -14,12 +14,13 @@ internal class JobService : IJobService
         _endpoint = configuration.Value.ApiEndpoint;
     }
 
-    public async Task<IReadOnlyList<Job>> Find(JobsRequest query, int pageNumber, int pagerTake)
+    public async Task<IReadOnlyList<Job>> Find(JobsRequest query)
     {
         var jobs = new List<Job>();
 
         var client = new HttpClient();
-        var response = await client.GetAsync($"{_endpoint}?sivu={pageNumber}&maara={pagerTake}");
+        var pageNumber = GetPageNumberFromOffsetAndLimit(query.Paging.Offset, query.Paging.Limit);
+        var response = await client.GetAsync($"{_endpoint}?sivu={pageNumber}&maara={query.Paging.Limit}");
 
         if (!response.IsSuccessStatusCode) return jobs;
 
@@ -42,5 +43,12 @@ internal class JobService : IJobService
         }));
 
         return jobs;
+    }
+
+    private int GetPageNumberFromOffsetAndLimit(int pagingOffset, int pagingLimit)
+    {
+        var (quotient, _) = Math.DivRem(pagingOffset, pagingLimit);
+
+        return quotient;
     }
 }
