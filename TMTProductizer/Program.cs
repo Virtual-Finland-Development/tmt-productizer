@@ -24,7 +24,14 @@ if (app.Environment.IsDevelopment())
 app.MapPost("/jobs", async (JobsRequest requestModel, [FromServices] IJobService service) =>
     {
         var jobs = await service.Find(requestModel);
-        return Results.Ok(jobs);
+
+        var response = new
+        {
+            Results = jobs,
+            TotalCount = jobs.Count 
+        };
+        
+        return Results.Ok(response);
     })
     .Produces(200);
 
