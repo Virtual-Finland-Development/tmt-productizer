@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using TMTProductizer.Config;
+using TMTProductizer.Models;
 using TMTProductizer.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,13 +21,17 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.MapGet("/jobs", async ([FromQuery]int? page, [FromQuery]int? pageSize, [FromServices] IJobService service) =>
+app.MapPost("/jobs", async (JobsRequest requestModel, [FromServices] IJobService service) =>
     {
-        var pageNumber = page ?? 0;
-        var pagerTake = pageSize ?? 10;
+        var jobs = await service.Find(requestModel);
 
-        var jobs = await service.Find(pageNumber, pagerTake);
-        return Results.Ok(jobs);
+        var response = new
+        {
+            Results = jobs,
+            TotalCount = jobs.Count
+        };
+
+        return Results.Ok(response);
     })
     .Produces(200);
 

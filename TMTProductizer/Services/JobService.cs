@@ -14,12 +14,13 @@ internal class JobService : IJobService
         _endpoint = configuration.Value.ApiEndpoint;
     }
 
-    public async Task<IReadOnlyList<Job>> Find(int pageNumber, int pagerTake)
+    public async Task<IReadOnlyList<Job>> Find(JobsRequest query)
     {
         var jobs = new List<Job>();
 
         var client = new HttpClient();
-        var response = await client.GetAsync($"{_endpoint}?sivu={pageNumber}&maara={pagerTake}");
+        var pageNumber = GetPageNumberFromOffsetAndLimit(query.Paging.Offset, query.Paging.Limit);
+        var response = await client.GetAsync($"{_endpoint}?sivu={pageNumber}&maara={query.Paging.Limit}");
 
         if (!response.IsSuccessStatusCode) return jobs;
 
@@ -31,16 +32,28 @@ internal class JobService : IJobService
             Employer = ilmoitus.IlmoittajanNimi.FirstOrDefault(x => x.KieliKoodi == "fi")?.Arvo.ToString(),
             Location = new Location
             {
-                City = ilmoitus.Sijainti.Toimipaikka.Postitoimipaikka.ToString()
+                City = ilmoitus.Sijainti.Toimipaikka.Postitoimipaikka,
+                Postcode = ilmoitus.Sijainti.Toimipaikka.Postinumero
             },
             BasicInfo = new BasicInfo
             {
                 Title = ilmoitus.Perustiedot.TyonOtsikko.FirstOrDefault(x => x.KieliKoodi == "fi")?.Arvo.ToString(),
-                Description = ilmoitus.Perustiedot.TyonKuvaus.FirstOrDefault(x => x.KieliKoodi == "fi")?.Arvo.ToString()
+                Description =
+                    ilmoitus.Perustiedot.TyonKuvaus.FirstOrDefault(x => x.KieliKoodi == "fi")?.Arvo.ToString(),
+                WorkTimeType = ilmoitus.Perustiedot.TyoAika
             },
-            PublishedAt = ilmoitus.Julkaisupvm
+            PublishedAt = ilmoitus.Julkaisupvm,
+            ApplicationUrl = ilmoitus.Hakeminen.HakemuksenUrl,
+            ApplicationEndDate = ilmoitus.Hakeminen.HakuaikaPaattyy
         }));
 
         return jobs;
+    }
+
+    private int GetPageNumberFromOffsetAndLimit(int pagingOffset, int pagingLimit)
+    {
+        var (quotient, _) = Math.DivRem(pagingOffset, pagingLimit);
+
+        return quotient;
     }
 }
