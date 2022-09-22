@@ -32,14 +32,18 @@ internal class JobService : IJobService
             Employer = ilmoitus.IlmoittajanNimi.FirstOrDefault(x => x.KieliKoodi == "fi")?.Arvo.ToString(),
             Location = new Location
             {
-                City = ilmoitus.Sijainti.Toimipaikka.Postitoimipaikka.ToString()
+                City = ilmoitus.Sijainti.Toimipaikka.Postitoimipaikka,
+                Postcode = ilmoitus.Sijainti.Toimipaikka.Postinumero
             },
             BasicInfo = new BasicInfo
             {
                 Title = ilmoitus.Perustiedot.TyonOtsikko.FirstOrDefault(x => x.KieliKoodi == "fi")?.Arvo.ToString(),
-                Description = ilmoitus.Perustiedot.TyonKuvaus.FirstOrDefault(x => x.KieliKoodi == "fi")?.Arvo.ToString()
+                Description = ilmoitus.Perustiedot.TyonKuvaus.FirstOrDefault(x => x.KieliKoodi == "fi")?.Arvo.ToString(),
+                WorkTimeType = ilmoitus.Perustiedot.TyoAika
             },
-            PublishedAt = ilmoitus.Julkaisupvm
+            PublishedAt = ilmoitus.Julkaisupvm,
+            ApplicationUrl = ilmoitus.Hakeminen.HakemuksenUrl,
+            ApplicationEndDate = ilmoitus.Hakeminen.HakuaikaPaattyy   
         }));
 
         return jobs;
