@@ -38,12 +38,13 @@ internal class JobService : IJobService
             BasicInfo = new BasicInfo
             {
                 Title = ilmoitus.Perustiedot.TyonOtsikko.FirstOrDefault(x => x.KieliKoodi == "fi")?.Arvo.ToString(),
-                Description = ilmoitus.Perustiedot.TyonKuvaus.FirstOrDefault(x => x.KieliKoodi == "fi")?.Arvo.ToString(),
+                Description =
+                    ilmoitus.Perustiedot.TyonKuvaus.FirstOrDefault(x => x.KieliKoodi == "fi")?.Arvo.ToString(),
                 WorkTimeType = ilmoitus.Perustiedot.TyoAika
             },
             PublishedAt = ilmoitus.Julkaisupvm,
             ApplicationUrl = ilmoitus.Hakeminen.HakemuksenUrl,
-            ApplicationEndDate = ilmoitus.Hakeminen.HakuaikaPaattyy   
+            ApplicationEndDate = ilmoitus.Hakeminen.HakuaikaPaattyy
         }));
 
         return jobs;

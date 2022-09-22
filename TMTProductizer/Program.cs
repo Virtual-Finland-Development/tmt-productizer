@@ -28,9 +28,9 @@ app.MapPost("/jobs", async (JobsRequest requestModel, [FromServices] IJobService
         var response = new
         {
             Results = jobs,
-            TotalCount = jobs.Count 
+            TotalCount = jobs.Count
         };
-        
+
         return Results.Ok(response);
     })
     .Produces(200);
