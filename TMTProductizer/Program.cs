@@ -13,20 +13,18 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSwaggerGenNewtonsoftSupport();
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(name: "AllowAll", policyBuilder =>
-    {
-        policyBuilder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
-    });
+    options.AddPolicy("AllowAllForDevelopment",
+        policyBuilder => { policyBuilder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin(); });
 });
 
 var app = builder.Build();
-app.UseCors();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.UseCors("AllowAllForDevelopment");
 }
 
 app.MapPost("/jobs", async (JobsRequest requestModel, [FromServices] IJobService service) =>
