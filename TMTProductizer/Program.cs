@@ -11,8 +11,16 @@ builder.Services.Configure<TmtOptions>(builder.Configuration.GetSection("TmtOpti
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSwaggerGenNewtonsoftSupport();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: "AllowAll", policyBuilder =>
+    {
+        policyBuilder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
+    });
+});
 
 var app = builder.Build();
+app.UseCors();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
