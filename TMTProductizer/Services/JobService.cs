@@ -44,6 +44,11 @@ internal class JobService : IJobService
             ApplicationEndDate = ilmoitus.Hakeminen.HakuaikaPaattyy
         }));
 
+        if (query.Query != "")
+            jobs = jobs.FindAll(j =>
+                j.BasicInfo.Description!.Contains(query.Query) ||
+                j.BasicInfo.Title!.Contains(query.Query));
+
         return jobs;
     }
 
