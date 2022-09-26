@@ -1,26 +1,23 @@
 using CodeGen.Api.TMT.Model;
-using Microsoft.Extensions.Options;
-using TMTProductizer.Config;
 using TMTProductizer.Models;
 
 namespace TMTProductizer.Services;
 
 internal class JobService : IJobService
 {
-    private readonly string _endpoint;
+    private readonly HttpClient _client;
 
-    public JobService(IOptions<TmtOptions> configuration)
+    public JobService(HttpClient client)
     {
-        _endpoint = configuration.Value.ApiEndpoint;
+        _client = client;
     }
 
     public async Task<IReadOnlyList<Job>> Find(JobsRequest query)
     {
         var jobs = new List<Job>();
 
-        var client = new HttpClient();
         var pageNumber = GetPageNumberFromOffsetAndLimit(query.Paging.Offset, query.Paging.Limit);
-        var response = await client.GetAsync($"{_endpoint}?sivu={pageNumber}&maara={query.Paging.Limit}");
+        var response = await _client.GetAsync($"?sivu={pageNumber}&maara={query.Paging.Limit}");
 
         if (!response.IsSuccessStatusCode) return jobs;
 

@@ -17,6 +17,12 @@ builder.Services.AddCors(options =>
         policyBuilder => { policyBuilder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin(); });
 });
 
+builder.Services.AddHttpClient<IJobService, JobService>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration.GetSection("TmtOptions:ApiEndpoint").Value);
+});
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
