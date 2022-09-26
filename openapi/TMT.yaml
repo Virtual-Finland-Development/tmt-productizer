@@ -614,7 +614,7 @@ paths:
                             puhelinNro: '+358123456789'
                             sposti: some.one@somewhere.com
                         ilmoittajanNimi:
-                          - arvo: Fapplication Oy
+                          - arvo: Fapplication Oyj
                             kieliKoodi: fi
                         ilmoittajanYTunnus: string
                         ilmoituksenID: f5eb5e7f-8e27-4e6f-96fd-5317f74518ed
@@ -782,7 +782,7 @@ paths:
                             - arvo: string
                               kieliKoodi: fi
                           tyonOtsikko:
-                            - arvo: string
+                            - arvo: Rahanpesijä saa paikan
                               kieliKoodi: fi
                           tyonTiivistelma:
                             - arvo: string

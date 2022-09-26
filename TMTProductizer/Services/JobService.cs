@@ -1,26 +1,23 @@
 using CodeGen.Api.TMT.Model;
-using Microsoft.Extensions.Options;
-using TMTProductizer.Config;
 using TMTProductizer.Models;
 
 namespace TMTProductizer.Services;
 
 internal class JobService : IJobService
 {
-    private readonly string _endpoint;
+    private readonly HttpClient _client;
 
-    public JobService(IOptions<TmtOptions> configuration)
+    public JobService(HttpClient client)
     {
-        _endpoint = configuration.Value.ApiEndpoint;
+        _client = client;
     }
 
     public async Task<IReadOnlyList<Job>> Find(JobsRequest query)
     {
         var jobs = new List<Job>();
 
-        var client = new HttpClient();
         var pageNumber = GetPageNumberFromOffsetAndLimit(query.Paging.Offset, query.Paging.Limit);
-        var response = await client.GetAsync($"{_endpoint}?sivu={pageNumber}&maara={query.Paging.Limit}");
+        var response = await _client.GetAsync($"?sivu={pageNumber}&maara={query.Paging.Limit}");
 
         if (!response.IsSuccessStatusCode) return jobs;
 
@@ -46,6 +43,12 @@ internal class JobService : IJobService
             ApplicationUrl = ilmoitus.Hakeminen.HakemuksenUrl,
             ApplicationEndDate = ilmoitus.Hakeminen.HakuaikaPaattyy
         }));
+
+        // TODO: TMT API doesn't support keyword search so we have to do proper in-memory filtering instead. This isn't it.
+        if (query.Query != "")
+            jobs = jobs.FindAll(j =>
+                j.BasicInfo.Description!.Contains(query.Query) ||
+                j.BasicInfo.Title!.Contains(query.Query));
 
         return jobs;
     }
