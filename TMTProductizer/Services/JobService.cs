@@ -44,6 +44,7 @@ internal class JobService : IJobService
             ApplicationEndDate = ilmoitus.Hakeminen.HakuaikaPaattyy
         }));
 
+        // TODO: TMT API doesn't support keyword search so we have to do proper in-memory filtering instead. This isn't it.
         if (query.Query != "")
             jobs = jobs.FindAll(j =>
                 j.BasicInfo.Description!.Contains(query.Query) ||
