@@ -11,6 +11,11 @@ builder.Services.Configure<TmtOptions>(builder.Configuration.GetSection("TmtOpti
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSwaggerGenNewtonsoftSupport();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllForDevelopment",
+        policyBuilder => { policyBuilder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin(); });
+});
 
 var app = builder.Build();
 
@@ -19,6 +24,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.UseCors("AllowAllForDevelopment");
 }
 
 app.MapPost("/jobs", async (JobsRequest requestModel, [FromServices] IJobService service) =>
