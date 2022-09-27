@@ -85,5 +85,5 @@ public class TmtProductizerStack : Stack
         Url = functionUrl.FunctionUrlResult;
     }
 
-    [Output] private Output<string> Url { get; }
+    [Output] public Output<string> Url { get; set; }
 }
