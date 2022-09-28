@@ -22,6 +22,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       - uses: pulumi/actions@v3
         with: 
+          work-dir: ./deployment
           command: up
           stack-name: virtualfinland/dev
         env:
