@@ -21,6 +21,5 @@ jobs:
       - uses: pulumi/actions@v3
         with:
           command: preview
-          stack-name: virtualfinland/dev
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
