@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TMTProductizer", "TMTProduc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeGen.Api.TMT", "generated\TMTDataModels\src\CodeGen.Api.TMT\CodeGen.Api.TMT.csproj", "{83491B17-0455-46A5-86E5-E829BEA967B5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tmt-productizer", "deployment\tmt-productizer.csproj", "{D48E2496-83D0-4F37-8DCA-4BDC3A7FEB87}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{83491B17-0455-46A5-86E5-E829BEA967B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{83491B17-0455-46A5-86E5-E829BEA967B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{83491B17-0455-46A5-86E5-E829BEA967B5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D48E2496-83D0-4F37-8DCA-4BDC3A7FEB87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D48E2496-83D0-4F37-8DCA-4BDC3A7FEB87}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D48E2496-83D0-4F37-8DCA-4BDC3A7FEB87}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D48E2496-83D0-4F37-8DCA-4BDC3A7FEB87}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -22,6 +22,7 @@ builder.Services.AddHttpClient<IJobService, JobService>(client =>
     client.BaseAddress = new Uri(builder.Configuration.GetSection("TmtOptions:ApiEndpoint").Value);
 });
 
+builder.Services.AddAWSLambdaHosting(LambdaEventSource.HttpApi);
 
 var app = builder.Build();
 
