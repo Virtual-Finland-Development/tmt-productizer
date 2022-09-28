@@ -1,4 +1,3 @@
 name: tmt-productizer
 description: Stack for TMT productizer. Productizer is .NET minimal API.
 runtime: dotnet
- 
