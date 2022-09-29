@@ -36,7 +36,16 @@ if (app.Environment.IsDevelopment())
 
 app.MapPost("/jobs", async (JobsRequest requestModel, [FromServices] IJobService service) =>
     {
-        var jobs = await service.Find(requestModel);
+        IReadOnlyList<Job> jobs;
+        try
+        {
+            jobs = await service.Find(requestModel);
+        }
+        catch (HttpRequestException)
+        {
+            return Results.StatusCode(500);
+        }
+
 
         var response = new
         {
