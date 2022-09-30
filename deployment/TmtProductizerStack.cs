@@ -12,7 +12,7 @@ public class TmtProductizerStack : Stack
 {
     public TmtProductizerStack()
     {
-        var role = new Role("lambdaRole", new RoleArgs
+        var role = new Role("tmtProductizerLambdaRole", new RoleArgs
         {
             AssumeRolePolicy = JsonSerializer.Serialize(new Dictionary<string, object?>
             {
@@ -37,13 +37,13 @@ public class TmtProductizerStack : Stack
             })
         });
 
-        var rolePolicyAttachment = new RolePolicyAttachment("lambdaRoleAttachment", new RolePolicyAttachmentArgs
+        var rolePolicyAttachment = new RolePolicyAttachment("tmtProductizerLambdaRoleAttachment", new RolePolicyAttachmentArgs
         {
             Role = Output.Format($"{role.Name}"),
             PolicyArn = ManagedPolicy.AWSLambdaBasicExecutionRole.ToString()
         });
 
-        var lambdaFunction = new Function("lambdaFunction", new FunctionArgs
+        var lambdaFunction = new Function("tmtProductizer", new FunctionArgs
         {
             Role = role.Arn,
             Runtime = "dotnet6",
@@ -62,13 +62,13 @@ public class TmtProductizerStack : Stack
             })
         });
 
-        var functionUrl = new FunctionUrl("lambdaFunctionUrl", new FunctionUrlArgs
+        var functionUrl = new FunctionUrl("tmtProductizerFunctionUrl", new FunctionUrlArgs
         {
             FunctionName = lambdaFunction.Arn,
             AuthorizationType = "NONE"
         });
 
-        var localCommand = new Command("addPermissions", new CommandArgs
+        var localCommand = new Command("tmtProductizerAddPermissions", new CommandArgs
         {
             Create = Output.Format(
                 $"aws lambda add-permission --function-name {lambdaFunction.Arn} --action lambda:InvokeFunctionUrl --principal '*' --function-url-auth-type NONE --statement-id FunctionUrlAllowAccess")
