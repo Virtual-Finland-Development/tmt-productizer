@@ -14,7 +14,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\generated\TMTDataModels\src\CodeGen.Api.TMT\CodeGen.Api.TMT.csproj" />
+        <ProjectReference Include="..\CodeGen.Api.TMT\CodeGen.Api.TMT.csproj" />
     </ItemGroup>
 
 </Project>
