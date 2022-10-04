@@ -10,7 +10,7 @@ services:
   tmt-productizer:
     build: .
     ports:
-      - '6000:5286'
+      - '5286:5286'
     depends_on:
       - prism
     environment:
