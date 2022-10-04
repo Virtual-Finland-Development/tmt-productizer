@@ -57,6 +57,8 @@ app.MapPost("/test/lassipatanen/Job/JobPosting", async (JobsRequest requestModel
 
         return Results.Ok(response);
     })
-    .Produces(200);
+    .Produces(200)
+    .Produces(500)
+    .WithName("FindJobPostings");
 
 app.Run();
