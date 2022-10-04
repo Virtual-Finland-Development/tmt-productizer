@@ -3,12 +3,7 @@ Test implementation for työmarkkinatori productizer. Actual API is not yet rele
 
 ### Generating models from Open API spec
 
-`docker run --rm -v "${PWD}:/local" openapitools/openapi-generator-cli generate \
-    -i /local/openapi/TMT.yaml \
-    -g csharp-netcore \
-    -o /local/generated/TMTDataModels \
-    --global-property=apiTests=false,modelTests=false,modelDocs=false \
-    -c /local/config.yaml`
+Execute `generate-api-models.sh` shell script in terminal
 
 ### Mocking data with Prism
 
@@ -16,7 +11,7 @@ Test implementation for työmarkkinatori productizer. Actual API is not yet rele
 `npm install -g @stoplight/prism-cli`
 
 #### Run Prism
-Run the following command in openapi directory:
+Run the following command in `openapi` directory:
 
 `prism mock TMT.yaml`
 
@@ -25,7 +20,11 @@ If you wish to generate dynamic data, use `--dynamic` flag with the previous com
 ### Running productizer locally
 
 Start up Prism mock server and take note of the port it is using (4010 by default). Open `appsettings.Development.json` and
-make sure `TmtOptions:ApiEndpoint` host and port are matching that of Prism mock server.
-
+make sure `TmtOptions:ApiEndpoint` host and port are matching that of Prism mock server. 
 To query job data send POST request with correct body to `http://localhost:5286/jobs`
 
+Alternatively you can run both prism and productizer with Docker compose command
+
+`docker  compose up`
+
+Note: Prism doesn't seem to work in docker container if host machine is M1 Mac :(
