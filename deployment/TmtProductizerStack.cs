@@ -58,7 +58,7 @@ public class TmtProductizerStack : Stack
             },
             Code = new AssetArchive(new Dictionary<string, AssetOrArchive>
             {
-                { "folder", new FileArchive("../TMTProductizer") }
+                { "folder", new FileArchive("../src/TMTProductizer") }
             })
         });
 

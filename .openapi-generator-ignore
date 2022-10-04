@@ -33,3 +33,7 @@ src/CodeGen.Api.TMT/Client/*
 !src/CodeGen.Api.TMT/Client/OpenAPIDateConverter.cs
 
 /docs/*.md
+
+# Don't generate .gitignore or README.MD
+.gitignore
+README.md

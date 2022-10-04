@@ -34,6 +34,8 @@ if (app.Environment.IsDevelopment())
     app.UseCors("AllowAllForDevelopment");
 }
 
+app.Urls.Add("http://*:80");
+
 app.MapPost("/jobs", async (JobsRequest requestModel, [FromServices] IJobService service) =>
     {
         IReadOnlyList<Job> jobs;

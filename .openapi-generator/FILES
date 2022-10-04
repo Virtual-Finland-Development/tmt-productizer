@@ -1,5 +1,3 @@
-.gitignore
-README.md
 src/CodeGen.Api.TMT/Client/OpenAPIDateConverter.cs
 src/CodeGen.Api.TMT/CodeGen.Api.TMT.csproj
 src/CodeGen.Api.TMT/Model/AbstractOpenAPISchema.cs
