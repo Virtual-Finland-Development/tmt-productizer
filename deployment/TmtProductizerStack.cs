@@ -12,7 +12,7 @@ public class TmtProductizerStack : Stack
 {
     public TmtProductizerStack()
     {
-        var role = new Role("tmtProductizerLambdaRole", new RoleArgs
+        var role = new Role("tmt-productizer-lambda-role", new RoleArgs
         {
             AssumeRolePolicy = JsonSerializer.Serialize(new Dictionary<string, object?>
             {
@@ -37,13 +37,13 @@ public class TmtProductizerStack : Stack
             })
         });
 
-        var rolePolicyAttachment = new RolePolicyAttachment("tmtProductizerLambdaRoleAttachment", new RolePolicyAttachmentArgs
+        var rolePolicyAttachment = new RolePolicyAttachment("tmt-productizer-lambda-role-attachment", new RolePolicyAttachmentArgs
         {
             Role = Output.Format($"{role.Name}"),
             PolicyArn = ManagedPolicy.AWSLambdaBasicExecutionRole.ToString()
         });
 
-        var lambdaFunction = new Function("tmtProductizer", new FunctionArgs
+        var lambdaFunction = new Function("tmt-productizer", new FunctionArgs
         {
             Role = role.Arn,
             Runtime = "dotnet6",
@@ -56,19 +56,16 @@ public class TmtProductizerStack : Stack
                     { "ASPNETCORE_ENVIRONMENT", "Development" }
                 }
             },
-            Code = new AssetArchive(new Dictionary<string, AssetOrArchive>
-            {
-                { "folder", new FileArchive("../src/TMTProductizer") }
-            })
+            Code = new FileArchive("./bin/Debug/net6.0")
         });
 
-        var functionUrl = new FunctionUrl("tmtProductizerFunctionUrl", new FunctionUrlArgs
+        var functionUrl = new FunctionUrl("tmt-productizer-function-url", new FunctionUrlArgs
         {
             FunctionName = lambdaFunction.Arn,
             AuthorizationType = "NONE"
         });
 
-        var localCommand = new Command("tmtProductizerAddPermissions", new CommandArgs
+        var localCommand = new Command("tmt-productizer-add-permissions", new CommandArgs
         {
             Create = Output.Format(
                 $"aws lambda add-permission --function-name {lambdaFunction.Arn} --action lambda:InvokeFunctionUrl --principal '*' --function-url-auth-type NONE --statement-id FunctionUrlAllowAccess")
