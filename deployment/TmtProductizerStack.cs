@@ -56,10 +56,7 @@ public class TmtProductizerStack : Stack
                     { "ASPNETCORE_ENVIRONMENT", "Development" }
                 }
             },
-            Code = new AssetArchive(new Dictionary<string, AssetOrArchive>
-            {
-                { "folder", new FileArchive("../src/TMTProductizer") }
-            })
+            Code = new FileArchive("./bin/Debug/net6.0")
         });
 
         var functionUrl = new FunctionUrl("tmt-productizer-function-url", new FunctionUrlArgs
