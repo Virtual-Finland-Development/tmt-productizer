@@ -58,6 +58,7 @@ public class TmtProductizerStack : Stack
             },
             Code = new FileArchive("./release/Application_Artifact.zip")
         });
+        
 
         var functionUrl = new FunctionUrl("tmt-productizer-function-url", new FunctionUrlArgs
         {
