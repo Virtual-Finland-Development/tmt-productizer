@@ -36,7 +36,7 @@ if (app.Environment.IsDevelopment())
 
 app.Urls.Add("http://*:80");
 
-app.MapPost("/jobs", async (JobsRequest requestModel, [FromServices] IJobService service) =>
+app.MapPost("/test/lassipatanen/Job/JobPosting", async (JobsRequest requestModel, [FromServices] IJobService service) =>
     {
         IReadOnlyList<Job> jobs;
         try
@@ -57,6 +57,8 @@ app.MapPost("/jobs", async (JobsRequest requestModel, [FromServices] IJobService
 
         return Results.Ok(response);
     })
-    .Produces(200);
+    .Produces(200)
+    .Produces(500)
+    .WithName("FindJobPostings");
 
 app.Run();
