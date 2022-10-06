@@ -56,7 +56,7 @@ public class TmtProductizerStack : Stack
                     { "ASPNETCORE_ENVIRONMENT", "Development" }
                 }
             },
-            Code = new FileArchive("/home/runner/work/tmt-productizer/tmt-productizer/deployment/release/Application_Artifact.zip")
+            Code = new FileArchive("release/Application_Artifact.zip")
         });
 
         var functionUrl = new FunctionUrl("tmt-productizer-function-url", new FunctionUrlArgs
