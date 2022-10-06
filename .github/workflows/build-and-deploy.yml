@@ -25,7 +25,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: Application_Artifact
-          path: /home/runner/work/src/TMTProductizer/TMTProductizer/release/
+          path: /home/runner/work/tmt-productizer/tmt-productizer/release/
           retention-days: 5
   deploy:
     name: Deploy
