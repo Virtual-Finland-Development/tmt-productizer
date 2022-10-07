@@ -32,7 +32,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
     app.UseCors("AllowAllForDevelopment");
-    app.Urls.Add("http://*:80");
 }
 
 
