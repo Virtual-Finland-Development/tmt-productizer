@@ -2,16 +2,16 @@ namespace TMTProductizer.Models;
 
 public class JobsRequest
 {
-    public string Query { get; set; }
-    public LocationQuery Location { get; set; }
-    public PagingOptions Paging { get; set; }
+    public string Query { get; set; } = null!;
+    public LocationQuery Location { get; set; } = null!;
+    public PagingOptions Paging { get; set; } = null!;
 }
 
 public class LocationQuery
 {
-    public IEnumerable<string> Countries { get; set; }
-    public IEnumerable<string> Regions { get; set; }
-    public IEnumerable<string> Municipalities { get; set; }
+    public IEnumerable<string> Countries { get; set; } = null!;
+    public IEnumerable<string> Regions { get; set; } = null!;
+    public IEnumerable<string> Municipalities { get; set; } = null!;
 }
 
 public class PagingOptions
