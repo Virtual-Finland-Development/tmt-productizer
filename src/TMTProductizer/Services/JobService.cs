@@ -3,7 +3,7 @@ using TMTProductizer.Models;
 
 namespace TMTProductizer.Services;
 
-internal class JobService : IJobService
+public class JobService : IJobService
 {
     private readonly HttpClient _client;
 
