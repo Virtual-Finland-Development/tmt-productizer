@@ -37,11 +37,12 @@ public class TmtProductizerStack : Stack
             })
         });
 
-        var rolePolicyAttachment = new RolePolicyAttachment("tmt-productizer-lambda-role-attachment", new RolePolicyAttachmentArgs
-        {
-            Role = Output.Format($"{role.Name}"),
-            PolicyArn = ManagedPolicy.AWSLambdaBasicExecutionRole.ToString()
-        });
+        var rolePolicyAttachment = new RolePolicyAttachment("tmt-productizer-lambda-role-attachment",
+            new RolePolicyAttachmentArgs
+            {
+                Role = Output.Format($"{role.Name}"),
+                PolicyArn = ManagedPolicy.AWSLambdaBasicExecutionRole.ToString()
+            });
 
         var lambdaFunction = new Function("tmt-productizer", new FunctionArgs
         {
