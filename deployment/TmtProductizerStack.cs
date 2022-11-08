@@ -26,7 +26,7 @@ public class TmtProductizerStack : Stack
             }
         };
 
-        var role = new Role($"{projectName}-LambdaRole-{environment}", new RoleArgs
+        var role = new Role($"{projectName}-lambda-role-{environment}", new RoleArgs
         {
             AssumeRolePolicy = JsonSerializer.Serialize(new Dictionary<string, object?>
             {
@@ -51,7 +51,7 @@ public class TmtProductizerStack : Stack
             })
         });
 
-        var rolePolicyAttachment = new RolePolicyAttachment($"{projectName}-LambdaRoleAttachment-{environment}",
+        var rolePolicyAttachment = new RolePolicyAttachment($"{projectName}-lambda-role-attachment-{environment}",
             new RolePolicyAttachmentArgs
             {
                 Role = Output.Format($"{role.Name}"),
@@ -75,13 +75,13 @@ public class TmtProductizerStack : Stack
             Tags = tags
         });
 
-        var functionUrl = new FunctionUrl($"{projectName}-FunctionUrl-{environment}", new FunctionUrlArgs
+        var functionUrl = new FunctionUrl($"{projectName}-function-url-{environment}", new FunctionUrlArgs
         {
             FunctionName = lambdaFunction.Arn,
             AuthorizationType = "NONE"
         });
 
-        var command = new Command($"{projectName}-AddPermissionsCommand-{environment}", new CommandArgs
+        var command = new Command($"{projectName}-add-permissions-command-{environment}", new CommandArgs
         {
             Create = Output.Format(
                 $"aws lambda add-permission --function-name {lambdaFunction.Arn} --action lambda:InvokeFunctionUrl --principal '*' --function-url-auth-type NONE --statement-id FunctionUrlAllowAccess")
