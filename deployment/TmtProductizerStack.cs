@@ -12,7 +12,21 @@ public class TmtProductizerStack : Stack
 {
     public TmtProductizerStack()
     {
-        var role = new Role("tmt-productizer-lambda-role", new RoleArgs
+        var config = new Config();
+        var environment = Pulumi.Deployment.Instance.StackName;
+        var projectName = Pulumi.Deployment.Instance.ProjectName;
+        var artifactPath = config.Get("artifactPath") ?? "release/";
+        var tags = new InputMap<string>
+        {
+            {
+                "vfd:stack", environment
+            },
+            {
+                "vfd:project", projectName
+            }
+        };
+
+        var role = new Role($"{projectName}-LambdaRole-{environment}", new RoleArgs
         {
             AssumeRolePolicy = JsonSerializer.Serialize(new Dictionary<string, object?>
             {
@@ -37,14 +51,14 @@ public class TmtProductizerStack : Stack
             })
         });
 
-        var rolePolicyAttachment = new RolePolicyAttachment("tmt-productizer-lambda-role-attachment",
+        var rolePolicyAttachment = new RolePolicyAttachment($"{projectName}-LambdaRoleAttachment-{environment}",
             new RolePolicyAttachmentArgs
             {
                 Role = Output.Format($"{role.Name}"),
                 PolicyArn = ManagedPolicy.AWSLambdaBasicExecutionRole.ToString()
             });
 
-        var lambdaFunction = new Function("tmt-productizer", new FunctionArgs
+        var lambdaFunction = new Function($"{projectName}-{environment}", new FunctionArgs
         {
             Role = role.Arn,
             Runtime = "dotnet6",
@@ -57,16 +71,17 @@ public class TmtProductizerStack : Stack
                     { "ASPNETCORE_ENVIRONMENT", "Development" }
                 }
             },
-            Code = new FileArchive("release/")
+            Code = new FileArchive(artifactPath),
+            Tags = tags
         });
 
-        var functionUrl = new FunctionUrl("tmt-productizer-function-url", new FunctionUrlArgs
+        var functionUrl = new FunctionUrl($"{projectName}-FunctionUrl-{environment}", new FunctionUrlArgs
         {
             FunctionName = lambdaFunction.Arn,
             AuthorizationType = "NONE"
         });
 
-        var localCommand = new Command("tmt-productizer-add-permissions", new CommandArgs
+        var command = new Command($"{projectName}-AddPermissionsCommand-{environment}", new CommandArgs
         {
             Create = Output.Format(
                 $"aws lambda add-permission --function-name {lambdaFunction.Arn} --action lambda:InvokeFunctionUrl --principal '*' --function-url-auth-type NONE --statement-id FunctionUrlAllowAccess")
@@ -80,8 +95,8 @@ public class TmtProductizerStack : Stack
         });
 
 
-        Url = functionUrl.FunctionUrlResult;
+        ApplicationUrl = functionUrl.FunctionUrlResult;
     }
 
-    [Output] public Output<string> Url { get; set; }
+    [Output] public Output<string> ApplicationUrl { get; set; }
 }
