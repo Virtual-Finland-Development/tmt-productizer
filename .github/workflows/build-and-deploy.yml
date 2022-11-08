@@ -60,5 +60,6 @@ jobs:
           work-dir: ./deployment
           command: up
           stack-name: ${{ env.PULUMI_ORGANIZATION }}/${{ env.PULUMI_STACK }}
+          upsert: true
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN}}
