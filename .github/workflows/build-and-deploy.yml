@@ -5,10 +5,15 @@ on:
     branches:
       - main
 
+env:
+  PULUMI_ORGANIZATION: virtualfinland
+  PULUMI_STACK: dev
+
 jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
+    environment: ${{ env.PULUMI_STACK }}
     steps:
       - uses: actions/checkout@v3
       - name: Setup .NET
@@ -31,6 +36,7 @@ jobs:
     name: Deploy
     needs: build
     runs-on: ubuntu-latest
+    environment: ${{ env.PULUMI_STACK }}
     steps:
       - uses: actions/checkout@v3
       - name: Download build artifact
@@ -53,6 +59,6 @@ jobs:
         with:
           work-dir: ./deployment
           command: up
-          stack-name: virtualfinland/dev
+          stack-name: ${{ env.PULUMI_ORGANIZATION }}/${{ env.PULUMI_STACK }}
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN}}
