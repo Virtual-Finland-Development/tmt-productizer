@@ -3,6 +3,10 @@ name: Preview Pulumi
 on:
   pull_request
 
+env:
+  PULUMI_ORGANIZATION: virtualfinland
+  PULUMI_STACK: dev
+
 jobs:
   preview:
     name: Preview
@@ -29,6 +33,6 @@ jobs:
         with:
           work-dir: ./deployment
           command: preview
-          stack-name: virtualfinland/dev
+          stack-name: ${{ env.PULUMI_ORGANIZATION }}/${{ env.PULUMI_STACK }}
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
