@@ -29,10 +29,14 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-region: ${{ secrets.AWS_REGION }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      - uses: pulumi/actions@v3
-        with:
-          work-dir: ./deployment
-          command: preview
-          stack-name: ${{ env.PULUMI_ORGANIZATION }}/${{ env.PULUMI_STACK }}
-        env:
-          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+      - name: Install Pulumi CLI
+        uses: pulumi/setup-pulumi@v2
+      - name: Select Pulumi stack
+        working-directory: ./deployment
+        run: pulumi stack select ${{ env.PULUMI_ORGANIZATION}}/${{ env.PULUMI_STACK }}
+      - name: Set artifact path
+        working-directory: ./deployment
+        run: pulumi config set artifactPath release/
+      - name: Run Pulumi deployment
+        working-directory: ./deployment
+        run: pulumi preview
