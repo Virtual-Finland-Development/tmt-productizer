@@ -24,6 +24,8 @@ jobs:
         run: dotnet restore
       - name: Build
         run: dotnet build --no-restore
+        env:
+          TmtOptions.ApiEndpoint: ${{ secrets.TMT_API_BASE_URL }}
       - name: Publish
         run: dotnet publish src/TMTProductizer/TMTProductizer.csproj -c Release -o release --nologo
       - name: Upload build artifact
