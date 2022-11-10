@@ -4,7 +4,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TMTProductizer", "src\TMTPr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeGen.Api.TMT", "src\CodeGen.Api.TMT\CodeGen.Api.TMT.csproj", "{83491B17-0455-46A5-86E5-E829BEA967B5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tmt-productizer", "deployment\tmt-productizer.csproj", "{D48E2496-83D0-4F37-8DCA-4BDC3A7FEB87}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TMTProductizer.Infrastructure", "deployment\TMTProductizer.Infrastructure.csproj", "{D48E2496-83D0-4F37-8DCA-4BDC3A7FEB87}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TMTProductizer.UnitTests", "src\TMTProductizer.UnitTests\TMTProductizer.UnitTests.csproj", "{EEF149AB-CDFE-4ADD-9DF3-9D11641B211A}"
 EndProject
