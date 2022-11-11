@@ -26,11 +26,14 @@ git_push.sh
 appveyor.yml
 
 CodeGen.Api.TMT.sln
-
 /src/CodeGen.Api.TMT/Api/*
-
 src/CodeGen.Api.TMT/Client/*
 !src/CodeGen.Api.TMT/Client/OpenAPIDateConverter.cs
+
+CodeGen.Api.Testbed.sln
+/src/CodeGen.Api.Testbed/Api/*
+src/CodeGen.Api.Testbed/Client/*
+!src/CodeGen.Api.Testbed/Client/OpenAPIDateConverter.cs
 
 /docs/*.md
 

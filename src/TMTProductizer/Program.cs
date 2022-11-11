@@ -1,3 +1,4 @@
+using CodeGen.Api.Testbed.Model;
 using Microsoft.AspNetCore.Mvc;
 using TMTProductizer.Config;
 using TMTProductizer.Models;
@@ -37,7 +38,7 @@ if (app.Environment.IsDevelopment())
 
 app.MapPost("/test/lassipatanen/Job/JobPosting", async (JobsRequest requestModel, [FromServices] IJobService service) =>
     {
-        IReadOnlyList<Job> jobs;
+        IReadOnlyList<JobPosting> jobs;
         try
         {
             jobs = await service.Find(requestModel);
@@ -47,10 +48,9 @@ app.MapPost("/test/lassipatanen/Job/JobPosting", async (JobsRequest requestModel
             return Results.StatusCode(500);
         }
 
-
-        var response = new
+        var response = new JobPostingResponse
         {
-            Results = jobs,
+            Results = jobs.ToList(),
             TotalCount = jobs.Count
         };
 

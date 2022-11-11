@@ -1,8 +1,9 @@
+using CodeGen.Api.Testbed.Model;
 using TMTProductizer.Models;
 
 namespace TMTProductizer.Services;
 
 public interface IJobService
 {
-    Task<IReadOnlyList<Job>> Find(JobsRequest query);
+    Task<IReadOnlyList<JobPosting>> Find(JobsRequest query);
 }

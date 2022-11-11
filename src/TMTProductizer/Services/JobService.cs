@@ -1,3 +1,4 @@
+using CodeGen.Api.Testbed.Model;
 using CodeGen.Api.TMT.Model;
 using TMTProductizer.Models;
 
@@ -12,9 +13,9 @@ public class JobService : IJobService
         _client = client;
     }
 
-    public async Task<IReadOnlyList<Job>> Find(JobsRequest query)
+    public async Task<IReadOnlyList<JobPosting>> Find(JobsRequest query)
     {
-        var jobs = new List<Job>();
+        var jobs = new List<JobPosting>();
 
         var pageNumber = GetPageNumberFromOffsetAndLimit(query.Paging.Offset, query.Paging.Limit);
         var response = await _client.GetAsync($"?sivu={pageNumber}&maara={query.Paging.Limit}");
@@ -24,19 +25,24 @@ public class JobService : IJobService
         var result = await response.Content.ReadFromJsonAsync<Hakutulos>();
         if (result == null) return jobs;
 
-        jobs.AddRange(result.Ilmoitukset.Select(ilmoitus => new Job
+        jobs.AddRange(result.Ilmoitukset.Select(ilmoitus => new JobPosting
         {
-            Employer = ilmoitus.IlmoittajanNimi.FirstOrDefault(x => x.KieliKoodi == "fi")?.Arvo.ToString(),
-            Location = new Location
+            Employer = ilmoitus.IlmoittajanNimi
+                .FirstOrDefault(e => e.KieliKoodi == "fi")?.Arvo
+                .ToString() ?? string.Empty,
+            Location = new JobPostingLocation
             {
-                City = ilmoitus.Sijainti.Toimipaikka.Postitoimipaikka,
-                Postcode = ilmoitus.Sijainti.Toimipaikka.Postinumero
+                Municipality = "",
+                Postcode = ""
             },
-            BasicInfo = new BasicInfo
+            BasicInfo = new JobPostingBasicInfo
             {
-                Title = ilmoitus.Perustiedot.TyonOtsikko.FirstOrDefault(x => x.KieliKoodi == "fi")?.Arvo.ToString(),
-                Description =
-                    ilmoitus.Perustiedot.TyonKuvaus.FirstOrDefault(x => x.KieliKoodi == "fi")?.Arvo.ToString(),
+                Title = ilmoitus.Perustiedot.TyonOtsikko
+                    .FirstOrDefault(x => x.KieliKoodi == "fi")?.Arvo
+                    .ToString() ?? string.Empty,
+                Description = ilmoitus.Perustiedot.TyonKuvaus
+                    .FirstOrDefault(x => x.KieliKoodi == "fi")?.Arvo
+                    .ToString() ?? string.Empty,
                 WorkTimeType = ilmoitus.Perustiedot.TyoAika
             },
             PublishedAt = ilmoitus.Julkaisupvm,

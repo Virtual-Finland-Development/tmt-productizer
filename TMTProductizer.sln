@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TMTProductizer.Infrastructu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TMTProductizer.UnitTests", "src\TMTProductizer.UnitTests\TMTProductizer.UnitTests.csproj", "{EEF149AB-CDFE-4ADD-9DF3-9D11641B211A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeGen.Api.Testbed", "src\CodeGen.Api.Testbed\CodeGen.Api.Testbed.csproj", "{3285F844-DE20-4CB8-BC94-8F1C2A821A4D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{EEF149AB-CDFE-4ADD-9DF3-9D11641B211A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EEF149AB-CDFE-4ADD-9DF3-9D11641B211A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EEF149AB-CDFE-4ADD-9DF3-9D11641B211A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3285F844-DE20-4CB8-BC94-8F1C2A821A4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3285F844-DE20-4CB8-BC94-8F1C2A821A4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3285F844-DE20-4CB8-BC94-8F1C2A821A4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3285F844-DE20-4CB8-BC94-8F1C2A821A4D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

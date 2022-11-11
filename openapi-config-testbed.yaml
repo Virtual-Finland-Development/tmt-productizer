@@ -1,0 +1,3 @@
+packageName: "CodeGen.Api.Testbed"
+targetFramework: "net6.0"
+optionalProjectFile: "CodeGen.Api.Testbed"
