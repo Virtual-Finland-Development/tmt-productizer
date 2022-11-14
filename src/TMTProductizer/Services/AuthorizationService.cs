@@ -14,12 +14,6 @@ public class AuthorizationService : IAuthorizationService
         // Get the auth headers from the origin request
         var originHeaders = request.Headers.ToDictionary(x => x.Key.ToLowerInvariant(), x => x.Value.ToString());
         
-        // Check CORS origin against allowed origins
-        if (!originHeaders.TryGetValue("origin", out var origin) || !IsAllowedOrigin(origin))
-        {
-            throw new HttpRequestException("Unknown origin", null, System.Net.HttpStatusCode.Unauthorized); // Throws 401 if bad origin
-        }
-
         // Prep authorization request
         if (!originHeaders.ContainsKey("authorization") || !originHeaders.ContainsKey("x-authorization-provider")) {
             throw new HttpRequestException("Missing headers", null, System.Net.HttpStatusCode.Unauthorized); // Throws 401 if no auth headers
@@ -42,13 +36,5 @@ public class AuthorizationService : IAuthorizationService
         }
 
         return null;
-    }
-
-    /**
-     * Check if the origin is allowed.
-     */
-    private bool IsAllowedOrigin(string origin)
-    {
-        return origin == "https://gateway.testbed.fi";
     }
 }
