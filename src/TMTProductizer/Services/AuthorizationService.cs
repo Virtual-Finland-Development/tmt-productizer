@@ -1,3 +1,5 @@
+using System.Net;
+
 namespace TMTProductizer.Services;
 
 public class AuthorizationService : IAuthorizationService
@@ -9,18 +11,18 @@ public class AuthorizationService : IAuthorizationService
         _client = client;
     }
 
-    public async Task<object?> Authorize(HttpRequest request)
+    public async Task Authorize(HttpRequest request)
     {
         // Get the auth headers from the origin request
         var originHeaders = request.Headers.ToDictionary(x => x.Key.ToLowerInvariant(), x => x.Value.ToString());
         
         // Prep authorization request
         if (!originHeaders.ContainsKey("authorization") || !originHeaders.ContainsKey("x-authorization-provider")) {
-            throw new HttpRequestException("Missing headers", null, System.Net.HttpStatusCode.Unauthorized); // Throws 401 if no auth headers
+            throw new HttpRequestException("Missing headers", null, HttpStatusCode.Unauthorized); // Throws 401 if no auth headers
         }
 
-        var authorizeRequest = new HttpRequestMessage() {
-            RequestUri = new Uri($"{_client.BaseAddress}/authorize"),
+        var authorizeRequest = new HttpRequestMessage {
+            RequestUri = new Uri($"{_client.BaseAddress}authorize"),
             Method = HttpMethod.Post,
             Headers = {
                 { "authorization", originHeaders["authorization"] },
@@ -32,9 +34,7 @@ public class AuthorizationService : IAuthorizationService
         // Engage
         var response = await _client.SendAsync(authorizeRequest); 
         if (!response.IsSuccessStatusCode) {
-            throw new HttpRequestException("Access Denied", null, System.Net.HttpStatusCode.Unauthorized); // Throw 401 if not authorized.
+            throw new HttpRequestException("Access Denied", null, HttpStatusCode.Unauthorized); // Throw 401 if not authorized.
         }
-
-        return null;
     }
 }

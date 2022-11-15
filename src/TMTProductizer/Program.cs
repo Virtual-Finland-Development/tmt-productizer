@@ -1,13 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
-using TMTProductizer.Config;
 using TMTProductizer.Models;
 using TMTProductizer.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSingleton<IJobService, JobService>();
 builder.Services.AddSingleton<IAuthorizationService, AuthorizationService>();
-
-builder.Services.Configure<TmtOptions>(builder.Configuration.GetSection("TmtOptions"));
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -25,7 +22,7 @@ builder.Services.AddHttpClient<IJobService, JobService>(client =>
 
 builder.Services.AddHttpClient<IAuthorizationService, AuthorizationService>(client =>
 {
-    client.BaseAddress = new Uri(builder.Configuration.GetSection("TmtOptions:AuthGWEndpoint").Value);
+    client.BaseAddress = new Uri(builder.Configuration.GetSection("AppConfig:AuthGWEndpoint").Value);
 });
 
 builder.Services.AddAWSLambdaHosting(LambdaEventSource.HttpApi);

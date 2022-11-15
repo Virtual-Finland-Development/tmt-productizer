@@ -15,5 +15,4 @@ services:
       - prism
     environment:
       - TmtOptions__ApiEndpoint=http://prism:4010/api/v1/tyopaikat
-      - TmtOptions__AuthGWEndpoint=https://q88uo5prmh.execute-api.eu-north-1.amazonaws.com
       - ASPNETCORE_URLS=http://0.0.0.0:5286
