@@ -40,12 +40,20 @@ public class JobService : IJobService
         // Send request
         var response = await httpClient.SendAsync(requestMessage);
         if (!response.IsSuccessStatusCode) {
-            _logger.LogInformation("TMT API responded with: {StatusCode}", response.StatusCode);
-            _logger.LogInformation("Content: {content}", await response.Content.ReadAsStringAsync());
+            _logger.LogError("TMT API responded with: {StatusCode}", response.StatusCode);
+            _logger.LogError("Content: {content}", await response.Content.ReadAsStringAsync());
             return jobs;
         };
 
-        var result = await response.Content.ReadFromJsonAsync<Hakutulos>();
+        // Parse response
+        Hakutulos? result;
+        try {
+            result = await response.Content.ReadFromJsonAsync<Hakutulos>();
+        } catch (Exception e) {
+            _logger.LogError(e, "Failed to parse TMT API response");
+            return jobs;
+        }
+
         if (result == null) return jobs;
 
         jobs.AddRange(result.Ilmoitukset.Select(ilmoitus => new Job

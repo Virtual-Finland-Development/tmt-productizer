@@ -24,10 +24,12 @@ public class TMTAuthorizationResponse
     public string? TokenType { get; set; }
     [JsonPropertyName("expires_in")]
     public int ExpiresIn { get; set; }
-     [JsonPropertyName("scope")]
-    public string? Scope { get; set; }
-     [JsonPropertyName("refresh_token")]
-    public string? RefreshToken { get; set; }
+    [JsonPropertyName("expires_on")]
+    public int ExpiresOn { get; set; }
+    [JsonPropertyName("not_before")]
+    public int NotBefore { get; set; }
+    [JsonPropertyName("resource")]
+    public string? Resource { get; set; }
 }
 
 

@@ -49,8 +49,8 @@ public class TMT_AuthorizationService : ITMT_AuthorizationService
         // Authorize
         var response = await _client.SendAsync(authorizeRequest); 
         if (!response.IsSuccessStatusCode) {
-            _logger.LogInformation("Bad response code: {code}", response.StatusCode.ToString());
-            _logger.LogInformation("Bad content: {content}", await response.Content.ReadAsStringAsync());
+            _logger.LogError("Bad response code: {code}", response.StatusCode.ToString());
+            _logger.LogError("Bad content: {content}", await response.Content.ReadAsStringAsync());
             throw new HttpRequestException("TMT: Access Denied", null, HttpStatusCode.Unauthorized); // Throw 401 if not authorized.
         }
 
