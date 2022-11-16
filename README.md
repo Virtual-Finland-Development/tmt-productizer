@@ -65,4 +65,3 @@ Alternatively you can run both prism and productizer with Docker compose command
 `docker compose -f docker-compose.prism.yml up`
 
 Note: Prism doesn't seem to work in docker container if host machine is M1 Mac :(
-Note2: when using mock data, the authorization methods are not used, so you can use any values for them.
