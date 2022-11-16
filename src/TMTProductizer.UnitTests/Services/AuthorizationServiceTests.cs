@@ -4,6 +4,7 @@ using Moq;
 using Moq.Protected;
 using Microsoft.AspNetCore.Http;
 using FluentAssertions;
+using Microsoft.AspNetCore.Hosting;
 
 namespace TMTProductizer.UnitTests.Services;
 
@@ -25,7 +26,7 @@ public class AuthorizationServiceTests
                 Content = new StringContent("")
             });
         var httpClient = new HttpClient(handler.Object) { BaseAddress = new Uri("http://localhost/") };
-        var authorizationService = new AuthorizationService(httpClient);
+        var authorizationService = new AuthorizationService(httpClient, new Mock<IWebHostEnvironment>().Object);
 
         return authorizationService;
     }

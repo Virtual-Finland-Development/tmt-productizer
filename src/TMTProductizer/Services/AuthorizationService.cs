@@ -5,14 +5,19 @@ namespace TMTProductizer.Services;
 public class AuthorizationService : IAuthorizationService
 {
     private readonly HttpClient _client;
-    
-    public AuthorizationService(HttpClient client)
+    private readonly bool _skipAuthorizationCeck;
+
+    public AuthorizationService(HttpClient client, IWebHostEnvironment env)
     {
         _client = client;
+        _skipAuthorizationCeck = env.IsDevelopment();
     }
 
     public async Task Authorize(HttpRequest request)
     {
+        // Skip on local development
+        if (this._skipAuthorizationCeck) return;
+
         // Get the auth headers from the origin request
         var originHeaders = request.Headers.ToDictionary(x => x.Key.ToLowerInvariant(), x => x.Value.ToString());
         

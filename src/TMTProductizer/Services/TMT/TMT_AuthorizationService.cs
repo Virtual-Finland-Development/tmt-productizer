@@ -13,16 +13,22 @@ public class TMT_AuthorizationService : ITMT_AuthorizationService
     private readonly ISecretsManager _secretsManager;
     private readonly ILogger<TMT_AuthorizationService> _logger;
     private TMTAuthorizationDetails? _TMTAuthorizationDetails = null;
+    private bool _skipAuthorizationCeck;
 
-    public TMT_AuthorizationService(HttpClient client, ISecretsManager secretsManager, ILogger<TMT_AuthorizationService> logger)
+    public TMT_AuthorizationService(HttpClient client, ISecretsManager secretsManager, ILogger<TMT_AuthorizationService> logger, IWebHostEnvironment env)
     {
         _client = client;
         _secretsManager = secretsManager;
         _logger = logger;
+        _skipAuthorizationCeck = env.IsDevelopment();
+
     }
 
     public async Task<TMTAuthorizationDetails> GetTMTAuthorizationDetails()
     {
+        // Skip on local development
+        if (this._skipAuthorizationCeck) return new TMTAuthorizationDetails();
+
         // If we have a valid token in the current lambda instance, return it
         // @TODO: cache the token for time period over the lambda instance lifetime
         if (this._TMTAuthorizationDetails != null && DateUtils.UnixTimeStampToDateTime(this._TMTAuthorizationDetails.ExpiresOn) > DateTime.UtcNow) {

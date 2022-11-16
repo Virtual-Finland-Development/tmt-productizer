@@ -27,6 +27,8 @@ public class JobService : IJobService
         // Get TMT Authorization Details
         TMTAuthorizationDetails tmtAuthorizationDetails  = await _tmtAuthorizationService.GetTMTAuthorizationDetails(); // Throws HttpRequestException;
 
+        _logger.LogInformation("TMT Base Address: {BaseAddress}", this._client.BaseAddress);
+
         // Form the request
         var requestMessage = new HttpRequestMessage {
             RequestUri = new Uri($"{this._client.BaseAddress}?sivu={pageNumber}&maara={query.Paging.Limit}"),

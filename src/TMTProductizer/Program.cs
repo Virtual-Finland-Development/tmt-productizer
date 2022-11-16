@@ -45,16 +45,13 @@ if (app.Environment.IsDevelopment())
 
 app.MapPost("/test/lassipatanen/Job/JobPosting", async (HttpRequest request, JobsRequest requestModel, [FromServices] IJobService service, [FromServices] IAuthorizationService authorizationService) =>
     {
-        if (!app.Environment.IsDevelopment())
+        try
         {
-            try
-            {
-                await authorizationService.Authorize(request);
-            }
-            catch (HttpRequestException)
-            {
-                return Results.StatusCode(401);
-            }
+            await authorizationService.Authorize(request);
+        }
+        catch (HttpRequestException)
+        {
+            return Results.StatusCode(401);
         }
 
         IReadOnlyList<Job> jobs;
