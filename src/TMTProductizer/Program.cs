@@ -1,12 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
-using TMTProductizer.Config;
 using TMTProductizer.Models;
 using TMTProductizer.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSingleton<IJobService, JobService>();
-
-builder.Services.Configure<TmtOptions>(builder.Configuration.GetSection("TmtOptions"));
+builder.Services.AddSingleton<IAuthorizationService, AuthorizationService>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -22,6 +20,11 @@ builder.Services.AddHttpClient<IJobService, JobService>(client =>
     client.BaseAddress = new Uri(builder.Configuration.GetSection("TmtOptions:ApiEndpoint").Value);
 });
 
+builder.Services.AddHttpClient<IAuthorizationService, AuthorizationService>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration.GetSection("AppConfig:AuthGWEndpoint").Value);
+});
+
 builder.Services.AddAWSLambdaHosting(LambdaEventSource.HttpApi);
 
 var app = builder.Build();
@@ -35,8 +38,20 @@ if (app.Environment.IsDevelopment())
 }
 
 
-app.MapPost("/test/lassipatanen/Job/JobPosting", async (JobsRequest requestModel, [FromServices] IJobService service) =>
+app.MapPost("/test/lassipatanen/Job/JobPosting", async (HttpRequest request, JobsRequest requestModel, [FromServices] IJobService service, [FromServices] IAuthorizationService authorizationService) =>
     {
+        if (!app.Environment.IsDevelopment())
+        {
+            try
+            {
+                await authorizationService.Authorize(request);
+            }
+            catch (HttpRequestException)
+            {
+                return Results.StatusCode(401);
+            }
+        }
+
         IReadOnlyList<Job> jobs;
         try
         {
@@ -57,6 +72,7 @@ app.MapPost("/test/lassipatanen/Job/JobPosting", async (JobsRequest requestModel
         return Results.Ok(response);
     })
     .Produces(200)
+    .Produces(401)
     .Produces(500)
     .WithName("FindJobPostings");
 
