@@ -20,13 +20,13 @@ public class TMT_AuthorizationService : ITMT_AuthorizationService
         _client = client;
         _secretsManager = secretsManager;
         _logger = logger;
-        _skipAuthorizationCeck = env.IsDevelopment();
+        _skipAuthorizationCeck = env.IsEnvironment("Mock");
 
     }
 
     public async Task<TMTAuthorizationDetails> GetTMTAuthorizationDetails()
     {
-        // Skip on local development
+        // Skip on local mock development
         if (this._skipAuthorizationCeck) return new TMTAuthorizationDetails();
 
         // If we have a valid token in the current lambda instance, return it

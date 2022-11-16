@@ -14,6 +14,6 @@ services:
     depends_on:
       - prism
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=Mock
       - AppConfig__TmtOptions__ApiEndpoint=http://prism:4010/api/v1/tyopaikat
       - ASPNETCORE_URLS=http://0.0.0.0:5286
