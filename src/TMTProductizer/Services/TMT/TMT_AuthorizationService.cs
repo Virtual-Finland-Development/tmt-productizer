@@ -3,6 +3,7 @@ using System.Text;
 using System.Text.Json;
 using TMTProductizer.Models;
 using TMTProductizer.Services.AWS;
+using TMTProductizer.Utils.DateUtils;
 
 namespace TMTProductizer.Services.TMT;
 
@@ -11,6 +12,7 @@ public class TMT_AuthorizationService : ITMT_AuthorizationService
     private readonly HttpClient _client;
     private readonly ISecretsManager _secretsManager;
     private readonly ILogger<TMT_AuthorizationService> _logger;
+    private TMTAuthorizationDetails? _TMTAuthorizationDetails = null;
 
     public TMT_AuthorizationService(HttpClient client, ISecretsManager secretsManager, ILogger<TMT_AuthorizationService> logger)
     {
@@ -20,6 +22,17 @@ public class TMT_AuthorizationService : ITMT_AuthorizationService
     }
 
     public async Task<TMTAuthorizationDetails> GetTMTAuthorizationDetails()
+    {
+        // If we have a valid token in the current lambda instance, return it
+        // @TODO: cache the token for time period over the lambda instance lifetime
+        if (this._TMTAuthorizationDetails != null && DateUtils.UnixTimeStampToDateTime(this._TMTAuthorizationDetails.ExpiresOn) > DateTime.UtcNow) {
+            return this._TMTAuthorizationDetails;
+        }
+        this._TMTAuthorizationDetails = await this._fetchTMTAuthorizationDetails();
+        return this._TMTAuthorizationDetails;
+    }
+
+    private async Task<TMTAuthorizationDetails> _fetchTMTAuthorizationDetails()
     {
         // Fetch secrets
         var secrets = await _secretsManager.GetTMTSecrets(); // throws HttpRequestException
@@ -65,6 +78,7 @@ public class TMT_AuthorizationService : ITMT_AuthorizationService
         // Return authorization details
         var details = new TMTAuthorizationDetails {
             AccessToken = responseContent.AccessToken,
+            ExpiresOn = responseContent.ExpiresOn,
             ProxyAddress = secrets.ProxyAddress,
             ProxyUser = secrets.ProxyUser,
             ProxyPassword = secrets.ProxyPassword
