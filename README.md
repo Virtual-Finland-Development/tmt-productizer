@@ -1,6 +1,6 @@
 # tmt-productizer
 
-Test implementation for työmarkkinatori productizer. Actual API is not yet released, so we have to mock the data.
+Test implementation for työmarkkinatori productizer.
 
 ## Running with live data
 
