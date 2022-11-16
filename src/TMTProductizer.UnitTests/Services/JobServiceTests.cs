@@ -1,9 +1,11 @@
 using System.Net;
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Moq.Protected;
 using TMTProductizer.Models;
 using TMTProductizer.Services;
+using TMTProductizer.Services.TMT;
 
 namespace TMTProductizer.UnitTests.Services;
 
@@ -27,6 +29,8 @@ public class JobServiceTests
                 Content = new StringContent(TmtJson)
             });
         var httpClient = new HttpClient(handler.Object) { BaseAddress = new Uri("http://localhost/") };
+        var mockTMT_AuthorizationService = new MockTMT_AuthorizationService();
+        
         var query = new JobsRequest
         {
             Query = "",
@@ -42,7 +46,7 @@ public class JobServiceTests
                 Offset = 20
             }
         };
-        var sut = new JobService(httpClient);
+        var sut = new JobService(httpClient, mockTMT_AuthorizationService, new Logger<JobService>(new LoggerFactory()));
 
         var result = sut.Find(query);
 
@@ -66,6 +70,8 @@ public class JobServiceTests
                 Content = new StringContent("errorMessage")
             });
         var httpClient = new HttpClient(handler.Object) { BaseAddress = new Uri("http://localhost/") };
+        var mockTMT_AuthorizationService = new MockTMT_AuthorizationService();
+
         var query = new JobsRequest
         {
             Query = "",
@@ -81,12 +87,30 @@ public class JobServiceTests
                 Offset = 20
             }
         };
-        var sut = new JobService(httpClient);
+        var sut = new JobService(httpClient, mockTMT_AuthorizationService, new Logger<JobService>(new LoggerFactory()));
 
         var result = sut.Find(query);
 
         result.Should().NotBeNull();
         result.Result.Should().BeOfType<List<Job>>();
         result.Result.Count.Should().Be(0);
+    }
+}
+
+
+
+public class MockTMT_AuthorizationService : ITMT_AuthorizationService
+{
+    public Task<TMTAuthorizationDetails> GetTMTAuthorizationDetails()
+    {
+        // Return authorization details
+        var details = new TMTAuthorizationDetails {
+            AccessToken = null,
+            ProxyAddress = null,
+            ProxyUser = null,
+            ProxyPassword = null
+        };
+
+        return Task.FromResult(details);
     }
 }
