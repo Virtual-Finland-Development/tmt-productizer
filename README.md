@@ -25,6 +25,17 @@ dotnet run --project ./src/TMTProductizer/TMTProductizer.csproj
 
 The endpoint should be available at: `http://localhost:5286/test/lassipatanen/Job/JobPosting`
 
+### Locally testing the authentication with the Authentication GW
+
+In local development the [Authentication GW](https://github.com/Virtual-Finland-Development/authentication-gw) checks are disabled by default. To enable them, you need to set the `ASPNETCORE_ENVIRONMENT` environment variable to `Staging` or `Production` when running the app. For example:
+
+```
+export ASPNETCORE_ENVIRONMENT=Staging
+dotnet run --project ./src/TMTProductizer/TMTProductizer.csproj
+```
+
+The auth headers `Authorization` and `X-Authorization-Provider` are required in every enviroment stage. For stages `Development` and `Mock` the values for these headers are not important, as long as they are present.
+
 ### Generating models from Open API spec
 
 Execute `generate-api-models.sh` shell script in terminal
