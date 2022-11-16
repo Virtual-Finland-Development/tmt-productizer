@@ -20,6 +20,11 @@ builder.Services.AddCors(options =>
         policyBuilder => { policyBuilder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin(); });
 });
 
+builder.Services.AddHttpClient<IJobService, JobService>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration.GetSection("AppConfig:TmtOptions:ApiEndpoint").Value);
+});
+
 builder.Services.AddHttpClient<IAuthorizationService, AuthorizationService>(client =>
 {
     client.BaseAddress = new Uri(builder.Configuration.GetSection("AppConfig:AuthGWEndpoint").Value);
