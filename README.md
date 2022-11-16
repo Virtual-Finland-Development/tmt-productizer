@@ -43,7 +43,7 @@ Run the following command in `openapi` directory:
 
 If you wish to generate dynamic data, use `--dynamic` flag with the previous command.
 
-### Running productizer locally
+### Running productizer locally with mock data, mockally
 
 Start up Prism mock server and take note of the port it is using (4010 by default). Open `appsettings.Development.json` and
 make sure `TmtOptions:ApiEndpoint` host and port are matching that of Prism mock server.
