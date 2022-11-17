@@ -29,7 +29,7 @@ public class JobServiceTests
                 Content = new StringContent(TmtJson)
             });
         var httpClient = new HttpClient(handler.Object) { BaseAddress = new Uri("http://localhost/") };
-        var mockTMT_AuthorizationService = new MockTMT_AuthorizationService();
+        var mockTMTAuthorizationService = new MockTMTAuthorizationService();
         
         var query = new JobsRequest
         {
@@ -46,7 +46,7 @@ public class JobServiceTests
                 Offset = 20
             }
         };
-        var sut = new JobService(httpClient, mockTMT_AuthorizationService, new Logger<JobService>(new LoggerFactory()));
+        var sut = new JobService(httpClient, mockTMTAuthorizationService, new Logger<JobService>(new LoggerFactory()));
 
         var result = sut.Find(query);
 
@@ -70,7 +70,7 @@ public class JobServiceTests
                 Content = new StringContent("errorMessage")
             });
         var httpClient = new HttpClient(handler.Object) { BaseAddress = new Uri("http://localhost/") };
-        var mockTMT_AuthorizationService = new MockTMT_AuthorizationService();
+        var mockTMTAuthorizationService = new MockTMTAuthorizationService();
 
         var query = new JobsRequest
         {
@@ -87,7 +87,7 @@ public class JobServiceTests
                 Offset = 20
             }
         };
-        var sut = new JobService(httpClient, mockTMT_AuthorizationService, new Logger<JobService>(new LoggerFactory()));
+        var sut = new JobService(httpClient, mockTMTAuthorizationService, new Logger<JobService>(new LoggerFactory()));
 
         var result = sut.Find(query);
 
@@ -99,7 +99,7 @@ public class JobServiceTests
 
 
 
-public class MockTMT_AuthorizationService : ITMT_AuthorizationService
+public class MockTMTAuthorizationService : ITMTAuthorizationService
 {
     public Task<TMTAuthorizationDetails> GetTMTAuthorizationDetails()
     {

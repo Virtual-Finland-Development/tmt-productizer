@@ -2,7 +2,7 @@ using TMTProductizer.Models;
 
 namespace TMTProductizer.Services.TMT;
 
-public interface ITMT_AuthorizationService
+public interface ITMTAuthorizationService
 {
     Task<TMTAuthorizationDetails> GetTMTAuthorizationDetails();
 }

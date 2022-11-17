@@ -9,10 +9,10 @@ namespace TMTProductizer.Services;
 public class JobService : IJobService
 {   
     private readonly HttpClient _client;
-    private readonly ITMT_AuthorizationService _tmtAuthorizationService;
+    private readonly ITMTAuthorizationService _tmtAuthorizationService;
     private readonly ILogger<JobService> _logger;
 
-    public JobService(HttpClient client, ITMT_AuthorizationService tmtAuthorizationService, ILogger<JobService> logger)
+    public JobService(HttpClient client, ITMTAuthorizationService tmtAuthorizationService, ILogger<JobService> logger)
     {
         _client = client;
         _tmtAuthorizationService = tmtAuthorizationService;

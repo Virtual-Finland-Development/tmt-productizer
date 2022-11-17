@@ -7,15 +7,15 @@ using TMTProductizer.Utils.DateUtils;
 
 namespace TMTProductizer.Services.TMT;
 
-public class TMT_AuthorizationService : ITMT_AuthorizationService
+public class TMTAuthorizationService : ITMTAuthorizationService
 {
     private readonly HttpClient _client;
     private readonly ISecretsManager _secretsManager;
-    private readonly ILogger<TMT_AuthorizationService> _logger;
+    private readonly ILogger<TMTAuthorizationService> _logger;
     private TMTAuthorizationDetails? _TMTAuthorizationDetails = null;
     private bool _skipAuthorizationCeck;
 
-    public TMT_AuthorizationService(HttpClient client, ISecretsManager secretsManager, ILogger<TMT_AuthorizationService> logger, IWebHostEnvironment env)
+    public TMTAuthorizationService(HttpClient client, ISecretsManager secretsManager, ILogger<TMTAuthorizationService> logger, IWebHostEnvironment env)
     {
         _client = client;
         _secretsManager = secretsManager;

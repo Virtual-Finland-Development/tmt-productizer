@@ -8,7 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSingleton<IJobService, JobService>();
 builder.Services.AddSingleton<IAuthorizationService, AuthorizationService>();
 builder.Services.AddSingleton<ISecretsManager, SecretsManager>();
-builder.Services.AddSingleton<ITMT_AuthorizationService, TMT_AuthorizationService>();
+builder.Services.AddSingleton<ITMTAuthorizationService, TMTAuthorizationService>();
 
 
 builder.Services.AddEndpointsApiExplorer();
