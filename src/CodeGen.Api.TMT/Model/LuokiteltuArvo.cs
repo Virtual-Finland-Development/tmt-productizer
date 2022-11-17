@@ -32,6 +32,14 @@ namespace CodeGen.Api.TMT.Model
     public partial class LuokiteltuArvo : IEquatable<LuokiteltuArvo>, IValidatableObject
     {
         /// <summary>
+        /// Purkka for deserialization
+        /// </summary>
+        public LuokiteltuArvo()
+        {
+            
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="LuokiteltuArvo" /> class.
         /// </summary>
         /// <param name="luokiteltuArvo">**fi:** Luokittelun arvo | **en:** Value.</param>

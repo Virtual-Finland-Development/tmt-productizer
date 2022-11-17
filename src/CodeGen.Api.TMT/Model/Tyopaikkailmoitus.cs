@@ -50,7 +50,7 @@ namespace CodeGen.Api.TMT.Model
         /// <param name="perustiedot">perustiedot.</param>
         /// <param name="sijainti">sijainti.</param>
         /// <param name="tyollistaja">**fi:** Työpaikkailmoituksen tyyppi | **en:** Type of the job posting&lt;details&gt;&lt;summary&gt;Koodit | Codes&lt;/summary&gt;&lt;pre&gt;01 &#x3D; Yritys | Organization  02 &#x3D; Kotitalous | Household&lt;/pre&gt;&lt;/details&gt;.</param>
-        public Tyopaikkailmoitus(Hakeminen hakeminen = default(Hakeminen), List<LokalisoituArvo> ilmoittajanNimi = default(List<LokalisoituArvo>), string ilmoittajanYTunnus = default(string), string ilmoituksenID = default(string), List<string> ilmoituksenKielet = default(List<string>), bool ilmoituksenOhjaus = default(bool), DateTime julkaisupvm = default(DateTime), string kotisivut = default(string), string kotitaloudenNimi = default(string), DateTime luontipvm = default(DateTime), string markkinointikuvaus = default(string), DateTime muokattupvm = default(DateTime), Osaamisvaatimukset osaamisvaatimukset = default(Osaamisvaatimukset), Perustiedot perustiedot = default(Perustiedot), Sijainti sijainti = default(Sijainti), string tyollistaja = default(string))
+        public Tyopaikkailmoitus(Hakeminen hakeminen = default(Hakeminen), List<LokalisoituArvo> ilmoittajanNimi = default(List<LokalisoituArvo>), string ilmoittajanYTunnus = default(string), string ilmoituksenID = default(string), List<string> ilmoituksenKielet = default(List<string>), bool ilmoituksenOhjaus = default(bool), DateTime julkaisupvm = default(DateTime), string kotisivut = default(string), string kotitaloudenNimi = default(string), DateTime luontipvm = default(DateTime), List<LokalisoituArvo> markkinointikuvaus = default(List<LokalisoituArvo>), DateTime muokattupvm = default(DateTime), Osaamisvaatimukset osaamisvaatimukset = default(Osaamisvaatimukset), Perustiedot perustiedot = default(Perustiedot), Sijainti sijainti = default(Sijainti), string tyollistaja = default(string))
         {
             this.Hakeminen = hakeminen;
             this.IlmoittajanNimi = ilmoittajanNimi;
@@ -143,7 +143,7 @@ namespace CodeGen.Api.TMT.Model
         /// </summary>
         /// <value>**fi:** Työpaikkailmoitukseen lisätty yrityksen yleinen markkinointikuvaus, kentässä on arvo vain jos tyyppi on &#39;*01*&#39; | **en:** Marketing description of company (field has value only if job posting type is &#39;*01*&#39;)</value>
         [DataMember(Name = "markkinointikuvaus", EmitDefaultValue = false)]
-        public string Markkinointikuvaus { get; set; }
+        public List<LokalisoituArvo> Markkinointikuvaus { get; set; }
 
         /// <summary>
         /// **fi:** Muokattu viimeksi | **en:** Last modified timestamp

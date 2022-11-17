@@ -38,7 +38,7 @@ namespace CodeGen.Api.TMT.Model
         /// <param name="hakuaikaPaattyy">**fi:** Hakuaika päättyy | **en:** Application end date.</param>
         /// <param name="hakuohjeet">**fi:** Hakuohjeet | **en:** Application instructions.</param>
         /// <param name="ilmoittajanYhteystiedot">ilmoittajanYhteystiedot.</param>
-        public Hakeminen(string hakemuksenUrl = default(string), DateTime hakuaikaPaattyy = default(DateTime), List<LokalisoituArvo> hakuohjeet = default(List<LokalisoituArvo>), IlmoittajanYhteystieto ilmoittajanYhteystiedot = default(IlmoittajanYhteystieto))
+        public Hakeminen(string hakemuksenUrl = default(string), DateTime hakuaikaPaattyy = default(DateTime), List<LokalisoituArvo> hakuohjeet = default(List<LokalisoituArvo>), List<IlmoittajanYhteystieto> ilmoittajanYhteystiedot = default(List<IlmoittajanYhteystieto>))
         {
             this.HakemuksenUrl = hakemuksenUrl;
             this.HakuaikaPaattyy = hakuaikaPaattyy;
@@ -71,7 +71,7 @@ namespace CodeGen.Api.TMT.Model
         /// Gets or Sets IlmoittajanYhteystiedot
         /// </summary>
         [DataMember(Name = "ilmoittajanYhteystiedot", EmitDefaultValue = false)]
-        public IlmoittajanYhteystieto IlmoittajanYhteystiedot { get; set; }
+        public List<IlmoittajanYhteystieto> IlmoittajanYhteystiedot { get; set; }
 
         /// <summary>
         /// Returns the string presentation of the object
