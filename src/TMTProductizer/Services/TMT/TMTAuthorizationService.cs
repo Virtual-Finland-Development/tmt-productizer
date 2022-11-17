@@ -15,7 +15,7 @@ public class TMTAuthorizationService : ITMTAuthorizationService
     private TMTAuthorizationDetails? _TMTAuthorizationDetails = null;
     private bool _skipAuthorizationCeck;
 
-    public TMTAuthorizationService(HttpClient client, ISecretsManager secretsManager, ILogger<TMTAuthorizationService> logger, IWebHostEnvironment env)
+    public TMTAuthorizationService(HttpClient client, ISecretsManager secretsManager, ILogger<TMTAuthorizationService> logger, IHostEnvironment env)
     {
         _client = client;
         _secretsManager = secretsManager;
@@ -27,31 +27,28 @@ public class TMTAuthorizationService : ITMTAuthorizationService
     public async Task<TMTAuthorizationDetails> GetTMTAuthorizationDetails()
     {
         // Skip on local mock development
-        if (this._skipAuthorizationCeck) return new TMTAuthorizationDetails();
+        if (_skipAuthorizationCeck) return new TMTAuthorizationDetails();
 
         // If we have a valid token in the current lambda instance, return it
         // @TODO: cache the token for time period over the lambda instance lifetime
-        if (this._TMTAuthorizationDetails != null && DateUtils.UnixTimeStampToDateTime(this._TMTAuthorizationDetails.ExpiresOn) > DateTime.UtcNow) {
-            return this._TMTAuthorizationDetails;
+        if (_TMTAuthorizationDetails != null && DateUtils.UnixTimeStampToDateTime(_TMTAuthorizationDetails.ExpiresOn) > DateTime.UtcNow) {
+            return _TMTAuthorizationDetails;
         }
-        this._TMTAuthorizationDetails = await this._fetchTMTAuthorizationDetails();
-        return this._TMTAuthorizationDetails;
+        _TMTAuthorizationDetails = await GetchTMTAuthorizationDetails();
+        return _TMTAuthorizationDetails;
     }
 
-    private async Task<TMTAuthorizationDetails> _fetchTMTAuthorizationDetails()
+    private async Task<TMTAuthorizationDetails> GetchTMTAuthorizationDetails()
     {
         // Fetch secrets
-        var secrets = await _secretsManager.GetTMTSecrets(); // throws HttpRequestException
-        if (secrets.ClientId == null || secrets.ClientSecret == null) {
-            throw new HttpRequestException("TMT secrets are not set", null, HttpStatusCode.Unauthorized);
-        }
-
+        TMTSecrets secrets = await _secretsManager.GetTMTSecrets(); // throws HttpRequestException
+        
         // Prep authorization request
         // @see: https://learn.microsoft.com/en-us/azure/active-directory-b2c/authorization-code-flow#2-get-an-access-token
         var contentData = new Dictionary<string, string> {
             {"grant_type", "client_credentials"},
-            {"client_id", secrets.ClientId}, // null is checked at GetTMTSecrets()
-            {"client_secret", secrets.ClientSecret}, // null is checked at GetTMTSecrets()
+            {"client_id", secrets.ClientId}, 
+            {"client_secret", secrets.ClientSecret}, 
             {"scope", "https://tedigib2c.onmicrosoft.com/fad9328b-e852-45e4-951b-6d142430e89d/.default"},
             {"response_type", "token"}
         };

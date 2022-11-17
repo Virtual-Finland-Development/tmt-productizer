@@ -4,7 +4,7 @@ using Moq;
 using Moq.Protected;
 using Microsoft.AspNetCore.Http;
 using FluentAssertions;
-using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 
 namespace TMTProductizer.UnitTests.Services;
 
@@ -13,7 +13,7 @@ public class AuthorizationServiceTests
     /**
     * Mockup service for testing
     */
-    private IAuthorizationService getAuthorizationServiceMock() {
+    private IAuthorizationService GetAuthorizationServiceMock() {
         var handler = new Mock<HttpMessageHandler>(MockBehavior.Strict);
         handler.Protected()
             .Setup<Task<HttpResponseMessage>>(
@@ -26,7 +26,7 @@ public class AuthorizationServiceTests
                 Content = new StringContent("")
             });
         var httpClient = new HttpClient(handler.Object) { BaseAddress = new Uri("http://localhost/") };
-        var authorizationService = new AuthorizationService(httpClient, new Mock<IWebHostEnvironment>().Object);
+        var authorizationService = new AuthorizationService(httpClient, new Mock<IHostEnvironment>().Object);
 
         return authorizationService;
     }
@@ -43,7 +43,7 @@ public class AuthorizationServiceTests
                     }
                 }
             };
-            var authorizationService = this.getAuthorizationServiceMock();
+            var authorizationService = GetAuthorizationServiceMock();
             authorizationService.Authorize(httpContext.Request).Wait();
         };
         badHeadersAction.Should().Throw<HttpRequestException>()
@@ -65,7 +65,7 @@ public class AuthorizationServiceTests
                 }
             };
 
-            var authorizationService = this.getAuthorizationServiceMock();
+            var authorizationService = GetAuthorizationServiceMock();
             authorizationService.Authorize(httpContext.Request).Wait();
         };
         invalidHeadersAction.Should().Throw<HttpRequestException>()

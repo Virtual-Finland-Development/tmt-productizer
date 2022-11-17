@@ -27,17 +27,15 @@ public class JobService : IJobService
         // Get TMT Authorization Details
         TMTAuthorizationDetails tmtAuthorizationDetails  = await _tmtAuthorizationService.GetTMTAuthorizationDetails(); // Throws HttpRequestException;
 
-        _logger.LogInformation("TMT Base Address: {BaseAddress}", this._client.BaseAddress);
-
         // Form the request
         var requestMessage = new HttpRequestMessage {
-            RequestUri = new Uri($"{this._client.BaseAddress}?sivu={pageNumber}&maara={query.Paging.Limit}"),
+            RequestUri = new Uri($"{_client.BaseAddress}?sivu={pageNumber}&maara={query.Paging.Limit}"),
             Method = HttpMethod.Get,
         };
         requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", tmtAuthorizationDetails.AccessToken);
 
         // Build a proxy client
-        var httpClient = this.getTMTProxyClient(tmtAuthorizationDetails);
+        var httpClient = GetTMTProxyClient(tmtAuthorizationDetails);
 
         // Send request
         var response = await httpClient.SendAsync(requestMessage);
@@ -94,10 +92,10 @@ public class JobService : IJobService
         return quotient;
     }
 
-    private HttpClient getTMTProxyClient(TMTAuthorizationDetails tmtAuthorizationDetails)
+    private HttpClient GetTMTProxyClient(TMTAuthorizationDetails tmtAuthorizationDetails)
     {   
         if (tmtAuthorizationDetails.ProxyAddress == null) {
-            return this._client; // Pass for test cases
+            return _client; // Pass for test cases
         }
 
         var proxy = new WebProxy {

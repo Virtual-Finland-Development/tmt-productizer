@@ -7,7 +7,7 @@ public class AuthorizationService : IAuthorizationService
     private readonly HttpClient _client;
     private readonly bool _skipAuthorizationCheck;
 
-    public AuthorizationService(HttpClient client, IWebHostEnvironment env)
+    public AuthorizationService(HttpClient client, IHostEnvironment env)
     {
         _client = client;
         _skipAuthorizationCheck = env.IsDevelopment() || env.IsEnvironment("Mock");
@@ -24,7 +24,7 @@ public class AuthorizationService : IAuthorizationService
         }
 
         // Skip on local development, but require headers present (above)
-        if (this._skipAuthorizationCheck) return;
+        if (_skipAuthorizationCheck) return;
 
         var authorizeRequest = new HttpRequestMessage {
             RequestUri = new Uri($"{_client.BaseAddress}authorize"),

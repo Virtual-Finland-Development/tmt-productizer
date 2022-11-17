@@ -5,15 +5,15 @@ namespace TMTProductizer.Models;
 public class TMTSecrets
 {
     [JsonPropertyName("CLIENT_ID")]
-    public string? ClientId { get; set; }
+    public string ClientId { get; set; } = null!;
     [JsonPropertyName("CLIENT_SECRET")]
-    public string? ClientSecret { get; set; }
+    public string ClientSecret { get; set; } = null!;
     [JsonPropertyName("PROXY_ADDRESS")]
-    public string? ProxyAddress { get; set; }
+    public string ProxyAddress { get; set; } = null!;
     [JsonPropertyName("PROXY_USER")]
-    public string? ProxyUser { get; set; }
+    public string ProxyUser { get; set; } = null!;
     [JsonPropertyName("PROXY_PASSWORD")]
-    public string? ProxyPassword { get; set; }
+    public string ProxyPassword { get; set; } = null!;
 }
 
 public class TMTAuthorizationResponse
