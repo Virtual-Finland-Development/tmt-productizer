@@ -34,6 +34,14 @@ namespace CodeGen.Api.TMT.Model
     public partial class Palvelussuhde : AbstractOpenAPISchema, IEquatable<Palvelussuhde>, IValidatableObject
     {
         /// <summary>
+        /// Purkka for deserialization
+        /// </summary>
+        public Palvelussuhde()
+        {
+            
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="Palvelussuhde" /> class
         /// with the <see cref="Tyosuhde" /> class
         /// </summary>
