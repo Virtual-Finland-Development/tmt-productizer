@@ -7,7 +7,7 @@ using TMTProductizer.Utils;
 namespace TMTProductizer.Services;
 
 public class JobService : IJobService
-{   
+{
     private readonly IProxyHttpClientFactory _clientFactory;
     private readonly ITMTAuthorizationService _tmtAuthorizationService;
     private readonly ILogger<JobService> _logger;
@@ -25,10 +25,11 @@ public class JobService : IJobService
         var pageNumber = GetPageNumberFromOffsetAndLimit(query.Paging.Offset, query.Paging.Limit);
 
         // Get TMT Authorization Details
-        TMTAuthorizationDetails tmtAuthorizationDetails  = await _tmtAuthorizationService.GetTMTAuthorizationDetails(); // Throws HttpRequestException;
+        TMTAuthorizationDetails tmtAuthorizationDetails = await _tmtAuthorizationService.GetTMTAuthorizationDetails(); // Throws HttpRequestException;
 
         // Form the request
-        var requestMessage = new HttpRequestMessage {
+        var requestMessage = new HttpRequestMessage
+        {
             RequestUri = new Uri($"{_clientFactory.BaseAddress}?sivu={pageNumber}&maara={query.Paging.Limit}"),
             Method = HttpMethod.Get,
         };
@@ -39,7 +40,8 @@ public class JobService : IJobService
 
         // Send request
         var response = await httpClient.SendAsync(requestMessage);
-        if (!response.IsSuccessStatusCode) {
+        if (!response.IsSuccessStatusCode)
+        {
             _logger.LogError("TMT API responded with: {StatusCode}", response.StatusCode);
             _logger.LogError("Content: {content}", await response.Content.ReadAsStringAsync());
             return jobs;
@@ -47,9 +49,12 @@ public class JobService : IJobService
 
         // Parse response
         Hakutulos? result;
-        try {
+        try
+        {
             result = await response.Content.ReadFromJsonAsync<Hakutulos>();
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             _logger.LogError(e, "Failed to parse TMT API response");
             return jobs;
         }
