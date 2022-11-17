@@ -56,6 +56,8 @@ public class JobService : IJobService
         catch (Exception e)
         {
             _logger.LogError(e, "Failed to parse TMT API response");
+            await File.WriteAllTextAsync("TMTResponseOutputDebug.txt", await response.Content.ReadAsStringAsync());
+            _logger.LogError("Wrote a response output debug file to TMTResponseOutputDebug.txt");
             return jobs;
         }
 
@@ -83,9 +85,15 @@ public class JobService : IJobService
 
         // TODO: TMT API doesn't support keyword search so we have to do proper in-memory filtering instead. This isn't it.
         if (query.Query != "")
+        {
             jobs = jobs.FindAll(j =>
-                j.BasicInfo.Description!.Contains(query.Query) ||
-                j.BasicInfo.Title!.Contains(query.Query));
+            {
+                // The ! operator does not seem to work at runtime, like it says: https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/null-forgiving
+                // Use null-comparison instead
+                return (j.BasicInfo.Description != null && j.BasicInfo.Description.Contains(query.Query)) || (j.BasicInfo.Title != null && j.BasicInfo.Title.Contains(query.Query));
+            });
+        }
+
 
         return jobs;
     }
