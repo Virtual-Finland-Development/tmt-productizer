@@ -21,11 +21,11 @@ builder.Services.AddCors(options =>
         policyBuilder => { policyBuilder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin(); });
 });
 
-builder.Services.AddSingleton<IProxyHttpClientFactory>(new ProxyHttpClientFactory(new Uri(builder.Configuration.GetSection("AppConfig:TmtOptions:ApiEndpoint").Value)));
+builder.Services.AddSingleton<IProxyHttpClientFactory>(new ProxyHttpClientFactory(new Uri(builder.Configuration.GetSection("TmtApiEndpoint").Value)));
 
 builder.Services.AddHttpClient<IAuthorizationService, AuthorizationService>(client =>
 {
-    client.BaseAddress = new Uri(builder.Configuration.GetSection("AppConfig:AuthGWEndpoint").Value);
+    client.BaseAddress = new Uri(builder.Configuration.GetSection("AuthGWEndpoint").Value);
 });
 
 builder.Services.AddAWSLambdaHosting(LambdaEventSource.HttpApi);
@@ -60,7 +60,8 @@ app.MapPost("/test/lassipatanen/Job/JobPosting", async (HttpRequest request, Job
         catch (HttpRequestException e)
         {
             var statusCode = 500;
-            if (e.StatusCode != null) {
+            if (e.StatusCode != null)
+            {
                 statusCode = (int)e.StatusCode;
             }
             return Results.StatusCode(statusCode);

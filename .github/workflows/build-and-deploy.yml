@@ -21,7 +21,7 @@ jobs:
       - name: Build
         run: dotnet build --no-restore
         env:
-          AppConfig.AuthGWEndpoint: ${{ secrets.AUTHENTICATION_GW_URL }}
+          AuthGWEndpoint: ${{ secrets.AUTHENTICATION_GW_URL }}
       - name: Publish
         run: dotnet publish src/TMTProductizer/TMTProductizer.csproj -c Release -o release --nologo
       - name: Upload build artifact
