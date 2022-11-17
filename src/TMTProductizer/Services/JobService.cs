@@ -1,20 +1,20 @@
-using System.Net;
 using System.Net.Http.Headers;
 using CodeGen.Api.TMT.Model;
 using TMTProductizer.Models;
 using TMTProductizer.Services.TMT;
+using TMTProductizer.Utils;
 
 namespace TMTProductizer.Services;
 
 public class JobService : IJobService
 {   
-    private readonly HttpClient _client;
+    private readonly IProxyHttpClientFactory _clientFactory;
     private readonly ITMTAuthorizationService _tmtAuthorizationService;
     private readonly ILogger<JobService> _logger;
 
-    public JobService(HttpClient client, ITMTAuthorizationService tmtAuthorizationService, ILogger<JobService> logger)
+    public JobService(IProxyHttpClientFactory clientFactory, ITMTAuthorizationService tmtAuthorizationService, ILogger<JobService> logger)
     {
-        _client = client;
+        _clientFactory = clientFactory;
         _tmtAuthorizationService = tmtAuthorizationService;
         _logger = logger;
     }
@@ -29,13 +29,13 @@ public class JobService : IJobService
 
         // Form the request
         var requestMessage = new HttpRequestMessage {
-            RequestUri = new Uri($"{_client.BaseAddress}?sivu={pageNumber}&maara={query.Paging.Limit}"),
+            RequestUri = new Uri($"{_clientFactory.BaseAddress}?sivu={pageNumber}&maara={query.Paging.Limit}"),
             Method = HttpMethod.Get,
         };
         requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", tmtAuthorizationDetails.AccessToken);
 
         // Build a proxy client
-        var httpClient = GetTMTProxyClient(tmtAuthorizationDetails);
+        var httpClient = _clientFactory.GetTMTProxyClient(tmtAuthorizationDetails);
 
         // Send request
         var response = await httpClient.SendAsync(requestMessage);
@@ -90,26 +90,5 @@ public class JobService : IJobService
         var (quotient, _) = Math.DivRem(pagingOffset, pagingLimit);
 
         return quotient;
-    }
-
-    private HttpClient GetTMTProxyClient(TMTAuthorizationDetails tmtAuthorizationDetails)
-    {   
-        if (tmtAuthorizationDetails.ProxyAddress == null) {
-            return _client; // Pass for test cases
-        }
-
-        var proxy = new WebProxy {
-            Address = new Uri(tmtAuthorizationDetails.ProxyAddress),
-            BypassProxyOnLocal = false,
-            UseDefaultCredentials = false,
-            Credentials = new NetworkCredential(userName: tmtAuthorizationDetails.ProxyUser, password: tmtAuthorizationDetails.ProxyPassword)
-        };
-        var httpClientHandler = new HttpClientHandler {
-            Proxy = proxy,
-            UseProxy = true
-        };
-        var httpClient = new HttpClient(httpClientHandler);
-
-        return httpClient;
     }
 }

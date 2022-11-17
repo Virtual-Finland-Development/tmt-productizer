@@ -3,6 +3,7 @@ using TMTProductizer.Models;
 using TMTProductizer.Services;
 using TMTProductizer.Services.AWS;
 using TMTProductizer.Services.TMT;
+using TMTProductizer.Utils;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSingleton<IJobService, JobService>();
@@ -20,10 +21,7 @@ builder.Services.AddCors(options =>
         policyBuilder => { policyBuilder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin(); });
 });
 
-builder.Services.AddHttpClient<IJobService, JobService>(client =>
-{
-    client.BaseAddress = new Uri(builder.Configuration.GetSection("AppConfig:TmtOptions:ApiEndpoint").Value);
-});
+builder.Services.AddSingleton<IProxyHttpClientFactory>(new ProxyHttpClientFactory(new Uri(builder.Configuration.GetSection("AppConfig:TmtOptions:ApiEndpoint").Value)));
 
 builder.Services.AddHttpClient<IAuthorizationService, AuthorizationService>(client =>
 {
