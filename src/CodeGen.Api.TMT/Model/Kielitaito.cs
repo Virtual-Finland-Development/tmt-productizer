@@ -43,11 +43,6 @@ namespace CodeGen.Api.TMT.Model
             this.KielitaidonTaso = kielitaidonTaso;
             this._Kielitaito = kielitaito;
         }
-        
-        /// <summary>
-        /// Purkka deserialisointia varten
-        /// </summary>
-        public Kielitaito(){}
 
         /// <summary>
         /// **fi:** Kielitaidon lisätieto | **en:** Additional information for language

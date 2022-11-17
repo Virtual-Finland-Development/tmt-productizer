@@ -4,7 +4,8 @@ components:
       description: '**fi:** Ajokortit | **en:** Driving licenses'
       properties:
         ajokortinLisatieto:
-          description: '**fi:** Ajokortin lisätieto | **en:** Additional information for driving licenses'
+          description: '**fi:** Ajokortin lisätieto | **en:** Additional information
+            for driving licenses'
           items:
             $ref: '#/components/schemas/LokalisoituArvo'
           type: array
@@ -26,7 +27,8 @@ components:
       description: '**fi:** Työpaikkaan hakeminen | **en:** Applying for the job'
       properties:
         hakemuksenUrl:
-          description: '**fi:** Linkki hakulomakkeelle | **en:** Link to application form'
+          description: '**fi:** Linkki hakulomakkeelle | **en:** Link to application
+            form'
           type: string
         hakuaikaPaattyy:
           description: '**fi:** Hakuaika päättyy | **en:** Application end date'
@@ -46,13 +48,15 @@ components:
       description: '**fi:** Haun palauttamat tulokset | **en:** Search results'
       properties:
         Ilmoitukset:
-          description: '**fi:** Haun palauttamat työpaikkailmoitukset | **en:** Job postings'
+          description: '**fi:** Haun palauttamat työpaikkailmoitukset | **en:** Job
+            postings'
           items:
             $ref: '#/components/schemas/Tyopaikkailmoitus'
           title: Ilmoitukset | JobPostings
           type: array
         ilmoituksienMaara:
-          description: '**fi:** Ilmoituksien määrä tässä hakutuloksessa | **en:** Amount of resutls'
+          description: '**fi:** Ilmoituksien määrä tässä hakutuloksessa | **en:**
+            Amount of resutls'
           format: int64
           type: integer
         sivutus:
@@ -60,7 +64,8 @@ components:
       title: Hakutulos | SearchResult
       type: object
     IlmoittajanYhteystieto:
-      description: '**fi:** Ilmoittajan yhteystiedot | **en:** Contact details of the recruiter'
+      description: '**fi:** Ilmoittajan yhteystiedot | **en:** Contact details of
+        the recruiter'
       properties:
         puhelinNro:
           description: '**fi:** Puhelinnumero | **en:** Telephone number'
@@ -76,7 +81,8 @@ components:
       description: '**fi:** Kielitaito | **en:** Language skill'
       properties:
         kielitaidonLisatieto:
-          description: '**fi:** Kielitaidon lisätieto | **en:** Additional information for language'
+          description: '**fi:** Kielitaidon lisätieto | **en:** Additional information
+            for language'
           items:
             $ref: '#/components/schemas/LokalisoituArvo'
           type: array
@@ -90,8 +96,9 @@ components:
           example: L1
           type: string
         kielitaito:
-          description: '**fi:** Kielitaito - arvot on ESCO URI muodossa | **en:** ESCO uri of language skill'
-          example: 'http://data.europa.eu/esco/skill/0e3493f4-0cad-4fbc-8e02-025f169b8114'
+          description: '**fi:** Kielitaito - arvot on ESCO URI muodossa | **en:**
+            ESCO uri of language skill'
+          example: http://data.europa.eu/esco/skill/0e3493f4-0cad-4fbc-8e02-025f169b8114
           type: string
       title: Kielitaito | LanguageSkill
       type: object
@@ -99,44 +106,51 @@ components:
       description: '**fi:** Kortit ja luvat | **en:** Permissions and licenses'
       properties:
         kortitJaLuvatLisatieto:
-          description: '**fi:** Kortit ja luvat lisätieto | **en:** Additional information for permmissions and licences'
+          description: '**fi:** Kortit ja luvat lisätieto | **en:** Additional information
+            for permmissions and licences'
           items:
             $ref: '#/components/schemas/LokalisoituArvo'
           type: array
         lupaKoodit:
           items:
-            description: '**fi:** Kortin tai luvan koodi, tarkempi koodien listaus käyttöohjeessa | **en:** Permission and license codes, detailed list of codes in the usage manual'
+            description: '**fi:** Kortin tai luvan koodi, tarkempi koodien listaus
+              käyttöohjeessa | **en:** Permission and license codes, detailed list
+              of codes in the usage manual'
             type: string
           type: array
       title: KortitJaLuvat | PermissionsAndLicenses
       type: object
     LokalisoituArvo:
-      description: '**fi:** Lokalisoidulla arvolla on kielikoodi sekä arvo | **en:** Localized value has language code and value of that language'
+      description: '**fi:** Lokalisoidulla arvolla on kielikoodi sekä arvo | **en:**
+        Localized value has language code and value of that language'
       properties:
         arvo:
           description: '**fi:** Tekstiarvo | **en:** Value'
           type: string
         kieliKoodi:
-          description: '**fi:** Kielikoodi (fi, sv, en) | **en:** Language code (fi, sv, en)'
+          description: '**fi:** Kielikoodi (fi, sv, en) | **en:** Language code (fi,
+            sv, en)'
           example: fi
           type: string
       title: LokalisoituArvo | LocalizedValue
       type: object
     LuokiteltuArvo:
-      description: '**fi:** Luokitellulla arvolla on luokittelun nimi sekä arvo | **en:** Classified value has classification and value '
-      title: LuokiteltuArvo | ClassifiedValue
-      type: object
+      description: '**fi:** Luokitellulla arvolla on luokittelun nimi sekä arvo |
+        **en:** Classified value has classification and value '
       properties:
         luokiteltuArvo:
           description: '**fi:** Luokittelun arvo | **en:** Value'
-          example: 'http://data.europa.eu/esco/occupation/8d3e8aaa-791b-4c75-a465-f3f827028f50'
+          example: http://data.europa.eu/esco/occupation/8d3e8aaa-791b-4c75-a465-f3f827028f50
           type: string
         luokittelunNimi:
           description: '**fi:** Luokittelyn nimi | **en:** Name of classification'
           example: ESCO
           type: string
+      title: LuokiteltuArvo | ClassifiedValue
+      type: object
     Osaamisvaatimukset:
-      description: '**fi:** Työpaikkailmoituksen osaamisvaatimukset | **en:** Job posting skill and competence requirements'
+      description: '**fi:** Työpaikkailmoituksen osaamisvaatimukset | **en:** Job
+        posting skill and competence requirements'
       properties:
         ajokortti:
           $ref: '#/components/schemas/Ajokortti'
@@ -169,41 +183,74 @@ components:
             $ref: '#/components/schemas/LuokiteltuArvo'
           type: array
         rikosrekisteriote:
-          description: '**fi:** Tehtävässä vaaditaan rikoskeristeriote, joka perustuu Lakiin lasten kanssa työskentelevien rikostaustan selvittämisestä (504/2002) | **en:** The task requires a criminal record, which is based on the Act on checking the criminal backround of persons working with children (504/2002)'
+          description: '**fi:** Tehtävässä vaaditaan rikoskeristeriote, joka perustuu
+            Lakiin lasten kanssa työskentelevien rikostaustan selvittämisestä (504/2002)
+            | **en:** The task requires a criminal record, which is based on the Act
+            on checking the criminal backround of persons working with children (504/2002)'
           type: boolean
       title: Osaamisvaatimukset | Requirements
       type: object
-    Perustiedot:
-      description: '**fi:** Työpaikkailmoituksen perustiedot | **en:** Basic information of the job posting'
-      title: Perustiedot | BasicInfo
+    Palvelussuhde:
+      oneOf:
+      - $ref: '#/components/schemas/Tyosuhde'
+      - $ref: '#/components/schemas/Toimeksianto'
+      - $ref: '#/components/schemas/Virkasuhde'
+      - $ref: '#/components/schemas/Yrittajyys'
+      properties:
+        toimeksianto:
+          $ref: '#/components/schemas/Toimeksianto'
+        tyosuhde:
+          $ref: '#/components/schemas/Tyosuhde'
+        tyyppi:
+          description: |-
+            **fi:**  Palvelussuhteen tyyppi | **en:** Employment relationship type<details><summary>Koodit | Codes</summary><pre>01 = Työsuhde | Employment
+            02 = Virkasuhde | Public service relationship
+            03 = Toimeksianto | Commission
+            04 = Yrittäjyys | Entrepreneurship</pre></details>
+          example: '01'
+          type: string
+        virkasuhde:
+          $ref: '#/components/schemas/Virkasuhde'
+        yrittajyys:
+          $ref: '#/components/schemas/Yrittajyys'
+      title: Palvelussuhde | EmploymentRelationship
       type: object
+    Perustiedot:
+      description: '**fi:** Työpaikkailmoituksen perustiedot | **en:** Basic information
+        of the job posting'
       properties:
         kutsutaanTarvittaessa:
-          description: '**fi:** Kutstutaan töihin tarvittaessa | **en:** To be called when needed'
+          description: '**fi:** Kutstutaan töihin tarvittaessa | **en:** To be called
+            when needed'
           type: boolean
         kuuluuMatkustamista:
-          description: '**fi:** Työhön kuuluu matkustamista | **en:** The job involves travel'
+          description: '**fi:** Työhön kuuluu matkustamista | **en:** The job involves
+            travel'
           type: boolean
         maaraaikaisuudenPaattymisPvm:
-          type: string
-          description: '**fi:** Määräaikausuuden päättymispäivä | **en:** Employment relationship end date for temporary contract'
+          description: '**fi:** Määräaikausuuden päättymispäivä | **en:** Employment
+            relationship end date for temporary contract'
           example: '2022-12-31'
-          format: date-time
+          format: date
+          type: string
         maaraaikaisuudenSyy:
-          description: '**fi:** Määräaikaisuuden syy | **en:** Reason for temporary employment relationship'
-          type: array
+          description: '**fi:** Määräaikaisuuden syy | **en:** Reason for temporary
+            employment relationship'
           items:
             $ref: '#/components/schemas/LokalisoituArvo'
+          type: array
         paikkojenMaara:
-          description: '**fi:** Työpaikkailmoituksen avoimien paikkojen kokonaismäärä | **en:** Quantity of open positions'
+          description: '**fi:** Työpaikkailmoituksen avoimien paikkojen kokonaismäärä
+            | **en:** Quantity of open positions'
           example: 1
           format: int32
           type: integer
         palkanLisatieto:
-          description: '**fi:** Palkan lisätieto | **en:** Additional information on wage principle'
-          type: array
+          description: '**fi:** Palkan lisätieto | **en:** Additional information
+            on wage principle'
           items:
             $ref: '#/components/schemas/LokalisoituArvo'
+          type: array
         palkanPeruste:
           description: |-
             **fi:** Palkanperuste | **en:** Principle of wage<details><summary>Koodit | Codes</summary><pre>01 = Aikapalkka | Time rate
@@ -215,10 +262,12 @@ components:
             07 = Muu | Other</pre></details>
           example: '01'
           type: string
+        palvelussuhde:
+          $ref: '#/components/schemas/Palvelussuhde'
         tyoAika:
-          description: |-
-            **fi:** Työaika | **en:** Type of work time<details><summary>Koodit | Codes</summary><pre>01 = Kokoaikatyö | Full-time 
-            02 = Osa-aikatyö | Part-time</pre>
+          description: "**fi:** Työaika | **en:** Type of work time<details><summary>Koodit\
+            \ | Codes</summary><pre>01 = Kokoaikatyö | Full-time \n02 = Osa-aikatyö\
+            \ | Part-time</pre>"
           example: '02'
           type: string
         tyoAlkaa:
@@ -229,15 +278,18 @@ components:
           example: '02'
           type: string
         tyoAlkaaLisatieto:
-          description: '**fi:** Työn aloituksen lisätieto | **en:** Additional information on start of work'
-          type: array
+          description: '**fi:** Työn aloituksen lisätieto | **en:** Additional information
+            on start of work'
           items:
             $ref: '#/components/schemas/LokalisoituArvo'
+          type: array
         tyoAlkaaPvm:
-          type: string
-          description: '**fi:** Työn aloitus, vain jos tyo alkaa tyyppi on ''*02* | **en:**  Work start date (field has value only if start of work type is ''*02*'')'
+          description: '**fi:** Työn aloitus, vain jos tyo alkaa tyyppi on ''*02*''
+            | **en:**  Work start date (field has value only if start of work type
+            is ''*02*'')'
           example: '2022-06-01'
-          format: date-time
+          format: date
+          type: string
         tyoTunnitAjanjakso:
           description: |-
             **fi:** Osa-aikaisen työn tuntien ajanjakso | **en:** Part time working hours<details><summary>Koodit | Codes</summary><pre>0201 = Osa-aikatyö, tuntia viikossa | Part-time, hours per week
@@ -245,11 +297,13 @@ components:
           example: '0201'
           type: string
         tyoTunnitMaksimi:
-          description: '*fi:** Osa-aikaisen työsuhteen työtunteja enintään | *en:** Maximum amount of working hours for part-time work'
+          description: '*fi:** Osa-aikaisen työsuhteen työtunteja enintään | *en:**
+            Maximum amount of working hours for part-time work'
           format: double
           type: number
         tyoTunnitMinimi:
-          description: '*fi:** Osa-aikaisen työsuhteen työtunteja vähintään | **en:** Minimum amount of working hours for part-time work'
+          description: '*fi:** Osa-aikaisen työsuhteen työtunteja vähintään | **en:**
+            Minimum amount of working hours for part-time work'
           format: double
           type: number
         tyonJatkuvuus:
@@ -261,45 +315,58 @@ components:
           example: '01'
           type: string
         tyonKuvaus:
-          description: '**fi:**Työpaikkailmoituksen kuvaus | **en:** Description of the job posting'
-          type: array
+          description: '**fi:**Työpaikkailmoituksen kuvaus | **en:** Description of
+            the job posting'
           items:
             $ref: '#/components/schemas/LokalisoituArvo'
+          type: array
         tyonOtsikko:
-          description: '**fi:** Työpaikkailmoituksen otsikko | **en:** Title of the job posting'
-          type: array
+          description: '**fi:** Työpaikkailmoituksen otsikko | **en:** Title of the
+            job posting'
           items:
             $ref: '#/components/schemas/LokalisoituArvo'
+          type: array
         tyonTiivistelma:
-          description: '**fi:** Työpaikkailmoituksen kuvauksen tiivistelmä | **en:** Short description of the job posting'
-          type: array
+          description: '**fi:** Työpaikkailmoituksen kuvauksen tiivistelmä | **en:**
+            Short description of the job posting'
           items:
             $ref: '#/components/schemas/LokalisoituArvo'
+          type: array
         tyoskentely:
           $ref: '#/components/schemas/Tyoskentely'
+      title: Perustiedot | BasicInfo
+      type: object
     Sijainti:
       description: '**fi:** Työn sijainti | **en:** Work location'
       properties:
         kunta:
           items:
-            description: '**fi:** Työn sijaintikunnat, arvot ovat Tilastokeskuksen koodistosta | **en:** Municipalities for the job location, values are from the Tilastokeskus classification'
-            example: '062, 179, 698, 309'
+            description: '**fi:** Työn sijaintikunnat, arvot ovat Tilastokeskuksen
+              koodistosta | **en:** Municipalities for the job location, values are
+              from the Tilastokeskus classification'
+            example: 062, 179, 698, 309
             type: string
           type: array
         maa:
           items:
-            description: '**fi:** Työn sijaintimaat, arvot ovat ISO 3166 standardista | **en:** Countries for the job location, values are from the ISO 3166 standard'
-            example: 'FI, SE'
+            description: '**fi:** Työn sijaintimaat, arvot ovat ISO 3166 standardista
+              | **en:** Countries for the job location, values are from the ISO 3166
+              standard'
+            example: FI, SE
             type: string
           type: array
         maakunta:
           items:
-            description: '**fi:**  Työn sijaintimaakunnat, arvot ovat Tilastokeskuksen koodistosta | **en:** Regions for the job location, values are from the Tilastokeskus classification'
-            example: '06, 01, 02, 19'
+            description: '**fi:**  Työn sijaintimaakunnat, arvot ovat Tilastokeskuksen
+              koodistosta | **en:** Regions for the job location, values are from
+              the Tilastokeskus classification'
+            example: 06, 01, 02, 19
             type: string
           type: array
         sijaintiJoustava:
-          description: '**fi:** Työn sijainti on joustava tai se on työntekijän valittavissa (esim. etätyö) | **en:** No fixed work location or the employee can determine the location (telework)'
+          description: '**fi:** Työn sijainti on joustava tai se on työntekijän valittavissa
+            (esim. etätyö) | **en:** No fixed work location or the employee can determine
+            the location (telework)'
           type: boolean
         toimipaikka:
           $ref: '#/components/schemas/Toimipaikka'
@@ -309,7 +376,8 @@ components:
       description: '**fi:** Sivutustiedot | **en:** Paging information '
       properties:
         maara:
-          description: '**fi:** Pyydetty määrä per sivu | **en:** Requested amount of job postings'
+          description: '**fi:** Pyydetty määrä per sivu | **en:** Requested amount
+            of job postings'
           format: int32
           type: integer
         sivu:
@@ -318,8 +386,22 @@ components:
           type: integer
       title: Sivutus | Paging
       type: object
+    Toimeksianto:
+      description: '**fi:** Toimeksiannon tiedot, jos palvelussuhteen tyyppi on ''*03*''
+        | **en:** Information of commission, if type of relationship is ''*03*'''
+      properties:
+        rekrytointiToimeksiantaja:
+          description: '**fi:** Rekrytointitoimeksiannon antaneen yrityksen nimi |
+            **en:** Name of recruitment commission company'
+          type: string
+        rekrytointiToimeksianto:
+          description: '**fi:** Rekrytointitoimeksianto | **en:** Recruitment commission'
+          type: boolean
+      title: Toimeksianto | Commission
+      type: object
     Toimipaikka:
-      description: '**fi:** Toimipaikka tai työskentelypaikka | **en:** Place of business or place of work'
+      description: '**fi:** Toimipaikka tai työskentelypaikka | **en:** Place of business
+        or place of work'
       properties:
         postinumero:
           description: '**fi:** Postinumero | **en:** Postcode'
@@ -331,7 +413,8 @@ components:
           description: '**fi:** Postitoimipaikka | **en:** Post office'
           type: string
         toimipaikanNimi:
-          description: '**fi:** Toimipaikan tai työskentelypaikan nimi | **en:** The name of place of business or place of work'
+          description: '**fi:** Toimipaikan tai työskentelypaikan nimi | **en:** The
+            name of place of business or place of work'
           items:
             $ref: '#/components/schemas/LokalisoituArvo'
           type: array
@@ -339,25 +422,27 @@ components:
       type: object
     Tyopaikkailmoitus:
       description: '**fi:** Työpaikkailmoitus | **en:** Job posting'
-      title: Tyopaikkailmoitus | JobPosting
-      type: object
       properties:
         hakeminen:
           $ref: '#/components/schemas/Hakeminen'
         ilmoittajanNimi:
-          description: '**fi:** Työpaikkailmoituksen ilmoittajan nimi, kentässä on arvo vain jos tyyppi on ''*01*'' | **en:** Name of the company that owns the job posting (field has value only if job posting type is ''**01**'')'
-          type: array
+          description: '**fi:** Työpaikkailmoituksen ilmoittajan nimi, kentässä on
+            arvo vain jos tyyppi on ''*01*'' | **en:** Name of the company that owns
+            the job posting (field has value only if job posting type is ''**01**'')'
           items:
             $ref: '#/components/schemas/LokalisoituArvo'
+          type: array
         ilmoittajanYTunnus:
-          description: '**fi:** Työpaikkailmoituksen tehneen yrityksen y-tunnus, kentässä on arvo vain jos tyyppi on ''*01*'' | **en:** Business ID of the company that owns the job posting (field has value only if job posting type is ''*01*'')'
+          description: '**fi:** Työpaikkailmoituksen tehneen yrityksen y-tunnus, kentässä
+            on arvo vain jos tyyppi on ''*01*'' | **en:** Business ID of the company
+            that owns the job posting (field has value only if job posting type is
+            ''*01*'')'
           type: string
         ilmoituksenID:
+          description: '**fi:** Työpaikkailmoituksen tunniste | **en:** Unique ID
+            of the job posting'
           type: string
-          description: '**fi:** Työpaikkailmoituksen tunniste | **en:** Unique ID of the job posting'
-          format: uuid
         ilmoituksenKielet:
-          type: array
           items:
             description: |-
               **fi:** Kielet, joilla ilmoitus on annettu | **en:** Languages of the job posting<details><summary>Koodit | Codes</summary><pre>fi = suomenkielinen | in Finnish
@@ -365,8 +450,11 @@ components:
               en = englanninkielinen | in English</pre></details>
             example: fi
             type: string
+          type: array
         ilmoituksenOhjaus:
-          description: '**fi:** Ilmoituksen ohjaus hakulomakkeeseen Työmarkkinatorin ulkopuolelle | **en:** Redirection to application form outside Job Market Finland'
+          description: '**fi:** Ilmoituksen ohjaus hakulomakkeeseen Työmarkkinatorin
+            ulkopuolelle | **en:** Redirection to application form outside Job Market
+            Finland'
           type: boolean
         julkaisupvm:
           description: '**fi:** Julkaistuaikaleima | **en:** Published timestamp'
@@ -374,10 +462,14 @@ components:
           format: date-time
           type: string
         kotisivut:
-          description: '**fi:** Yrityksen kotisivu, kentässä on arvo vain jos tyyppi on ''**01**'' | **en:** Homepage of company (field has value only if job posting type is ''*01*'')'
+          description: '**fi:** Yrityksen kotisivu, kentässä on arvo vain jos tyyppi
+            on ''**01**'' | **en:** Homepage of company (field has value only if job
+            posting type is ''*01*'')'
           type: string
         kotitaloudenNimi:
-          description: '**fi:** Työpaikkailmoituksen ilmoittajan nimi, kentässä on arvo vain jos tyyppi on ''*02*'' | **en:** Name of the household that owns the job posting (field has value only if job posting type is ''*02*'')'
+          description: '**fi:** Työpaikkailmoituksen ilmoittajan nimi, kentässä on
+            arvo vain jos tyyppi on ''*02*'' | **en:** Name of the household that
+            owns the job posting (field has value only if job posting type is ''*02*'')'
           type: string
         luontipvm:
           description: '**fi:** Luontiaikaleima | **en:** Created timestamp'
@@ -385,7 +477,9 @@ components:
           format: date-time
           type: string
         markkinointikuvaus:
-          description: '**fi:** Työpaikkailmoitukseen lisätty yrityksen yleinen markkinointikuvaus, kentässä on arvo vain jos tyyppi on ''*01*'' | **en:** Marketing description of company (field has value only if job posting type is ''*01*'')'
+          description: '**fi:** Työpaikkailmoitukseen lisätty yrityksen yleinen markkinointikuvaus,
+            kentässä on arvo vain jos tyyppi on ''*01*'' | **en:** Marketing description
+            of company (field has value only if job posting type is ''*01*'')'
           type: string
         muokattupvm:
           description: '**fi:** Muokattu viimeksi | **en:** Last modified timestamp'
@@ -399,14 +493,15 @@ components:
         sijainti:
           $ref: '#/components/schemas/Sijainti'
         tyollistaja:
-          description: |-
-            **fi:** Työpaikkailmoituksen tyyppi | **en:** Type of the job posting<details><summary>Koodit | Codes</summary><pre>01 = Yritys | Organization 
-            02 = Kotitalous | Household</pre></details>
+          description: "**fi:** Työpaikkailmoituksen tyyppi | **en:** Type of the\
+            \ job posting<details><summary>Koodit | Codes</summary><pre>01 = Yritys\
+            \ | Organization \n02 = Kotitalous | Household</pre></details>"
           type: string
-      required:
-        - ilmoituksenID
+      title: Tyopaikkailmoitus | JobPosting
+      type: object
     Tyoskentely:
-      description: '**fi:** Työskentelyajat / -vuorot | **en:** Working hours and shifts'
+      description: '**fi:** Työskentelyajat / -vuorot | **en:** Working hours and
+        shifts'
       properties:
         tyoskentelyAika:
           items:
@@ -419,7 +514,7 @@ components:
               06 = Arkisin | Weekdays
               07 = Viikonloppuisin | Weekends
               08 = Vuorotyö | Shift work</pre></details>
-            example: '01, 08'
+            example: 01, 08
             type: string
           type: array
           uniqueItems: true
@@ -430,14 +525,45 @@ components:
               0802 = 3-vuorotyö | Three shifts
               0803 = 4-vuorotyö | Four shifts
               0804 = 5-vuorotyö | Five shifts</pre></details>
-            example: '0801, 0802'
+            example: 0801, 0802
             type: string
           type: array
           uniqueItems: true
       title: Tyoskentely | WorkingHours
       type: object
+    Tyosuhde:
+      description: '**fi:** Työsuhteen tiedot, jos palvelussuhteen tyyppi on ''*01*''
+        | **en:** Information of employment, if type of relationship is ''*01*'''
+      properties:
+        oppisopimus:
+          description: '**fi:** Oppisopimus| **en:** Apprenticeship'
+          type: boolean
+        rekrytointiToimeksiantaja:
+          description: '**fi:** Rekrytointitoimeksiannon antaneen yrityksen nimi |
+            **en:** Name of recruitment commission company'
+          type: string
+        rekrytointiToimeksianto:
+          description: '**fi:** Rekrytointitoimeksianto | **en:** Recruitment commission'
+          type: boolean
+        tyoharjoittelu:
+          description: '**fi:** Työharjoittelu | **en:** Practical work training'
+          type: boolean
+        vuokratyo:
+          description: '**fi:** Vuokratyö | **en:** Temporary agency work'
+          type: boolean
+        vuokratyoToimeksiantaja:
+          description: '**fi:** Vuokratyön toimeksiantajan nimi | **en:** Name of
+            temporary agency work company'
+          type: string
+        vuorotteluvapaanSijaisuus:
+          description: '**fi:** Vuorotteluvapaan sijaisuus | **en:** Substitution
+            for alternate leave'
+          type: boolean
+      title: Tyosuhde | Employment
+      type: object
     Virhe:
-      description: '**fi:** Rajapinnan palauttama virheviesti | **en:** Error response for request'
+      description: '**fi:** Rajapinnan palauttama virheviesti | **en:** Error response
+        for request'
       properties:
         aikaleima:
           description: '**fi:** Virheen aikaleima | **en:** Timestamp of error'
@@ -454,13 +580,15 @@ components:
           items:
             $ref: '#/components/schemas/VirheViesti'
           type: array
-      title: "Virhe |\_ApiError"
+      title: Virhe | ApiError
       type: object
     VirheViesti:
-      description: '**fi:** Virhettä koskeva tarkempi kenttä tai syöte | **en:** More detailed field or input about the error'
+      description: '**fi:** Virhettä koskeva tarkempi kenttä tai syöte | **en:** More
+        detailed field or input about the error'
       properties:
         arvo:
-          description: '**fi:** Rajapintaan annettu syöte | **en:** The input entered in the field'
+          description: '**fi:** Rajapintaan annettu syöte | **en:** The input entered
+            in the field'
           type: object
         kenttä:
           description: '**fi:** Virheellinen kenttä | **en:** Invalid field'
@@ -470,357 +598,190 @@ components:
           type: string
       title: VirheViesti | ErrorMessage
       type: object
-  securitySchemes: {}
-x-stoplight:
-  id: rr2y39qvkr4uy
+    Virkasuhde:
+      description: '**fi:** Virkasuhteen tiedot, jos palvelussuhteen tyyppi on ''*02*''
+        | **en:** Information of public service relationship, if type of relationship
+        is ''*02*'''
+      properties:
+        vuorotteluvapaanSijaisuus:
+          description: '**fi:** Vuorotteluvapaan sijaisuus | **en:** Substitution
+            for alternate leave'
+          type: boolean
+      title: Virkasuhde | Appointment
+      type: object
+    Yrittajyys:
+      description: '**fi:** Yrittäjyyden tiedot, jos palvelussuhteen tyyppi on ''*04*''
+        | **en:** Information of entrepreneur, if type of relationship is ''*04*'''
+      properties:
+        franchising:
+          description: '**fi:** Franchising | **en:** Franchising'
+          type: boolean
+        franchisingSopimusaika:
+          description: '**fi:** Franchising sopimusaika | **en:**  Franchising contract
+            period'
+          items:
+            $ref: '#/components/schemas/LokalisoituArvo'
+          type: array
+        omaRahoitusLisatietoja:
+          description: '**fi:** Oma rahoitus lisätietoja | **en:** Additional information
+            for self financing'
+          items:
+            $ref: '#/components/schemas/LokalisoituArvo'
+          type: array
+        omaRahoitusVaaditaan:
+          description: '**fi:** Oma rahoitusvaaditaan | **en:** Self financing is
+            required'
+          type: boolean
+      title: Yrittajyys | Entrepreneur
+      type: object
+  securitySchemes:
+    BearerAuth:
+      bearerFormat: JWT
+      scheme: bearer
+      type: http
 info:
-  description: '<p>Tämän rajapinnan avulla voit hakea kaikki Työmarkkinatorilla julkaistut työpaikkailmoitukset.</p> <p>With this rest interface, you can retrieve all Job postings published in Job market Finland.</p>'
+  description: <p>Tämän rajapinnan avulla voit hakea kaikki Työmarkkinatorilla julkaistut
+    työpaikkailmoitukset.</p> <p>With this rest interface, you can retrieve all Job
+    postings published in Job market Finland.</p>
   title: TMT - Työpaikkailmoituksien hakurajapinta | Get Job postings
   version: v1
-  contact:
-    name: Gofore
 openapi: 3.0.1
 paths:
   /api/v1/tyopaikat:
     get:
-      description: '**fi:** Hae julkaistut työpaikkailmoitukset | **en:** Get published Job postings'
+      description: '**fi:** Hae julkaistut työpaikkailmoitukset | **en:** Get published
+        Job postings'
       operationId: getJobPostings
       parameters:
-        - description: '**fi:** Sivu numero | **en:** The page number'
-          example: '0'
-          in: query
-          name: sivu
-          required: true
-          schema:
-            minimum: 0
+      - description: '**fi:** Sivu numero | **en:** The page number'
+        example: 0
+        in: query
+        name: sivu
+        required: true
+        schema:
+          minimum: 0
+          type: string
+      - description: '**fi:** Tuloksien määrä per sivu | **en:** The number of results
+          per page'
+        example: 100
+        in: query
+        name: maara
+        required: true
+        schema:
+          maximum: 500
+          minimum: 100
+          type: string
+      - description: "**fi:** Työpaikkailmoituksen tyyppi | **en:** The type of the\
+          \ job posting<details><summary>Koodit | Codes</summary><pre>01 = Yritys\
+          \ | Organization \n02 = Kotitalous | Household</pre></details>"
+        in: query
+        name: tyollistaja
+        required: false
+        schema:
+          items:
+            enum:
+            - '01'
+            - '02'
             type: string
-        - description: '**fi:** Tuloksien määrä per sivu | **en:** The number of results per page'
-          example: '100'
-          in: query
-          name: maara
-          required: true
-          schema:
-            maximum: 500
-            minimum: 100
+          type: array
+      - description: |-
+          **fi:** Työn jatkuvuus | **en:** Type of employment contract<details><summary>Koodit | Codes</summary><pre>01 = Toistaiseksi voimassa oleva | Permanent
+          02 = Määräaikainen | Temporary
+          0201 = Kausityö | Seasonal work
+          0202 = Kesätyö | Summer work</pre></details>
+        in: query
+        name: tyonjatkuvuus
+        required: false
+        schema:
+          items:
+            enum:
+            - '01'
+            - '02'
+            - '0201'
+            - '0202'
             type: string
-        - description: |-
-            **fi:** Työpaikkailmoituksen tyyppi | **en:** The type of the job posting<details><summary>Koodit | Codes</summary><pre>01 = Yritys | Organization 
-            02 = Kotitalous | Household</pre></details>
-          in: query
-          name: tyollistaja
-          required: false
-          schema:
-            items:
-              enum:
-                - '01'
-                - '02'
-              type: string
-            type: array
-        - description: |-
-            **fi:** Työn jatkuvuus | **en:** Type of employment contract<details><summary>Koodit | Codes</summary><pre>01 = Toistaiseksi voimassa oleva | Permanent
-            02 = Määräaikainen | Temporary
-            0201 = Kausityö | Seasonal work
-            0202 = Kesätyö | Summer work</pre></details>
-          in: query
-          name: tyonjatkuvuus
-          required: false
-          schema:
-            items:
-              enum:
-                - '01'
-                - '02'
-                - '0201'
-                - '0202'
-              type: string
-            type: array
-        - description: |-
-            **fi:** Työaika | **en:** The work time<details><summary>Koodit | Codes</summary><pre>01 = Kokoaikatyö | Full-time 
-            02 = Osa-aikatyö | Part-time</pre></details>
-          in: query
-          name: tyoaika
-          required: false
-          schema:
-            items:
-              enum:
-                - '01'
-                - '02'
-              type: string
-            type: array
-        - description: |-
-            **fi:** Työpaikkailmoituksen kielet | **en:** The language of the job posting<details><summary>Koodit | Codes</summary><pre>fi = suomenkielinen | in Finnish
-            sv = ruotsinkielinen | in Swedish
-            en = englanninkielinen | in English</pre></details>
-          in: query
-          name: kieli
-          required: false
-          schema:
-            items:
-              enum:
-                - fi
-                - sv
-                - en
-              type: string
-            type: array
-        - description: '**fi:** Joustava sijainti tai työntekijän valittavissa, esim. etätyö | **en:** Flexible location or employee selectable, e.g. remote work'
-          in: query
-          name: sijaintiJoustava
-          required: false
-          schema:
-            type: boolean
-        - description: '**fi:** Työn sijaintimaat | **en:** Countries for the job location'
-          in: query
-          name: maa
-          required: false
-          schema:
-            items:
-              example: FI
-              type: string
-            type: array
-        - description: '**fi:** Työn sijaintimaakunnat | **en:** Regions for the job location'
-          in: query
-          name: maakunta
-          required: false
-          schema:
-            items:
-              example: '06'
-              type: string
-            type: array
-        - description: '**fi:** Työn sijaintikunnat | **en:** Municipalities for the job location'
-          in: query
-          name: kunta
-          required: false
-          schema:
-            items:
-              example: '837'
-              type: string
-            type: array
+          type: array
+      - description: "**fi:** Työaika | **en:** The work time<details><summary>Koodit\
+          \ | Codes</summary><pre>01 = Kokoaikatyö | Full-time \n02 = Osa-aikatyö\
+          \ | Part-time</pre></details>"
+        in: query
+        name: tyoaika
+        required: false
+        schema:
+          items:
+            enum:
+            - '01'
+            - '02'
+            type: string
+          type: array
+      - description: |-
+          **fi:** Työpaikkailmoituksen kielet | **en:** The language of the job posting<details><summary>Koodit | Codes</summary><pre>fi = suomenkielinen | in Finnish
+          sv = ruotsinkielinen | in Swedish
+          en = englanninkielinen | in English</pre></details>
+        in: query
+        name: kieli
+        required: false
+        schema:
+          items:
+            enum:
+            - fi
+            - sv
+            - en
+            type: string
+          type: array
+      - description: '**fi:** Joustava sijainti tai työntekijän valittavissa, esim.
+          etätyö | **en:** Flexible location or employee selectable, e.g. remote work'
+        in: query
+        name: sijaintiJoustava
+        required: false
+        schema:
+          type: boolean
+      - description: '**fi:** Työn sijaintimaat | **en:** Countries for the job location'
+        in: query
+        name: maa
+        required: false
+        schema:
+          items:
+            example: FI
+            type: string
+          type: array
+      - description: '**fi:** Työn sijaintimaakunnat | **en:** Regions for the job
+          location'
+        in: query
+        name: maakunta
+        required: false
+        schema:
+          items:
+            example: '06'
+            type: string
+          type: array
+      - description: '**fi:** Työn sijaintikunnat | **en:** Municipalities for the
+          job location'
+        in: query
+        name: kunta
+        required: false
+        schema:
+          items:
+            example: 837
+            type: string
+          type: array
       responses:
         '200':
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Hakutulos'
-              examples:
-                example-1:
-                  value:
-                    Ilmoitukset:
-                      - hakeminen:
-                          hakemuksenUrl: www.google.com
-                          hakuaikaPaattyy: '2022-05-10T12:00:00Z'
-                          hakuohjeet:
-                            - arvo: string
-                              kieliKoodi: fi
-                          ilmoittajanYhteystiedot:
-                            puhelinNro: '+358123456789'
-                            sposti: some.one@somewhere.com
-                        ilmoittajanNimi:
-                          - arvo: Fapplication Oyj
-                            kieliKoodi: fi
-                        ilmoittajanYTunnus: string
-                        ilmoituksenID: f5eb5e7f-8e27-4e6f-96fd-5317f74518ed
-                        ilmoituksenKielet:
-                          - fi
-                        ilmoituksenOhjaus: true
-                        julkaisupvm: '2022-05-02T12:06:55.818Z'
-                        kotisivut: string
-                        kotitaloudenNimi: string
-                        luontipvm: '2022-05-02T12:06:55.818Z'
-                        markkinointikuvaus: string
-                        muokattupvm: '2022-05-02T12:06:55.818Z'
-                        osaamisvaatimukset:
-                          ajokortti:
-                            ajokortinLisatieto:
-                              - arvo: string
-                                kieliKoodi: fi
-                            vaaditutAjokorttiluokat:
-                              - string
-                          ammatit:
-                            - luokiteltuArvo: 'http://data.europa.eu/esco/occupation/8d3e8aaa-791b-4c75-a465-f3f827028f50'
-                              luokittelunNimi: ESCO
-                          kielitaidot:
-                            - kielitaidonLisatieto:
-                                - arvo: string
-                                  kieliKoodi: fi
-                              kielitaidonTaso: L1
-                              kielitaito: 'http://data.europa.eu/esco/skill/0e3493f4-0cad-4fbc-8e02-025f169b8114'
-                          kortitJaLuvat:
-                            kortitJaLuvatLisatieto:
-                              - arvo: string
-                                kieliKoodi: fi
-                            lupaKoodit:
-                              - string
-                          koulutusaste: '31'
-                          osaamiset:
-                            - luokiteltuArvo: 'http://data.europa.eu/esco/occupation/8d3e8aaa-791b-4c75-a465-f3f827028f50'
-                              luokittelunNimi: ESCO
-                          rikosrekisteriote: true
-                        perustiedot:
-                          kutsutaanTarvittaessa: true
-                          kuuluuMatkustamista: true
-                          maaraaikaisuudenPaattymisPvm: '2022-12-31'
-                          maaraaikaisuudenSyy:
-                            - arvo: string
-                              kieliKoodi: fi
-                          paikkojenMaara: 1
-                          palkanLisatieto:
-                            - arvo: string
-                              kieliKoodi: fi
-                          palkanPeruste: '01'
-                          tyoAika: '02'
-                          tyoAlkaa: '02'
-                          tyoAlkaaLisatieto:
-                            - arvo: string
-                              kieliKoodi: fi
-                          tyoAlkaaPvm: '2022-06-01'
-                          tyoTunnitAjanjakso: '0201'
-                          tyoTunnitMaksimi: 0
-                          tyoTunnitMinimi: 0
-                          tyonJatkuvuus: '01'
-                          tyonKuvaus:
-                            - arvo: string
-                              kieliKoodi: fi
-                          tyonOtsikko:
-                            - arvo: Etsitään kapteenia
-                              kieliKoodi: fi
-                          tyonTiivistelma:
-                            - arvo: string
-                              kieliKoodi: fi
-                          tyoskentely:
-                            tyoskentelyAika:
-                              - '01, 08'
-                            vuorotyo:
-                              - '0801, 0802'
-                        sijainti:
-                          kunta:
-                            - '062, 179, 698, 309'
-                          maa:
-                            - 'FI, SE'
-                          maakunta:
-                            - '06, 01, 02, 19'
-                          sijaintiJoustava: true
-                          toimipaikka:
-                            postinumero: string
-                            postiosoite: string
-                            postitoimipaikka: string
-                            toimipaikanNimi:
-                              - arvo: string
-                                kieliKoodi: fi
-                        tyollistaja: string
-                      - hakeminen:
-                          hakemuksenUrl: 'http://www.akuankka.fi'
-                          hakuaikaPaattyy: '2022-05-10T12:00:00Z'
-                          hakuohjeet:
-                            - arvo: '# hakuohje'
-                              kieliKoodi: fi
-                          ilmoittajanYhteystiedot:
-                            puhelinNro: '+358123456789'
-                            sposti: some.one@somewhere.com
-                        ilmoittajanNimi:
-                          - arvo: Roope Setä
-                            kieliKoodi: fi
-                        ilmoittajanYTunnus: '# Y-Tunnus'
-                        ilmoituksenID: f5eb5e7f-8e27-4e6f-96fd-5317f74518ed
-                        ilmoituksenKielet:
-                          - fi
-                        ilmoituksenOhjaus: true
-                        julkaisupvm: '2022-05-02T12:06:55.818Z'
-                        kotisivut: 'http://www.akuankka.fi'
-                        kotitaloudenNimi: Roope Sedän Rahasäiliö
-                        luontipvm: '2022-05-02T12:06:55.818Z'
-                        markkinointikuvaus: Rahanpesijää etsitään
-                        muokattupvm: '2022-05-02T12:06:55.818Z'
-                        osaamisvaatimukset:
-                          ajokortti:
-                            ajokortinLisatieto:
-                              - arvo: '# ajokortinLisatieto'
-                                kieliKoodi: fi
-                            vaaditutAjokorttiluokat:
-                              - '# vaaditutAjokorttiluokat'
-                          ammatit:
-                            - luokiteltuArvo: 'http://data.europa.eu/esco/occupation/8d3e8aaa-791b-4c75-a465-f3f827028f50'
-                              luokittelunNimi: ESCO
-                          kielitaidot:
-                            - kielitaidonLisatieto:
-                                - arvo: string
-                                  kieliKoodi: fi
-                              kielitaidonTaso: L1
-                              kielitaito: 'http://data.europa.eu/esco/skill/0e3493f4-0cad-4fbc-8e02-025f169b8114'
-                          kortitJaLuvat:
-                            kortitJaLuvatLisatieto:
-                              - arvo: string
-                                kieliKoodi: fi
-                            lupaKoodit:
-                              - string
-                          koulutusaste: '31'
-                          osaamiset:
-                            - luokiteltuArvo: 'http://data.europa.eu/esco/occupation/8d3e8aaa-791b-4c75-a465-f3f827028f50'
-                              luokittelunNimi: ESCO
-                          rikosrekisteriote: true
-                        perustiedot:
-                          kutsutaanTarvittaessa: true
-                          kuuluuMatkustamista: true
-                          maaraaikaisuudenPaattymisPvm: '2022-12-31'
-                          maaraaikaisuudenSyy:
-                            - arvo: string
-                              kieliKoodi: fi
-                          paikkojenMaara: 1
-                          palkanLisatieto:
-                            - arvo: string
-                              kieliKoodi: fi
-                          palkanPeruste: '01'
-                          tyoAika: '02'
-                          tyoAlkaa: '02'
-                          tyoAlkaaLisatieto:
-                            - arvo: string
-                              kieliKoodi: fi
-                          tyoAlkaaPvm: '2022-06-01'
-                          tyoTunnitAjanjakso: '0201'
-                          tyoTunnitMaksimi: 0
-                          tyoTunnitMinimi: 0
-                          tyonJatkuvuus: '01'
-                          tyonKuvaus:
-                            - arvo: string
-                              kieliKoodi: fi
-                          tyonOtsikko:
-                            - arvo: Rahanpesijä saa paikan
-                              kieliKoodi: fi
-                          tyonTiivistelma:
-                            - arvo: string
-                              kieliKoodi: fi
-                          tyoskentely:
-                            tyoskentelyAika:
-                              - '01, 08'
-                            vuorotyo:
-                              - '0801, 0802'
-                        sijainti:
-                          kunta:
-                            - '062, 179, 698, 309'
-                          maa:
-                            - 'FI, SE'
-                          maakunta:
-                            - '06, 01, 02, 19'
-                          sijaintiJoustava: true
-                          toimipaikka:
-                            postinumero: string
-                            postiosoite: string
-                            postitoimipaikka: string
-                            toimipaikanNimi:
-                              - arvo: string
-                                kieliKoodi: fi
-                        tyollistaja: string
-                    ilmoituksienMaara: 2
-                    sivutus:
-                      maara: 0
-                      sivu: 0
           description: OK
         '400':
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Virhe'
-          description: '**fi:** Virheellinen data | **en:** Bad request, validation of data failed'
+          description: '**fi:** Virheellinen data | **en:** Bad request, validation
+            of data failed'
         '401':
-          description: '**fi:** Tunnistautuminen vaaditaan | **en:** Unauthorized access, authentication required'
+          description: '**fi:** Tunnistautuminen vaaditaan | **en:** Unauthorized
+            access, authentication required'
         '403':
           description: '**fi:** Käyttöoikeus puuttuu | **en:** Forbidden'
         '500':
@@ -830,10 +791,9 @@ paths:
                 $ref: '#/components/schemas/Virhe'
           description: '**fi:** Sisäinen virhe | **en:** Internal error'
       tags:
-        - tyopaikat
-tags:
-  - name: tyopaikat
-    description: Tag name for tyopaikat
+      - tyopaikat
+security:
+- BearerAuth: []
 servers:
-  - description: Kehitys | Development
-    url: 'http://localhost:8250'
+- description: Kehitys | Development
+  url: http://localhost:8250

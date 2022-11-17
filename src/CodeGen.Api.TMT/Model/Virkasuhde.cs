@@ -26,35 +26,26 @@ using OpenAPIDateConverter = CodeGen.Api.TMT.Client.OpenAPIDateConverter;
 namespace CodeGen.Api.TMT.Model
 {
     /// <summary>
-    /// **fi:** Luokitellulla arvolla on luokittelun nimi sekä arvo | **en:** Classified value has classification and value 
+    /// **fi:** Virkasuhteen tiedot, jos palvelussuhteen tyyppi on &#39;*02*&#39; | **en:** Information of public service relationship, if type of relationship is &#39;*02*&#39;
     /// </summary>
-    [DataContract(Name = "LuokiteltuArvo")]
-    public partial class LuokiteltuArvo : IEquatable<LuokiteltuArvo>, IValidatableObject
+    [DataContract(Name = "Virkasuhde")]
+    public partial class Virkasuhde : IEquatable<Virkasuhde>, IValidatableObject
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="LuokiteltuArvo" /> class.
+        /// Initializes a new instance of the <see cref="Virkasuhde" /> class.
         /// </summary>
-        /// <param name="luokiteltuArvo">**fi:** Luokittelun arvo | **en:** Value.</param>
-        /// <param name="luokittelunNimi">**fi:** Luokittelyn nimi | **en:** Name of classification.</param>
-        public LuokiteltuArvo(string luokiteltuArvo = default(string), string luokittelunNimi = default(string))
+        /// <param name="vuorotteluvapaanSijaisuus">**fi:** Vuorotteluvapaan sijaisuus | **en:** Substitution for alternate leave.</param>
+        public Virkasuhde(bool vuorotteluvapaanSijaisuus = default(bool))
         {
-            this._LuokiteltuArvo = luokiteltuArvo;
-            this.LuokittelunNimi = luokittelunNimi;
+            this.VuorotteluvapaanSijaisuus = vuorotteluvapaanSijaisuus;
         }
 
         /// <summary>
-        /// **fi:** Luokittelun arvo | **en:** Value
+        /// **fi:** Vuorotteluvapaan sijaisuus | **en:** Substitution for alternate leave
         /// </summary>
-        /// <value>**fi:** Luokittelun arvo | **en:** Value</value>
-        [DataMember(Name = "luokiteltuArvo", EmitDefaultValue = false)]
-        public string _LuokiteltuArvo { get; set; }
-
-        /// <summary>
-        /// **fi:** Luokittelyn nimi | **en:** Name of classification
-        /// </summary>
-        /// <value>**fi:** Luokittelyn nimi | **en:** Name of classification</value>
-        [DataMember(Name = "luokittelunNimi", EmitDefaultValue = false)]
-        public string LuokittelunNimi { get; set; }
+        /// <value>**fi:** Vuorotteluvapaan sijaisuus | **en:** Substitution for alternate leave</value>
+        [DataMember(Name = "vuorotteluvapaanSijaisuus", EmitDefaultValue = true)]
+        public bool VuorotteluvapaanSijaisuus { get; set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -63,9 +54,8 @@ namespace CodeGen.Api.TMT.Model
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append("class LuokiteltuArvo {\n");
-            sb.Append("  _LuokiteltuArvo: ").Append(_LuokiteltuArvo).Append("\n");
-            sb.Append("  LuokittelunNimi: ").Append(LuokittelunNimi).Append("\n");
+            sb.Append("class Virkasuhde {\n");
+            sb.Append("  VuorotteluvapaanSijaisuus: ").Append(VuorotteluvapaanSijaisuus).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -86,15 +76,15 @@ namespace CodeGen.Api.TMT.Model
         /// <returns>Boolean</returns>
         public override bool Equals(object input)
         {
-            return this.Equals(input as LuokiteltuArvo);
+            return this.Equals(input as Virkasuhde);
         }
 
         /// <summary>
-        /// Returns true if LuokiteltuArvo instances are equal
+        /// Returns true if Virkasuhde instances are equal
         /// </summary>
-        /// <param name="input">Instance of LuokiteltuArvo to be compared</param>
+        /// <param name="input">Instance of Virkasuhde to be compared</param>
         /// <returns>Boolean</returns>
-        public bool Equals(LuokiteltuArvo input)
+        public bool Equals(Virkasuhde input)
         {
             if (input == null)
             {
@@ -102,14 +92,8 @@ namespace CodeGen.Api.TMT.Model
             }
             return 
                 (
-                    this._LuokiteltuArvo == input._LuokiteltuArvo ||
-                    (this._LuokiteltuArvo != null &&
-                    this._LuokiteltuArvo.Equals(input._LuokiteltuArvo))
-                ) && 
-                (
-                    this.LuokittelunNimi == input.LuokittelunNimi ||
-                    (this.LuokittelunNimi != null &&
-                    this.LuokittelunNimi.Equals(input.LuokittelunNimi))
+                    this.VuorotteluvapaanSijaisuus == input.VuorotteluvapaanSijaisuus ||
+                    this.VuorotteluvapaanSijaisuus.Equals(input.VuorotteluvapaanSijaisuus)
                 );
         }
 
@@ -122,14 +106,7 @@ namespace CodeGen.Api.TMT.Model
             unchecked // Overflow is fine, just wrap
             {
                 int hashCode = 41;
-                if (this._LuokiteltuArvo != null)
-                {
-                    hashCode = (hashCode * 59) + this._LuokiteltuArvo.GetHashCode();
-                }
-                if (this.LuokittelunNimi != null)
-                {
-                    hashCode = (hashCode * 59) + this.LuokittelunNimi.GetHashCode();
-                }
+                hashCode = (hashCode * 59) + this.VuorotteluvapaanSijaisuus.GetHashCode();
                 return hashCode;
             }
         }

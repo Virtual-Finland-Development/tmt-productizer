@@ -41,10 +41,11 @@ namespace CodeGen.Api.TMT.Model
         /// <param name="paikkojenMaara">**fi:** Työpaikkailmoituksen avoimien paikkojen kokonaismäärä | **en:** Quantity of open positions.</param>
         /// <param name="palkanLisatieto">**fi:** Palkan lisätieto | **en:** Additional information on wage principle.</param>
         /// <param name="palkanPeruste">**fi:** Palkanperuste | **en:** Principle of wage&lt;details&gt;&lt;summary&gt;Koodit | Codes&lt;/summary&gt;&lt;pre&gt;01 &#x3D; Aikapalkka | Time rate 02 &#x3D; Kiinteä palkka | Fixed salary 03 &#x3D; Provisiopalkka | Bonus-based 04 &#x3D; Kiinteä palkka + provisio | Fixed salary + bonus 05 &#x3D; Aikapalkka + provisio | Time rate + bonus 06 &#x3D; Urakkapalkka | Piece work pay 07 &#x3D; Muu | Other&lt;/pre&gt;&lt;/details&gt;.</param>
+        /// <param name="palvelussuhde">palvelussuhde.</param>
         /// <param name="tyoAika">**fi:** Työaika | **en:** Type of work time&lt;details&gt;&lt;summary&gt;Koodit | Codes&lt;/summary&gt;&lt;pre&gt;01 &#x3D; Kokoaikatyö | Full-time  02 &#x3D; Osa-aikatyö | Part-time&lt;/pre&gt;.</param>
         /// <param name="tyoAlkaa">**fi:** Työn alkamisen tyyppi | **en:** Type of start of work&lt;details&gt;&lt;summary&gt;Koodit | Codes&lt;/summary&gt;&lt;pre&gt;01 &#x3D; Mahdollisimman pian | As soon as possible 02 &#x3D; Alkaen | Starting on 03 &#x3D; Sopimuksen mukaan | According to agreement&lt;/pre&gt;&lt;/details&gt;.</param>
         /// <param name="tyoAlkaaLisatieto">**fi:** Työn aloituksen lisätieto | **en:** Additional information on start of work.</param>
-        /// <param name="tyoAlkaaPvm">**fi:** Työn aloitus, vain jos tyo alkaa tyyppi on &#39;*02* | **en:**  Work start date (field has value only if start of work type is &#39;*02*&#39;).</param>
+        /// <param name="tyoAlkaaPvm">**fi:** Työn aloitus, vain jos tyo alkaa tyyppi on &#39;*02*&#39; | **en:**  Work start date (field has value only if start of work type is &#39;*02*&#39;).</param>
         /// <param name="tyoTunnitAjanjakso">**fi:** Osa-aikaisen työn tuntien ajanjakso | **en:** Part time working hours&lt;details&gt;&lt;summary&gt;Koodit | Codes&lt;/summary&gt;&lt;pre&gt;0201 &#x3D; Osa-aikatyö, tuntia viikossa | Part-time, hours per week 0202 &#x3D; Osa-aikatyö, tuntia kuukaudessa | part-time, hours per month&lt;/pre&gt;&lt;/details&gt;.</param>
         /// <param name="tyoTunnitMaksimi">*fi:** Osa-aikaisen työsuhteen työtunteja enintään | *en:** Maximum amount of working hours for part-time work.</param>
         /// <param name="tyoTunnitMinimi">*fi:** Osa-aikaisen työsuhteen työtunteja vähintään | **en:** Minimum amount of working hours for part-time work.</param>
@@ -53,7 +54,7 @@ namespace CodeGen.Api.TMT.Model
         /// <param name="tyonOtsikko">**fi:** Työpaikkailmoituksen otsikko | **en:** Title of the job posting.</param>
         /// <param name="tyonTiivistelma">**fi:** Työpaikkailmoituksen kuvauksen tiivistelmä | **en:** Short description of the job posting.</param>
         /// <param name="tyoskentely">tyoskentely.</param>
-        public Perustiedot(bool kutsutaanTarvittaessa = default(bool), bool kuuluuMatkustamista = default(bool), DateTime maaraaikaisuudenPaattymisPvm = default(DateTime), List<LokalisoituArvo> maaraaikaisuudenSyy = default(List<LokalisoituArvo>), int paikkojenMaara = default(int), List<LokalisoituArvo> palkanLisatieto = default(List<LokalisoituArvo>), string palkanPeruste = default(string), string tyoAika = default(string), string tyoAlkaa = default(string), List<LokalisoituArvo> tyoAlkaaLisatieto = default(List<LokalisoituArvo>), DateTime tyoAlkaaPvm = default(DateTime), string tyoTunnitAjanjakso = default(string), double tyoTunnitMaksimi = default(double), double tyoTunnitMinimi = default(double), string tyonJatkuvuus = default(string), List<LokalisoituArvo> tyonKuvaus = default(List<LokalisoituArvo>), List<LokalisoituArvo> tyonOtsikko = default(List<LokalisoituArvo>), List<LokalisoituArvo> tyonTiivistelma = default(List<LokalisoituArvo>), Tyoskentely tyoskentely = default(Tyoskentely))
+        public Perustiedot(bool kutsutaanTarvittaessa = default(bool), bool kuuluuMatkustamista = default(bool), DateTime maaraaikaisuudenPaattymisPvm = default(DateTime), List<LokalisoituArvo> maaraaikaisuudenSyy = default(List<LokalisoituArvo>), int paikkojenMaara = default(int), List<LokalisoituArvo> palkanLisatieto = default(List<LokalisoituArvo>), string palkanPeruste = default(string), Palvelussuhde palvelussuhde = default(Palvelussuhde), string tyoAika = default(string), string tyoAlkaa = default(string), List<LokalisoituArvo> tyoAlkaaLisatieto = default(List<LokalisoituArvo>), DateTime tyoAlkaaPvm = default(DateTime), string tyoTunnitAjanjakso = default(string), double tyoTunnitMaksimi = default(double), double tyoTunnitMinimi = default(double), string tyonJatkuvuus = default(string), List<LokalisoituArvo> tyonKuvaus = default(List<LokalisoituArvo>), List<LokalisoituArvo> tyonOtsikko = default(List<LokalisoituArvo>), List<LokalisoituArvo> tyonTiivistelma = default(List<LokalisoituArvo>), Tyoskentely tyoskentely = default(Tyoskentely))
         {
             this.KutsutaanTarvittaessa = kutsutaanTarvittaessa;
             this.KuuluuMatkustamista = kuuluuMatkustamista;
@@ -62,6 +63,7 @@ namespace CodeGen.Api.TMT.Model
             this.PaikkojenMaara = paikkojenMaara;
             this.PalkanLisatieto = palkanLisatieto;
             this.PalkanPeruste = palkanPeruste;
+            this.Palvelussuhde = palvelussuhde;
             this.TyoAika = tyoAika;
             this.TyoAlkaa = tyoAlkaa;
             this.TyoAlkaaLisatieto = tyoAlkaaLisatieto;
@@ -95,6 +97,7 @@ namespace CodeGen.Api.TMT.Model
         /// </summary>
         /// <value>**fi:** Määräaikausuuden päättymispäivä | **en:** Employment relationship end date for temporary contract</value>
         [DataMember(Name = "maaraaikaisuudenPaattymisPvm", EmitDefaultValue = false)]
+        [JsonConverter(typeof(OpenAPIDateConverter))]
         public DateTime MaaraaikaisuudenPaattymisPvm { get; set; }
 
         /// <summary>
@@ -126,6 +129,12 @@ namespace CodeGen.Api.TMT.Model
         public string PalkanPeruste { get; set; }
 
         /// <summary>
+        /// Gets or Sets Palvelussuhde
+        /// </summary>
+        [DataMember(Name = "palvelussuhde", EmitDefaultValue = false)]
+        public Palvelussuhde Palvelussuhde { get; set; }
+
+        /// <summary>
         /// **fi:** Työaika | **en:** Type of work time&lt;details&gt;&lt;summary&gt;Koodit | Codes&lt;/summary&gt;&lt;pre&gt;01 &#x3D; Kokoaikatyö | Full-time  02 &#x3D; Osa-aikatyö | Part-time&lt;/pre&gt;
         /// </summary>
         /// <value>**fi:** Työaika | **en:** Type of work time&lt;details&gt;&lt;summary&gt;Koodit | Codes&lt;/summary&gt;&lt;pre&gt;01 &#x3D; Kokoaikatyö | Full-time  02 &#x3D; Osa-aikatyö | Part-time&lt;/pre&gt;</value>
@@ -147,10 +156,11 @@ namespace CodeGen.Api.TMT.Model
         public List<LokalisoituArvo> TyoAlkaaLisatieto { get; set; }
 
         /// <summary>
-        /// **fi:** Työn aloitus, vain jos tyo alkaa tyyppi on &#39;*02* | **en:**  Work start date (field has value only if start of work type is &#39;*02*&#39;)
+        /// **fi:** Työn aloitus, vain jos tyo alkaa tyyppi on &#39;*02*&#39; | **en:**  Work start date (field has value only if start of work type is &#39;*02*&#39;)
         /// </summary>
-        /// <value>**fi:** Työn aloitus, vain jos tyo alkaa tyyppi on &#39;*02* | **en:**  Work start date (field has value only if start of work type is &#39;*02*&#39;)</value>
+        /// <value>**fi:** Työn aloitus, vain jos tyo alkaa tyyppi on &#39;*02*&#39; | **en:**  Work start date (field has value only if start of work type is &#39;*02*&#39;)</value>
         [DataMember(Name = "tyoAlkaaPvm", EmitDefaultValue = false)]
+        [JsonConverter(typeof(OpenAPIDateConverter))]
         public DateTime TyoAlkaaPvm { get; set; }
 
         /// <summary>
@@ -223,6 +233,7 @@ namespace CodeGen.Api.TMT.Model
             sb.Append("  PaikkojenMaara: ").Append(PaikkojenMaara).Append("\n");
             sb.Append("  PalkanLisatieto: ").Append(PalkanLisatieto).Append("\n");
             sb.Append("  PalkanPeruste: ").Append(PalkanPeruste).Append("\n");
+            sb.Append("  Palvelussuhde: ").Append(Palvelussuhde).Append("\n");
             sb.Append("  TyoAika: ").Append(TyoAika).Append("\n");
             sb.Append("  TyoAlkaa: ").Append(TyoAlkaa).Append("\n");
             sb.Append("  TyoAlkaaLisatieto: ").Append(TyoAlkaaLisatieto).Append("\n");
@@ -303,6 +314,11 @@ namespace CodeGen.Api.TMT.Model
                     this.PalkanPeruste == input.PalkanPeruste ||
                     (this.PalkanPeruste != null &&
                     this.PalkanPeruste.Equals(input.PalkanPeruste))
+                ) && 
+                (
+                    this.Palvelussuhde == input.Palvelussuhde ||
+                    (this.Palvelussuhde != null &&
+                    this.Palvelussuhde.Equals(input.Palvelussuhde))
                 ) && 
                 (
                     this.TyoAika == input.TyoAika ||
@@ -395,6 +411,10 @@ namespace CodeGen.Api.TMT.Model
                 if (this.PalkanPeruste != null)
                 {
                     hashCode = (hashCode * 59) + this.PalkanPeruste.GetHashCode();
+                }
+                if (this.Palvelussuhde != null)
+                {
+                    hashCode = (hashCode * 59) + this.Palvelussuhde.GetHashCode();
                 }
                 if (this.TyoAika != null)
                 {

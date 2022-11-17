@@ -10,11 +10,16 @@ src/CodeGen.Api.TMT/Model/KortitJaLuvat.cs
 src/CodeGen.Api.TMT/Model/LokalisoituArvo.cs
 src/CodeGen.Api.TMT/Model/LuokiteltuArvo.cs
 src/CodeGen.Api.TMT/Model/Osaamisvaatimukset.cs
+src/CodeGen.Api.TMT/Model/Palvelussuhde.cs
 src/CodeGen.Api.TMT/Model/Perustiedot.cs
 src/CodeGen.Api.TMT/Model/Sijainti.cs
 src/CodeGen.Api.TMT/Model/Sivutus.cs
+src/CodeGen.Api.TMT/Model/Toimeksianto.cs
 src/CodeGen.Api.TMT/Model/Toimipaikka.cs
 src/CodeGen.Api.TMT/Model/Tyopaikkailmoitus.cs
 src/CodeGen.Api.TMT/Model/Tyoskentely.cs
+src/CodeGen.Api.TMT/Model/Tyosuhde.cs
 src/CodeGen.Api.TMT/Model/Virhe.cs
 src/CodeGen.Api.TMT/Model/VirheViesti.cs
+src/CodeGen.Api.TMT/Model/Virkasuhde.cs
+src/CodeGen.Api.TMT/Model/Yrittajyys.cs

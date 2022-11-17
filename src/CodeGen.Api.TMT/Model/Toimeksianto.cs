@@ -26,35 +26,35 @@ using OpenAPIDateConverter = CodeGen.Api.TMT.Client.OpenAPIDateConverter;
 namespace CodeGen.Api.TMT.Model
 {
     /// <summary>
-    /// **fi:** Luokitellulla arvolla on luokittelun nimi sekä arvo | **en:** Classified value has classification and value 
+    /// **fi:** Toimeksiannon tiedot, jos palvelussuhteen tyyppi on &#39;*03*&#39; | **en:** Information of commission, if type of relationship is &#39;*03*&#39;
     /// </summary>
-    [DataContract(Name = "LuokiteltuArvo")]
-    public partial class LuokiteltuArvo : IEquatable<LuokiteltuArvo>, IValidatableObject
+    [DataContract(Name = "Toimeksianto")]
+    public partial class Toimeksianto : IEquatable<Toimeksianto>, IValidatableObject
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="LuokiteltuArvo" /> class.
+        /// Initializes a new instance of the <see cref="Toimeksianto" /> class.
         /// </summary>
-        /// <param name="luokiteltuArvo">**fi:** Luokittelun arvo | **en:** Value.</param>
-        /// <param name="luokittelunNimi">**fi:** Luokittelyn nimi | **en:** Name of classification.</param>
-        public LuokiteltuArvo(string luokiteltuArvo = default(string), string luokittelunNimi = default(string))
+        /// <param name="rekrytointiToimeksiantaja">**fi:** Rekrytointitoimeksiannon antaneen yrityksen nimi | **en:** Name of recruitment commission company.</param>
+        /// <param name="rekrytointiToimeksianto">**fi:** Rekrytointitoimeksianto | **en:** Recruitment commission.</param>
+        public Toimeksianto(string rekrytointiToimeksiantaja = default(string), bool rekrytointiToimeksianto = default(bool))
         {
-            this._LuokiteltuArvo = luokiteltuArvo;
-            this.LuokittelunNimi = luokittelunNimi;
+            this.RekrytointiToimeksiantaja = rekrytointiToimeksiantaja;
+            this.RekrytointiToimeksianto = rekrytointiToimeksianto;
         }
 
         /// <summary>
-        /// **fi:** Luokittelun arvo | **en:** Value
+        /// **fi:** Rekrytointitoimeksiannon antaneen yrityksen nimi | **en:** Name of recruitment commission company
         /// </summary>
-        /// <value>**fi:** Luokittelun arvo | **en:** Value</value>
-        [DataMember(Name = "luokiteltuArvo", EmitDefaultValue = false)]
-        public string _LuokiteltuArvo { get; set; }
+        /// <value>**fi:** Rekrytointitoimeksiannon antaneen yrityksen nimi | **en:** Name of recruitment commission company</value>
+        [DataMember(Name = "rekrytointiToimeksiantaja", EmitDefaultValue = false)]
+        public string RekrytointiToimeksiantaja { get; set; }
 
         /// <summary>
-        /// **fi:** Luokittelyn nimi | **en:** Name of classification
+        /// **fi:** Rekrytointitoimeksianto | **en:** Recruitment commission
         /// </summary>
-        /// <value>**fi:** Luokittelyn nimi | **en:** Name of classification</value>
-        [DataMember(Name = "luokittelunNimi", EmitDefaultValue = false)]
-        public string LuokittelunNimi { get; set; }
+        /// <value>**fi:** Rekrytointitoimeksianto | **en:** Recruitment commission</value>
+        [DataMember(Name = "rekrytointiToimeksianto", EmitDefaultValue = true)]
+        public bool RekrytointiToimeksianto { get; set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -63,9 +63,9 @@ namespace CodeGen.Api.TMT.Model
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append("class LuokiteltuArvo {\n");
-            sb.Append("  _LuokiteltuArvo: ").Append(_LuokiteltuArvo).Append("\n");
-            sb.Append("  LuokittelunNimi: ").Append(LuokittelunNimi).Append("\n");
+            sb.Append("class Toimeksianto {\n");
+            sb.Append("  RekrytointiToimeksiantaja: ").Append(RekrytointiToimeksiantaja).Append("\n");
+            sb.Append("  RekrytointiToimeksianto: ").Append(RekrytointiToimeksianto).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -86,15 +86,15 @@ namespace CodeGen.Api.TMT.Model
         /// <returns>Boolean</returns>
         public override bool Equals(object input)
         {
-            return this.Equals(input as LuokiteltuArvo);
+            return this.Equals(input as Toimeksianto);
         }
 
         /// <summary>
-        /// Returns true if LuokiteltuArvo instances are equal
+        /// Returns true if Toimeksianto instances are equal
         /// </summary>
-        /// <param name="input">Instance of LuokiteltuArvo to be compared</param>
+        /// <param name="input">Instance of Toimeksianto to be compared</param>
         /// <returns>Boolean</returns>
-        public bool Equals(LuokiteltuArvo input)
+        public bool Equals(Toimeksianto input)
         {
             if (input == null)
             {
@@ -102,14 +102,13 @@ namespace CodeGen.Api.TMT.Model
             }
             return 
                 (
-                    this._LuokiteltuArvo == input._LuokiteltuArvo ||
-                    (this._LuokiteltuArvo != null &&
-                    this._LuokiteltuArvo.Equals(input._LuokiteltuArvo))
+                    this.RekrytointiToimeksiantaja == input.RekrytointiToimeksiantaja ||
+                    (this.RekrytointiToimeksiantaja != null &&
+                    this.RekrytointiToimeksiantaja.Equals(input.RekrytointiToimeksiantaja))
                 ) && 
                 (
-                    this.LuokittelunNimi == input.LuokittelunNimi ||
-                    (this.LuokittelunNimi != null &&
-                    this.LuokittelunNimi.Equals(input.LuokittelunNimi))
+                    this.RekrytointiToimeksianto == input.RekrytointiToimeksianto ||
+                    this.RekrytointiToimeksianto.Equals(input.RekrytointiToimeksianto)
                 );
         }
 
@@ -122,14 +121,11 @@ namespace CodeGen.Api.TMT.Model
             unchecked // Overflow is fine, just wrap
             {
                 int hashCode = 41;
-                if (this._LuokiteltuArvo != null)
+                if (this.RekrytointiToimeksiantaja != null)
                 {
-                    hashCode = (hashCode * 59) + this._LuokiteltuArvo.GetHashCode();
+                    hashCode = (hashCode * 59) + this.RekrytointiToimeksiantaja.GetHashCode();
                 }
-                if (this.LuokittelunNimi != null)
-                {
-                    hashCode = (hashCode * 59) + this.LuokittelunNimi.GetHashCode();
-                }
+                hashCode = (hashCode * 59) + this.RekrytointiToimeksianto.GetHashCode();
                 return hashCode;
             }
         }
