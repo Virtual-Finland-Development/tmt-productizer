@@ -65,7 +65,7 @@ public class JobService : IJobService
 
         jobs.AddRange(result.Ilmoitukset.Select(ilmoitus => new Job
         {
-            Employer = ilmoitus.IlmoittajanNimi.FirstOrDefault(x => x.KieliKoodi == "fi")?.Arvo.ToString(),
+            Employer = ilmoitus.IlmoittajanNimi.FirstOrDefault(x => x.KieliKoodi == "fi")?.Arvo.ToString() ?? string.Empty,
             Location = new Location
             {
                 Municipality = ilmoitus.Sijainti.Toimipaikka.Postitoimipaikka,
@@ -73,9 +73,9 @@ public class JobService : IJobService
             },
             BasicInfo = new BasicInfo
             {
-                Title = ilmoitus.Perustiedot.TyonOtsikko.FirstOrDefault(x => x.KieliKoodi == "fi")?.Arvo.ToString(),
+                Title = ilmoitus.Perustiedot.TyonOtsikko.FirstOrDefault(x => x.KieliKoodi == "fi")?.Arvo.ToString() ?? string.Empty,
                 Description =
-                    ilmoitus.Perustiedot.TyonKuvaus.FirstOrDefault(x => x.KieliKoodi == "fi")?.Arvo.ToString(),
+                    ilmoitus.Perustiedot.TyonKuvaus.FirstOrDefault(x => x.KieliKoodi == "fi")?.Arvo.ToString() ?? string.Empty,
                 WorkTimeType = ilmoitus.Perustiedot.TyoAika
             },
             PublishedAt = ilmoitus.Julkaisupvm,
