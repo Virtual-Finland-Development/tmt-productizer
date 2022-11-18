@@ -1,0 +1,156 @@
+{
+    "sivutus": {
+        "sivu": 0,
+        "maara": 1
+    },
+    "ilmoituksienMaara": 1,
+    "ilmoitukset": [
+        {
+            "ilmoituksenID": "91f04ea5-8eba-421e-a2b5-c6c21e4d64c8",
+            "tyollistaja": "01",
+            "ilmoittajanYTunnus": "AAAABBBB-4",
+            "ilmoittajanNimi": [
+                {
+                    "kieliKoodi": "fi",
+                    "arvo": "Henkilöstövuokraus AABB Oy"
+                }
+            ],
+            "luontipvm": "2022-08-01T11:27:15Z",
+            "muokattupvm": "2022-08-03T14:07:38Z",
+            "julkaisupvm": "2022-08-01T11:27:16Z",
+            "ilmoituksenKielet": [
+                "fi"
+            ],
+            "perustiedot": {
+                "tyonOtsikko": [
+                    {
+                        "kieliKoodi": "fi",
+                        "arvo": "Hoiva-avustaja/Lähihoitaja/Sairaanhoitaja"
+                    }
+                ],
+                "tyonTiivistelma": [
+                    {
+                        "kieliKoodi": "fi",
+                        "arvo": "Henkilöstövuokraus AABB Oy vuokraa hoitoalan ammattilaisia yrityksille."
+                    }
+                ],
+                "tyonKuvaus": [
+                    {
+                        "kieliKoodi": "fi",
+                        "arvo": "Kuvaus"
+                    }
+                ],
+                "paikkojenMaara": 10,
+                "palvelussuhde": {
+                    "tyyppi": "01",
+                    "tyosuhde": {
+                        "vuokratyo": true,
+                        "vuokratyoToimeksiantaja": "Henkilöstövuorkaus AABB Oy",
+                        "rekrytointiToimeksianto": false,
+                        "tyoharjoittelu": false,
+                        "oppisopimus": false,
+                        "vuorotteluvapaanSijaisuus": false
+                    }
+                },
+                "tyonJatkuvuus": "01",
+                "tyoAika": "02",
+                "tyoTunnitAjanjakso": "0201",
+                "tyoTunnitMaksimi": 40.0,
+                "kutsutaanTarvittaessa": false,
+                "palkanPeruste": "01",
+                "palkanLisatieto": [],
+                "tyoAlkaa": "01",
+                "tyoAlkaaLisatieto": [],
+                "tyoskentely": {
+                    "tyoskentelyAika": [
+                        "01",
+                        "02",
+                        "03",
+                        "06",
+                        "07",
+                        "08"
+                    ],
+                    "vuorotyo": [
+                        "0802",
+                        "0801"
+                    ]
+                },
+                "kuuluuMatkustamista": false
+            },
+            "osaamisvaatimukset": {
+                "ammatit": [
+                    {
+                        "luokittelunNimi": "ESCO",
+                        "luokiteltuArvo": "http://data.europa.eu/esco/occupation/8d3e8aaa-791b-4c75-a465-f3f827028f50"
+                    },
+                    {
+                        "luokittelunNimi": "ESCO",
+                        "luokiteltuArvo": "http://data.europa.eu/esco/occupation/d38c2107-98f2-47b7-8bb4-f69750d51082"
+                    }
+                ],
+                "osaamiset": [
+                    {
+                        "luokittelunNimi": "ESCO",
+                        "luokiteltuArvo": "http://data.europa.eu/esco/skill/a17286c5-238d-4f0b-bc24-29e9121345de"
+                    }
+                ],
+                "kielitaidot": [
+                    {
+                        "kielitaito": "fi",
+                        "kielitaidonTaso": "C1",
+                        "kielitaidonLisatieto": []
+                    }
+                ],
+                "ajokortti": {
+                    "vaaditutAjokorttiluokat": [],
+                    "ajokortinLisatieto": []
+                },
+                "kortitJaLuvat": {
+                    "lupaKoodit": [],
+                    "kortitJaLuvatLisatieto": []
+                },
+                "rikosrekisteriote": false
+            },
+            "sijainti": {
+                "sijaintiJoustava": false,
+                "maa": [],
+                "maakunta": [],
+                "kunta": [
+                    "297",
+                    "179"
+                ],
+                "toimipaikka": {
+                    "toimipaikanNimi": [
+                        {
+                            "kieliKoodi": "fi",
+                            "arvo": "Henkilöstövuokraus AABB Oy"
+                        }
+                    ],
+                    "postiosoite": "",
+                    "postinumero": "",
+                    "postitoimipaikka": ""
+                }
+            },
+            "hakeminen": {
+                "hakuaikaPaattyy": "2022-12-30T22:00:00Z",
+                "ilmoittajanYhteystiedot": [
+                    {
+                        "etunimi": "",
+                        "sukunimi": "",
+                        "sposti": "absesea@sasdada.com",
+                        "puhelinNro": "123123"
+                    }
+                ],
+                "hakuohjeet": [
+                    {
+                        "kieliKoodi": "fi",
+                        "arvo": "Ohjeet löytyvät myös ilmoituksesta."
+                    }
+                ]
+            },
+            "ilmoituksenOhjaus": false,
+            "markkinointikuvaus": [],
+            "tyoKielet": []
+        }
+    ]
+}

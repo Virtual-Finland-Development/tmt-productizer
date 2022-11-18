@@ -32,15 +32,41 @@ namespace CodeGen.Api.TMT.Model
     public partial class IlmoittajanYhteystieto : IEquatable<IlmoittajanYhteystieto>, IValidatableObject
     {
         /// <summary>
+        /// Purkka for deserialization
+        /// </summary>
+        public IlmoittajanYhteystieto()
+        {
+            
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="IlmoittajanYhteystieto" /> class.
         /// </summary>
+        /// <param name="etunimi">**fi:** etunimi | **en:** first name.</param>
+        /// <param name="sukunimi">**fi:** sukunimi | **en:** surname.</param>
         /// <param name="puhelinNro">**fi:** Puhelinnumero | **en:** Telephone number.</param>
         /// <param name="sposti">**fi:** Sähköpostiosoite | **en:** E-mail address.</param>
-        public IlmoittajanYhteystieto(string puhelinNro = default(string), string sposti = default(string))
+        public IlmoittajanYhteystieto(string etunimi = default(string), string sukunimi = default(string), string puhelinNro = default(string), string sposti = default(string))
         {
+            this.Etunimi = etunimi;
+            this.Sukunimi = sukunimi;
             this.PuhelinNro = puhelinNro;
             this.Sposti = sposti;
         }
+
+        /// <summary>
+        /// **fi:** Etunimi | **en:** First name
+        /// </summary>
+        /// <value>**fi:** Etunimi | **en:** First name</value>
+        [DataMember(Name = "etunimi", EmitDefaultValue = false)]
+        public string Etunimi { get; set; }
+
+        /// <summary>
+        /// **fi:** sukunimi | **en:** surname
+        /// </summary>
+        /// <value>**fi:** sukunimi | **en:** surname</value>
+        [DataMember(Name = "sukunimi", EmitDefaultValue = false)]
+        public string Sukunimi { get; set; }
 
         /// <summary>
         /// **fi:** Puhelinnumero | **en:** Telephone number

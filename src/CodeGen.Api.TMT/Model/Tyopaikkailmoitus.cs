@@ -34,15 +34,10 @@ namespace CodeGen.Api.TMT.Model
         /// <summary>
         /// Initializes a new instance of the <see cref="Tyopaikkailmoitus" /> class.
         /// </summary>
-        [JsonConstructorAttribute]
-        protected Tyopaikkailmoitus() { }
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Tyopaikkailmoitus" /> class.
-        /// </summary>
         /// <param name="hakeminen">hakeminen.</param>
         /// <param name="ilmoittajanNimi">**fi:** Työpaikkailmoituksen ilmoittajan nimi, kentässä on arvo vain jos tyyppi on &#39;*01*&#39; | **en:** Name of the company that owns the job posting (field has value only if job posting type is &#39;**01**&#39;).</param>
         /// <param name="ilmoittajanYTunnus">**fi:** Työpaikkailmoituksen tehneen yrityksen y-tunnus, kentässä on arvo vain jos tyyppi on &#39;*01*&#39; | **en:** Business ID of the company that owns the job posting (field has value only if job posting type is &#39;*01*&#39;).</param>
-        /// <param name="ilmoituksenID">**fi:** Työpaikkailmoituksen tunniste | **en:** Unique ID of the job posting (required).</param>
+        /// <param name="ilmoituksenID">**fi:** Työpaikkailmoituksen tunniste | **en:** Unique ID of the job posting.</param>
         /// <param name="ilmoituksenKielet">ilmoituksenKielet.</param>
         /// <param name="ilmoituksenOhjaus">**fi:** Ilmoituksen ohjaus hakulomakkeeseen Työmarkkinatorin ulkopuolelle | **en:** Redirection to application form outside Job Market Finland.</param>
         /// <param name="julkaisupvm">**fi:** Julkaistuaikaleima | **en:** Published timestamp.</param>
@@ -55,12 +50,12 @@ namespace CodeGen.Api.TMT.Model
         /// <param name="perustiedot">perustiedot.</param>
         /// <param name="sijainti">sijainti.</param>
         /// <param name="tyollistaja">**fi:** Työpaikkailmoituksen tyyppi | **en:** Type of the job posting&lt;details&gt;&lt;summary&gt;Koodit | Codes&lt;/summary&gt;&lt;pre&gt;01 &#x3D; Yritys | Organization  02 &#x3D; Kotitalous | Household&lt;/pre&gt;&lt;/details&gt;.</param>
-        public Tyopaikkailmoitus(Hakeminen hakeminen = default(Hakeminen), List<LokalisoituArvo> ilmoittajanNimi = default(List<LokalisoituArvo>), string ilmoittajanYTunnus = default(string), Guid ilmoituksenID = default(Guid), List<string> ilmoituksenKielet = default(List<string>), bool ilmoituksenOhjaus = default(bool), DateTime julkaisupvm = default(DateTime), string kotisivut = default(string), string kotitaloudenNimi = default(string), DateTime luontipvm = default(DateTime), string markkinointikuvaus = default(string), DateTime muokattupvm = default(DateTime), Osaamisvaatimukset osaamisvaatimukset = default(Osaamisvaatimukset), Perustiedot perustiedot = default(Perustiedot), Sijainti sijainti = default(Sijainti), string tyollistaja = default(string))
+        public Tyopaikkailmoitus(Hakeminen hakeminen = default(Hakeminen), List<LokalisoituArvo> ilmoittajanNimi = default(List<LokalisoituArvo>), string ilmoittajanYTunnus = default(string), string ilmoituksenID = default(string), List<string> ilmoituksenKielet = default(List<string>), bool ilmoituksenOhjaus = default(bool), DateTime julkaisupvm = default(DateTime), string kotisivut = default(string), string kotitaloudenNimi = default(string), DateTime luontipvm = default(DateTime), List<LokalisoituArvo> markkinointikuvaus = default(List<LokalisoituArvo>), DateTime muokattupvm = default(DateTime), Osaamisvaatimukset osaamisvaatimukset = default(Osaamisvaatimukset), Perustiedot perustiedot = default(Perustiedot), Sijainti sijainti = default(Sijainti), string tyollistaja = default(string))
         {
-            this.IlmoituksenID = ilmoituksenID;
             this.Hakeminen = hakeminen;
             this.IlmoittajanNimi = ilmoittajanNimi;
             this.IlmoittajanYTunnus = ilmoittajanYTunnus;
+            this.IlmoituksenID = ilmoituksenID;
             this.IlmoituksenKielet = ilmoituksenKielet;
             this.IlmoituksenOhjaus = ilmoituksenOhjaus;
             this.Julkaisupvm = julkaisupvm;
@@ -99,8 +94,8 @@ namespace CodeGen.Api.TMT.Model
         /// **fi:** Työpaikkailmoituksen tunniste | **en:** Unique ID of the job posting
         /// </summary>
         /// <value>**fi:** Työpaikkailmoituksen tunniste | **en:** Unique ID of the job posting</value>
-        [DataMember(Name = "ilmoituksenID", IsRequired = true, EmitDefaultValue = true)]
-        public Guid IlmoituksenID { get; set; }
+        [DataMember(Name = "ilmoituksenID", EmitDefaultValue = false)]
+        public string IlmoituksenID { get; set; }
 
         /// <summary>
         /// Gets or Sets IlmoituksenKielet
@@ -148,7 +143,7 @@ namespace CodeGen.Api.TMT.Model
         /// </summary>
         /// <value>**fi:** Työpaikkailmoitukseen lisätty yrityksen yleinen markkinointikuvaus, kentässä on arvo vain jos tyyppi on &#39;*01*&#39; | **en:** Marketing description of company (field has value only if job posting type is &#39;*01*&#39;)</value>
         [DataMember(Name = "markkinointikuvaus", EmitDefaultValue = false)]
-        public string Markkinointikuvaus { get; set; }
+        public List<LokalisoituArvo> Markkinointikuvaus { get; set; }
 
         /// <summary>
         /// **fi:** Muokattu viimeksi | **en:** Last modified timestamp

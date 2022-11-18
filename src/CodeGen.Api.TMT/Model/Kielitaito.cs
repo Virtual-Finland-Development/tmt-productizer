@@ -32,6 +32,14 @@ namespace CodeGen.Api.TMT.Model
     public partial class Kielitaito : IEquatable<Kielitaito>, IValidatableObject
     {
         /// <summary>
+        /// Purkka for deserialization
+        /// </summary>
+        public Kielitaito()
+        {
+            
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="Kielitaito" /> class.
         /// </summary>
         /// <param name="kielitaidonLisatieto">**fi:** Kielitaidon lisätieto | **en:** Additional information for language.</param>
@@ -43,11 +51,6 @@ namespace CodeGen.Api.TMT.Model
             this.KielitaidonTaso = kielitaidonTaso;
             this._Kielitaito = kielitaito;
         }
-        
-        /// <summary>
-        /// Purkka deserialisointia varten
-        /// </summary>
-        public Kielitaito(){}
 
         /// <summary>
         /// **fi:** Kielitaidon lisätieto | **en:** Additional information for language

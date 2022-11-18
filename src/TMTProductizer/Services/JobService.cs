@@ -1,27 +1,66 @@
+using System.Net.Http.Headers;
 using CodeGen.Api.TMT.Model;
 using TMTProductizer.Models;
+using TMTProductizer.Services.TMT;
+using TMTProductizer.Utils;
 
 namespace TMTProductizer.Services;
 
 public class JobService : IJobService
 {
-    private readonly HttpClient _client;
+    private readonly IProxyHttpClientFactory _clientFactory;
+    private readonly ITMTAuthorizationService _tmtAuthorizationService;
+    private readonly ILogger<JobService> _logger;
 
-    public JobService(HttpClient client)
+    public JobService(IProxyHttpClientFactory clientFactory, ITMTAuthorizationService tmtAuthorizationService, ILogger<JobService> logger)
     {
-        _client = client;
+        _clientFactory = clientFactory;
+        _tmtAuthorizationService = tmtAuthorizationService;
+        _logger = logger;
     }
 
     public async Task<IReadOnlyList<Job>> Find(JobsRequest query)
     {
         var jobs = new List<Job>();
-
         var pageNumber = GetPageNumberFromOffsetAndLimit(query.Paging.Offset, query.Paging.Limit);
-        var response = await _client.GetAsync($"?sivu={pageNumber}&maara={query.Paging.Limit}");
 
-        if (!response.IsSuccessStatusCode) return jobs;
+        // Get TMT Authorization Details
+        TMTAuthorizationDetails tmtAuthorizationDetails = await _tmtAuthorizationService.GetTMTAuthorizationDetails(); // Throws HttpRequestException;
 
-        var result = await response.Content.ReadFromJsonAsync<Hakutulos>();
+        // Form the request
+        var requestMessage = new HttpRequestMessage
+        {
+            RequestUri = new Uri($"{_clientFactory.BaseAddress}?sivu={pageNumber}&maara={query.Paging.Limit}"),
+            Method = HttpMethod.Get,
+        };
+        requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", tmtAuthorizationDetails.AccessToken);
+
+        // Build a proxy client
+        var httpClient = _clientFactory.GetTMTProxyClient(tmtAuthorizationDetails);
+
+        // Send request
+        var response = await httpClient.SendAsync(requestMessage);
+        if (!response.IsSuccessStatusCode)
+        {
+            _logger.LogError("TMT API responded with: {StatusCode}", response.StatusCode);
+            _logger.LogError("Content: {content}", await response.Content.ReadAsStringAsync());
+            return jobs;
+        };
+
+        // Parse response
+        Hakutulos? result;
+        try
+        {
+            result = await response.Content.ReadFromJsonAsync<Hakutulos>();
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Failed to parse TMT API response");
+            await File.WriteAllTextAsync("TMTResponseOutputDebug.txt", await response.Content.ReadAsStringAsync());
+            _logger.LogError("Wrote a response output debug file to TMTResponseOutputDebug.txt");
+            return jobs;
+        }
+
         if (result == null) return jobs;
 
         jobs.AddRange(result.Ilmoitukset.Select(ilmoitus => new Job
@@ -46,9 +85,15 @@ public class JobService : IJobService
 
         // TODO: TMT API doesn't support keyword search so we have to do proper in-memory filtering instead. This isn't it.
         if (query.Query != "")
+        {
             jobs = jobs.FindAll(j =>
-                j.BasicInfo.Description!.Contains(query.Query) ||
-                j.BasicInfo.Title!.Contains(query.Query));
+            {
+                // The ! operator does not seem to work at runtime, like it says: https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/null-forgiving
+                // Use null-comparison instead
+                return (j.BasicInfo.Description != null && j.BasicInfo.Description.Contains(query.Query)) || (j.BasicInfo.Title != null && j.BasicInfo.Title.Contains(query.Query));
+            });
+        }
+
 
         return jobs;
     }

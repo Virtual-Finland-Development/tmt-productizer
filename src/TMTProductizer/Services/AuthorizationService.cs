@@ -5,10 +5,12 @@ namespace TMTProductizer.Services;
 public class AuthorizationService : IAuthorizationService
 {
     private readonly HttpClient _client;
-    
-    public AuthorizationService(HttpClient client)
+    private readonly bool _skipAuthorizationCheck;
+
+    public AuthorizationService(HttpClient client, IHostEnvironment env)
     {
         _client = client;
+        _skipAuthorizationCheck = env.IsDevelopment() || env.IsEnvironment("Mock");
     }
 
     public async Task Authorize(HttpRequest request)
@@ -20,6 +22,9 @@ public class AuthorizationService : IAuthorizationService
         if (!originHeaders.ContainsKey("authorization") || !originHeaders.ContainsKey("x-authorization-provider")) {
             throw new HttpRequestException("Missing headers", null, HttpStatusCode.Unauthorized); // Throws 401 if no auth headers
         }
+
+        // Skip on local development, but require headers present (above)
+        if (_skipAuthorizationCheck) return;
 
         var authorizeRequest = new HttpRequestMessage {
             RequestUri = new Uri($"{_client.BaseAddress}authorize"),
