@@ -113,7 +113,7 @@ public class JobServiceTests
         try
         {
             // Open the text file using a stream reader.
-            using (var sr = new StreamReader("../../src/TMTProductizer.UnitTests/testTMTResponse.json"))
+            using (var sr = new StreamReader("../../src/TMTProductizer.UnitTests/Mocks/testTMTResponse.json"))
             {
                 // Read the stream to a string, and write the string to the console.
                 var line = sr.ReadToEnd();
