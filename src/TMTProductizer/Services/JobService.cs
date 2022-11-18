@@ -68,7 +68,7 @@ public class JobService : IJobService
             Employer = ilmoitus.IlmoittajanNimi.FirstOrDefault(x => x.KieliKoodi == "fi")?.Arvo.ToString(),
             Location = new Location
             {
-                City = ilmoitus.Sijainti.Toimipaikka.Postitoimipaikka,
+                Municipality = ilmoitus.Sijainti.Toimipaikka.Postitoimipaikka,
                 Postcode = ilmoitus.Sijainti.Toimipaikka.Postinumero
             },
             BasicInfo = new BasicInfo

@@ -19,6 +19,6 @@ public class BasicInfo
 
 public class Location
 {
-    public string City { get; set; } = null!;
+    public string Municipality { get; set; } = null!;
     public string Postcode { get; set; } = null!;
 }
