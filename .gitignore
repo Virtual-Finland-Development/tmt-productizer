@@ -16,3 +16,4 @@ _ReSharper*/
 # Locally built
 out/
 TMTResponseOutputDebug.txt
+release/
