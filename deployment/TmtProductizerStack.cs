@@ -68,6 +68,7 @@ public class TmtProductizerStack : Stack
                 ]
                 }
             ",
+            Tags = tags
         });
 
         // Attach secrets manager policy
