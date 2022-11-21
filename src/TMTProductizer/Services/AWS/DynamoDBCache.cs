@@ -3,9 +3,14 @@ using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
 using System.Text.Json;
 
-using TMTProductizer.Models;
-
 namespace TMTProductizer.Services.AWS;
+
+public class DynamoDBCacheTableItem
+{
+    public string CacheKey { get; set; } = null!;
+    public string CacheValue { get; set; } = null!; // JSON string
+    public Int64 CreatedAt { get; set; } // Unix timestamp
+}
 
 public class DynamoDBCache : IDynamoDBCache
 {
