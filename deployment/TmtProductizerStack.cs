@@ -6,6 +6,8 @@ using Pulumi.Aws.Lambda;
 using Pulumi.Aws.Lambda.Inputs;
 using Pulumi.Command.Local;
 
+using Deployment.Resources;
+
 namespace Deployment.TmtProductizerStack;
 
 public class TmtProductizerStack : Stack
@@ -76,6 +78,15 @@ public class TmtProductizerStack : Stack
         {
             Role = role.Name,
             PolicyArn = secretsManagerPolicy.Arn,
+        });
+
+        // DynamoDB
+        var dynamoDBCacheFactory = new DynamoDBCacheFactory();
+        var dynamoDBPolicy = dynamoDBCacheFactory.createDynamoDBTableAndReturnIAMPolicy(tags);
+        new RolePolicyAttachment($"{projectName}-dynamodb-policy-attachment-{environment}", new()
+        {
+            Role = role.Name,
+            PolicyArn = dynamoDBPolicy.Arn,
         });
 
         var rolePolicyAttachment = new RolePolicyAttachment($"{projectName}-lambda-role-attachment-{environment}",
