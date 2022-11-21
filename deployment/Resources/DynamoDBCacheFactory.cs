@@ -27,11 +27,6 @@ public class DynamoDBCacheFactory
                 },
                 new TableAttributeArgs
                 {
-                    Name = "CacheValue",
-                    Type = "S",
-                },
-                new TableAttributeArgs
-                {
                     Name = "UpdatedAt",
                     Type = "N",
                 },
@@ -61,7 +56,7 @@ public class DynamoDBCacheFactory
                             "dynamodb:DescribeTable",
                         },
                         ["Effect"] = "Allow",
-                        ["Resource"] = dynamoDbCacheTable.Arn,
+                        ["Resource"] = dynamoDbCacheTable.Arn.Apply(arn => $"{arn}"),
                     },
                 },
             }),
