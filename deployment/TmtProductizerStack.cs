@@ -51,6 +51,33 @@ public class TmtProductizerStack : Stack
             })
         });
 
+        // AWS Secrets Manager Policy
+        var secretsManagerPolicy = new Policy($"{projectName}-secrets-manager-policy-{environment}", new()
+        {
+            Description = "Read access to secrets manager",
+            PolicyDocument = @"{
+                ""Version"": ""2012-10-17"",
+                ""Statement"": [
+                    {
+                    ""Action"": [
+                        ""secretsmanager:GetSecretValue""
+                    ],
+                    ""Effect"": ""Allow"",
+                    ""Resource"": ""arn:aws:secretsmanager:eu-north-1:433482540854:secret:tmt-api/azure-b2c-auth/client-secrets-K7W9Iq""
+                    }
+                ]
+                }
+            ",
+            Tags = tags
+        });
+
+        // Attach secrets manager policy
+        new RolePolicyAttachment($"{projectName}-secrets-manager-policy-attachment-{environment}", new()
+        {
+            Role = role.Name,
+            PolicyArn = secretsManagerPolicy.Arn,
+        });
+
         var rolePolicyAttachment = new RolePolicyAttachment($"{projectName}-lambda-role-attachment-{environment}",
             new RolePolicyAttachmentArgs
             {
