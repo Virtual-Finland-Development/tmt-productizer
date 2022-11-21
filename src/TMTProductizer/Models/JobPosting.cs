@@ -2,7 +2,7 @@ namespace TMTProductizer.Models;
 
 public class Job
 {
-    public string? Employer { get; set; }
+    public string Employer { get; set; } = string.Empty;
     public Location Location { get; set; } = null!;
     public BasicInfo BasicInfo { get; set; } = null!;
     public DateTime PublishedAt { get; set; }
@@ -12,13 +12,13 @@ public class Job
 
 public class BasicInfo
 {
-    public string? Title { get; set; }
-    public string? Description { get; set; }
+    public string Title { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
     public string WorkTimeType { get; set; } = null!;
 }
 
 public class Location
 {
-    public string City { get; set; } = null!;
+    public string Municipality { get; set; } = string.Empty;
     public string Postcode { get; set; } = null!;
 }
