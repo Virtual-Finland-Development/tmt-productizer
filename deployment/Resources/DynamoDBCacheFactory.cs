@@ -9,19 +9,24 @@ namespace Deployment.Resources;
 
 public class DynamoDBCacheFactory
 {
-    public Policy createDynamoDBTableAndReturnIAMPolicy(InputMap<string> tags)
+    public (Table, Policy) createDynamoDBTable(InputMap<string> tags)
     {
         var environment = Pulumi.Deployment.Instance.StackName;
         var projectName = Pulumi.Deployment.Instance.ProjectName;
         var name = "tmt-productizer-dynamodb-cache";
 
-        var cacheTable = new Table($"{name}-{environment}", new()
+        var table = new Table($"{name}-{environment}", new()
         {
             Attributes = new[]
             {
                 new TableAttributeArgs
                 {
                     Name = "CacheKey",
+                    Type = "S",
+                },
+                new TableAttributeArgs
+                {
+                    Name = "CacheValue",
                     Type = "S",
                 },
                 new TableAttributeArgs
@@ -38,7 +43,7 @@ public class DynamoDBCacheFactory
         });
 
 
-        var dynamoDBPolicy = new Policy($"{projectName}-dynamodb-policy-attachment-{environment}", new()
+        var policy = new Policy($"{projectName}-dynamodb-policy-attachment-{environment}", new()
         {
             Description = "DynamoDB policy for lambda function",
             PolicyDocument = JsonSerializer.Serialize(new Dictionary<string, object?>
@@ -56,13 +61,13 @@ public class DynamoDBCacheFactory
                             "dynamodb:DescribeTable",
                         },
                         ["Effect"] = "Allow",
-                        ["Resource"] = cacheTable.Arn,
+                        ["Resource"] = table.Arn,
                     },
                 },
             }),
             Tags = tags,
         });
 
-        return dynamoDBPolicy;
+        return (table, policy);
     }
 }

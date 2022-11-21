@@ -10,6 +10,7 @@ builder.Services.AddSingleton<IJobService, JobService>();
 builder.Services.AddSingleton<IAuthorizationService, AuthorizationService>();
 builder.Services.AddSingleton<ISecretsManager, SecretsManager>();
 builder.Services.AddSingleton<ITMTAuthorizationService, TMTAuthorizationService>();
+builder.Services.AddSingleton<IDynamoDBCache, DynamoDBCache>();
 
 
 builder.Services.AddEndpointsApiExplorer();

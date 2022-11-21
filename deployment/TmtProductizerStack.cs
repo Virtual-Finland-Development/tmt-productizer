@@ -82,11 +82,11 @@ public class TmtProductizerStack : Stack
 
         // DynamoDB
         var dynamoDBCacheFactory = new DynamoDBCacheFactory();
-        var dynamoDBPolicy = dynamoDBCacheFactory.createDynamoDBTableAndReturnIAMPolicy(tags);
+        var dynamoDBCache = dynamoDBCacheFactory.createDynamoDBTable(tags);
         new RolePolicyAttachment($"{projectName}-dynamodb-policy-attachment-{environment}", new()
         {
             Role = role.Name,
-            PolicyArn = dynamoDBPolicy.Arn,
+            PolicyArn = dynamoDBCache.Item2.Arn,
         });
 
         var rolePolicyAttachment = new RolePolicyAttachment($"{projectName}-lambda-role-attachment-{environment}",
@@ -106,7 +106,8 @@ public class TmtProductizerStack : Stack
             {
                 Variables =
                 {
-                    { "ASPNETCORE_ENVIRONMENT", "Development" }
+                    { "ASPNETCORE_ENVIRONMENT", "Development" },
+                    { "DYNAMODB_CACHE_TABLE_NAME", dynamoDBCache.Item1.Name }
                 }
             },
             Code = new FileArchive(artifactPath),
