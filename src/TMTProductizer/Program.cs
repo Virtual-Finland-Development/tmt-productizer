@@ -10,7 +10,13 @@ builder.Services.AddSingleton<IJobService, JobService>();
 builder.Services.AddSingleton<IAuthorizationService, AuthorizationService>();
 builder.Services.AddSingleton<ISecretsManager, SecretsManager>();
 builder.Services.AddSingleton<ITMTAuthorizationService, TMTAuthorizationService>();
-builder.Services.AddSingleton<IDynamoDBCache, DynamoDBCache>();
+builder.Services.AddSingleton<IDynamoDBCache>(new DynamoDBCache(builder.Configuration.GetSection("DynamoDBCacheName").Value));
+builder.Services.AddSingleton<IProxyHttpClientFactory>(new ProxyHttpClientFactory(new Uri(builder.Configuration.GetSection("TmtApiEndpoint").Value)));
+
+builder.Services.AddHttpClient<IAuthorizationService, AuthorizationService>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration.GetSection("AuthGWEndpoint").Value);
+});
 
 
 builder.Services.AddEndpointsApiExplorer();
@@ -20,13 +26,6 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAllForDevelopment",
         policyBuilder => { policyBuilder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin(); });
-});
-
-builder.Services.AddSingleton<IProxyHttpClientFactory>(new ProxyHttpClientFactory(new Uri(builder.Configuration.GetSection("TmtApiEndpoint").Value)));
-
-builder.Services.AddHttpClient<IAuthorizationService, AuthorizationService>(client =>
-{
-    client.BaseAddress = new Uri(builder.Configuration.GetSection("AuthGWEndpoint").Value);
 });
 
 builder.Services.AddAWSLambdaHosting(LambdaEventSource.HttpApi);

@@ -82,11 +82,12 @@ public class TmtProductizerStack : Stack
 
         // DynamoDB
         var dynamoDBCacheFactory = new DynamoDBCacheFactory();
-        var dynamoDBCache = dynamoDBCacheFactory.createDynamoDBTable(tags);
+        var dynamoDBCache = dynamoDBCacheFactory.CreateDynamoDBTable(tags);
+        DynamoDBCacheTableName = dynamoDBCache.Table.Name; // Output
         new RolePolicyAttachment($"{projectName}-dynamodb-policy-attachment-{environment}", new()
         {
             Role = role.Name,
-            PolicyArn = dynamoDBCache.Item2.Arn,
+            PolicyArn = dynamoDBCache.Policy.Arn,
         });
 
         var rolePolicyAttachment = new RolePolicyAttachment($"{projectName}-lambda-role-attachment-{environment}",
@@ -107,7 +108,7 @@ public class TmtProductizerStack : Stack
                 Variables =
                 {
                     { "ASPNETCORE_ENVIRONMENT", "Development" },
-                    { "DYNAMODB_CACHE_TABLE_NAME", dynamoDBCache.Item1.Name }
+                    { "DynamoDBCacheName", DynamoDBCacheTableName }, // Override appsettings.json with staged value
                 }
             },
             Code = new FileArchive(artifactPath),
@@ -138,4 +139,6 @@ public class TmtProductizerStack : Stack
     }
 
     [Output] public Output<string> ApplicationUrl { get; set; }
+    [Output] public Output<string> DynamoDBCacheTableName { get; set; } // Use with local development
+    //[Output] public Output<string> SecretsManagerSecretName { get; set; } // TODO: Add secrets manager pulumi creation
 }

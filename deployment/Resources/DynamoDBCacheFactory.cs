@@ -9,14 +9,15 @@ namespace Deployment.Resources;
 
 public class DynamoDBCacheFactory
 {
-    public (Table, Policy) createDynamoDBTable(InputMap<string> tags)
+    public (Table Table, Policy Policy) CreateDynamoDBTable(InputMap<string> tags)
     {
         var environment = Pulumi.Deployment.Instance.StackName;
         var projectName = Pulumi.Deployment.Instance.ProjectName;
-        var name = "tmt-productizer-dynamodb-cache";
+        var name = $"{projectName}-dynamodb-cache-{environment}";
 
-        var table = new Table($"{name}-{environment}", new()
+        var dynamoDbCacheTable = new Table(name, new()
         {
+            Name = name, // Override the hashed pulumi name for a locally referenceable name
             Attributes = new[]
             {
                 new TableAttributeArgs
@@ -31,19 +32,18 @@ public class DynamoDBCacheFactory
                 },
                 new TableAttributeArgs
                 {
-                    Name = "CreatedAt",
+                    Name = "UpdatedAt",
                     Type = "N",
                 },
             },
             HashKey = "CacheKey",
-            RangeKey = "CreatedAt",
+            RangeKey = "UpdatedAt",
             TableClass = "STANDARD",
             BillingMode = "PAY_PER_REQUEST",
             Tags = tags,
         });
 
-
-        var policy = new Policy($"{projectName}-dynamodb-policy-attachment-{environment}", new()
+        var dynamoDBpolicy = new Policy($"{projectName}-dynamodb-policy-attachment-{environment}", new()
         {
             Description = "DynamoDB policy for lambda function",
             PolicyDocument = JsonSerializer.Serialize(new Dictionary<string, object?>
@@ -61,13 +61,13 @@ public class DynamoDBCacheFactory
                             "dynamodb:DescribeTable",
                         },
                         ["Effect"] = "Allow",
-                        ["Resource"] = table.Arn,
+                        ["Resource"] = dynamoDbCacheTable.Arn,
                     },
                 },
             }),
             Tags = tags,
         });
 
-        return (table, policy);
+        return (dynamoDbCacheTable, dynamoDBpolicy);
     }
 }

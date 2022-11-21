@@ -9,27 +9,21 @@ public class DynamoDBCacheTableItem
 {
     public string CacheKey { get; set; } = null!;
     public string CacheValue { get; set; } = null!; // JSON string
-    public Int64 CreatedAt { get; set; } // Unix timestamp
+    public Int64 UpdatedAt { get; set; } // Unix timestamp
 }
 
 public class DynamoDBCache : IDynamoDBCache
 {
-    // This const is the name of the environment variable that the serverless.template will use to set
-    // the name of the DynamoDB table used to store blog posts.
-    const string TABLENAME_ENVIRONMENT_VARIABLE_LOOKUP = "DYNAMODB_CACHE_TABLE_NAME";
-
     IDynamoDBContext _DDBContext { get; set; }
 
-    public DynamoDBCache()
+    public DynamoDBCache(string dynamoDbCacheName)
     {
-        // Check to see if a table name was passed in through environment variables and if so 
-        // add the table mapping.
-        var tableName = System.Environment.GetEnvironmentVariable(TABLENAME_ENVIRONMENT_VARIABLE_LOOKUP);
-        if (!string.IsNullOrEmpty(tableName))
+        if (string.IsNullOrEmpty(dynamoDbCacheName))
         {
-            AWSConfigsDynamoDB.Context.TypeMappings[typeof(DynamoDBCacheTableItem)] = new Amazon.Util.TypeMapping(typeof(DynamoDBCacheTableItem), tableName);
+            throw new ArgumentNullException("DynamoDB cache table name is null or empty.");
         }
 
+        AWSConfigsDynamoDB.Context.TypeMappings[typeof(DynamoDBCacheTableItem)] = new Amazon.Util.TypeMapping(typeof(DynamoDBCacheTableItem), dynamoDbCacheName);
         var config = new DynamoDBContextConfig { Conversion = DynamoDBEntryConversion.V2 };
         _DDBContext = new DynamoDBContext(new AmazonDynamoDBClient(), config);
     }
@@ -51,7 +45,7 @@ public class DynamoDBCache : IDynamoDBCache
         {
             CacheKey = cacheKey,
             CacheValue = cacheTextValue,
-            CreatedAt = DateTimeOffset.UtcNow.ToUnixTimeSeconds()
+            UpdatedAt = DateTimeOffset.UtcNow.ToUnixTimeSeconds()
         });
     }
 }
