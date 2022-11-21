@@ -25,14 +25,8 @@ public class DynamoDBCacheFactory
                     Name = "CacheKey",
                     Type = "S",
                 },
-                new TableAttributeArgs
-                {
-                    Name = "UpdatedAt",
-                    Type = "N",
-                },
             },
             HashKey = "CacheKey",
-            RangeKey = "UpdatedAt",
             TableClass = "STANDARD",
             BillingMode = "PAY_PER_REQUEST",
             Tags = tags,

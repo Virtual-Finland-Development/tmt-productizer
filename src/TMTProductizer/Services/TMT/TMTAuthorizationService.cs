@@ -36,7 +36,6 @@ public class TMTAuthorizationService : ITMTAuthorizationService
         _TMTAuthorizationDetails = await GetTMTAuthorizationDetailsFromCache();
         if (_TMTAuthorizationDetails != null && DateUtils.UnixTimeStampToDateTime(_TMTAuthorizationDetails.ExpiresOn) > DateTime.UtcNow)
         {
-            _logger.LogInformation("Returning cached TMTAuthorizationDetails");
             return _TMTAuthorizationDetails;
         }
 
@@ -111,6 +110,7 @@ public class TMTAuthorizationService : ITMTAuthorizationService
 
     private async Task SaveTMTAuthorizationDetailsToCache(TMTAuthorizationDetails tmtAuthorizationDetails)
     {
+        _logger.LogInformation("Saving TMTAuthorizationDetails to cache: {details}", tmtAuthorizationDetails.ToString());
         await _dynamoDBCache.SaveCacheItem<TMTAuthorizationDetails>(_cacheKey, tmtAuthorizationDetails);
     }
 }
