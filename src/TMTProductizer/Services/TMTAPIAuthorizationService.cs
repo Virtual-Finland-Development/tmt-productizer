@@ -15,18 +15,18 @@ public class TMTAPIAuthorizationService : IAPIAuthorizationService
     private readonly ILogger<TMTAPIAuthorizationService> _logger;
     private APIAuthorizationPackage? _authorizationPackage = null;
     private bool _skipAuthorizationCeck;
-    private (string SecretsName, string SecretsRegion) _tmtSecrets;
+    private (string SecretsName, string SecretsRegion) _tmtSecretFields;
 
     private const string _cacheKey = "APIAuthorizationPackage";
 
-    public TMTAPIAuthorizationService(HttpClient client, IDynamoDBCache dynamoDBCache, ISecretsManager secretsManager, ILogger<TMTAPIAuthorizationService> logger, IHostEnvironment env, (string SecretsName, string SecretsRegion) tmtSecrets)
+    public TMTAPIAuthorizationService(HttpClient client, IDynamoDBCache dynamoDBCache, ISecretsManager secretsManager, ILogger<TMTAPIAuthorizationService> logger, IHostEnvironment env, (string SecretsName, string SecretsRegion) tmtSecretFields)
     {
         _client = client;
         _dynamoDBCache = dynamoDBCache;
         _secretsManager = secretsManager;
         _logger = logger;
         _skipAuthorizationCeck = env.IsEnvironment("Mock");
-        _tmtSecrets = tmtSecrets;
+        _tmtSecretFields = tmtSecretFields;
     }
 
     public async Task<APIAuthorizationPackage> GetAPIAuthorizationPackage()
@@ -51,7 +51,7 @@ public class TMTAPIAuthorizationService : IAPIAuthorizationService
     private async Task<APIAuthorizationPackage> FetchAPIAuthorizationPackage()
     {
         // Fetch secrets
-        TMTSecrets secrets = await _secretsManager.GetSecrets<TMTSecrets>(_tmtSecrets.SecretsName, _tmtSecrets.SecretsRegion); // throws HttpRequestException
+        TMTSecrets secrets = await _secretsManager.GetSecrets<TMTSecrets>(_tmtSecretFields.SecretsName, _tmtSecretFields.SecretsRegion); // throws HttpRequestException
 
         // Prep authorization request
         // @see: https://learn.microsoft.com/en-us/azure/active-directory-b2c/authorization-code-flow#2-get-an-access-token
