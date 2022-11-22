@@ -11,7 +11,7 @@ public class ProxyHttpClientFactory : IProxyHttpClientFactory
         BaseAddress = baseAddress;
     }
 
-    public HttpClient GetProxyClient(AuthorizationPackage authorizationPackage)
+    public HttpClient GetProxyClient(APIAuthorizationPackage authorizationPackage)
     {
         WebProxy? proxy = null;
 

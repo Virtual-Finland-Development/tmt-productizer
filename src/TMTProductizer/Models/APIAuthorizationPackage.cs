@@ -1,6 +1,6 @@
 namespace TMTProductizer.Models;
 
-public class AuthorizationPackage
+public class APIAuthorizationPackage
 {
     public string? AccessToken { get; set; }
     public int ExpiresOn { get; set; }

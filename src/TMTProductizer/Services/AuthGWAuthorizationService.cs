@@ -2,12 +2,12 @@ using System.Net;
 
 namespace TMTProductizer.Services;
 
-public class AuthorizationService : IAuthorizationService
+public class AuthGWAuthorizationService : IAuthorizationService
 {
     private readonly HttpClient _client;
     private readonly bool _skipAuthorizationCheck;
 
-    public AuthorizationService(HttpClient client, IHostEnvironment env)
+    public AuthGWAuthorizationService(HttpClient client, IHostEnvironment env)
     {
         _client = client;
         _skipAuthorizationCheck = env.IsEnvironment("Local") || env.IsEnvironment("Mock");

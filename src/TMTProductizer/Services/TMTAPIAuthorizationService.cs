@@ -5,51 +5,53 @@ using TMTProductizer.Models;
 using TMTProductizer.Services.AWS;
 using TMTProductizer.Utils.DateUtils;
 
-namespace TMTProductizer.Services.TMT;
+namespace TMTProductizer.Services;
 
-public class TMTAPIAuthorizationService : ITMTAPIAuthorizationService
+public class TMTAPIAuthorizationService : IAPIAuthorizationService
 {
     private readonly HttpClient _client;
     private readonly IDynamoDBCache _dynamoDBCache;
-    private readonly ITMTSecretsManager _secretsManager;
+    private readonly ISecretsManager _secretsManager;
     private readonly ILogger<TMTAPIAuthorizationService> _logger;
-    private AuthorizationPackage? _authorizationPackage = null;
+    private APIAuthorizationPackage? _authorizationPackage = null;
     private bool _skipAuthorizationCeck;
-    private const string _cacheKey = "AuthorizationPackage";
+    private (string SecretsName, string SecretsRegion) _tmtSecrets;
 
-    public TMTAPIAuthorizationService(HttpClient client, IDynamoDBCache dynamoDBCache, ITMTSecretsManager secretsManager, ILogger<TMTAPIAuthorizationService> logger, IHostEnvironment env)
+    private const string _cacheKey = "APIAuthorizationPackage";
+
+    public TMTAPIAuthorizationService(HttpClient client, IDynamoDBCache dynamoDBCache, ISecretsManager secretsManager, ILogger<TMTAPIAuthorizationService> logger, IHostEnvironment env, (string SecretsName, string SecretsRegion) tmtSecrets)
     {
         _client = client;
         _dynamoDBCache = dynamoDBCache;
         _secretsManager = secretsManager;
         _logger = logger;
         _skipAuthorizationCeck = env.IsEnvironment("Mock");
-
+        _tmtSecrets = tmtSecrets;
     }
 
-    public async Task<AuthorizationPackage> GetAuthorizationPackage()
+    public async Task<APIAuthorizationPackage> GetAPIAuthorizationPackage()
     {
         // Skip on local mock development
-        if (_skipAuthorizationCeck) return new AuthorizationPackage();
+        if (_skipAuthorizationCeck) return new APIAuthorizationPackage();
 
         // If we have a valid token in the current lambda instance, return it
-        _authorizationPackage = await GetAuthorizationPackageFromCache();
+        _authorizationPackage = await GetAPIAuthorizationPackageFromCache();
         if (_authorizationPackage != null && DateUtils.UnixTimeStampToDateTime(_authorizationPackage.ExpiresOn) > DateTime.UtcNow)
         {
             return _authorizationPackage;
         }
 
-        _logger.LogInformation("Fetching new AuthorizationPackage");
-        _authorizationPackage = await FetchAuthorizationPackage();
-        await SaveAuthorizationPackageToCache(_authorizationPackage);
+        _logger.LogInformation("Fetching new APIAuthorizationPackage");
+        _authorizationPackage = await FetchAPIAuthorizationPackage();
+        await SaveAPIAuthorizationPackageToCache(_authorizationPackage);
 
         return _authorizationPackage;
     }
 
-    private async Task<AuthorizationPackage> FetchAuthorizationPackage()
+    private async Task<APIAuthorizationPackage> FetchAPIAuthorizationPackage()
     {
         // Fetch secrets
-        TMTSecrets secrets = await _secretsManager.GetTMTSecrets(); // throws HttpRequestException
+        TMTSecrets secrets = await _secretsManager.GetSecrets<TMTSecrets>(_tmtSecrets.SecretsName, _tmtSecrets.SecretsRegion); // throws HttpRequestException
 
         // Prep authorization request
         // @see: https://learn.microsoft.com/en-us/azure/active-directory-b2c/authorization-code-flow#2-get-an-access-token
@@ -90,7 +92,7 @@ public class TMTAPIAuthorizationService : ITMTAPIAuthorizationService
         }
 
         // Return authorization details
-        var details = new AuthorizationPackage
+        var details = new APIAuthorizationPackage
         {
             AccessToken = responseContent.AccessToken,
             ExpiresOn = responseContent.ExpiresOn,
@@ -103,14 +105,14 @@ public class TMTAPIAuthorizationService : ITMTAPIAuthorizationService
     }
 
 
-    private async Task<AuthorizationPackage?> GetAuthorizationPackageFromCache()
+    private async Task<APIAuthorizationPackage?> GetAPIAuthorizationPackageFromCache()
     {
-        return await _dynamoDBCache.GetCacheItem<AuthorizationPackage>(_cacheKey);
+        return await _dynamoDBCache.GetCacheItem<APIAuthorizationPackage>(_cacheKey);
     }
 
-    private async Task SaveAuthorizationPackageToCache(AuthorizationPackage tmtAuthorizationDetails)
+    private async Task SaveAPIAuthorizationPackageToCache(APIAuthorizationPackage tmtAuthorizationDetails)
     {
-        await _dynamoDBCache.SaveCacheItem<AuthorizationPackage>(_cacheKey, tmtAuthorizationDetails);
+        await _dynamoDBCache.SaveCacheItem<APIAuthorizationPackage>(_cacheKey, tmtAuthorizationDetails);
     }
 }
 

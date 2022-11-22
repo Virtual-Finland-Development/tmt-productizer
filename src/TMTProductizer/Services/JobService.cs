@@ -1,7 +1,6 @@
 using System.Net.Http.Headers;
 using CodeGen.Api.TMT.Model;
 using TMTProductizer.Models;
-using TMTProductizer.Services.TMT;
 using TMTProductizer.Utils;
 
 namespace TMTProductizer.Services;
@@ -9,10 +8,10 @@ namespace TMTProductizer.Services;
 public class JobService : IJobService
 {
     private readonly IProxyHttpClientFactory _clientFactory;
-    private readonly ITMTAPIAuthorizationService _tmtApiAuthorizationService;
+    private readonly IAPIAuthorizationService _tmtApiAuthorizationService;
     private readonly ILogger<JobService> _logger;
 
-    public JobService(IProxyHttpClientFactory clientFactory, ITMTAPIAuthorizationService tmtApiAuthorizationService, ILogger<JobService> logger)
+    public JobService(IProxyHttpClientFactory clientFactory, IAPIAuthorizationService tmtApiAuthorizationService, ILogger<JobService> logger)
     {
         _clientFactory = clientFactory;
         _tmtApiAuthorizationService = tmtApiAuthorizationService;
@@ -25,7 +24,7 @@ public class JobService : IJobService
         var pageNumber = GetPageNumberFromOffsetAndLimit(query.Paging.Offset, query.Paging.Limit);
 
         // Get TMT Authorization Details
-        AuthorizationPackage authorizationPackage = await _tmtApiAuthorizationService.GetAuthorizationPackage(); // Throws HttpRequestException;
+        APIAuthorizationPackage authorizationPackage = await _tmtApiAuthorizationService.GetAPIAuthorizationPackage(); // Throws HttpRequestException;
 
         // Form the request
         var requestMessage = new HttpRequestMessage

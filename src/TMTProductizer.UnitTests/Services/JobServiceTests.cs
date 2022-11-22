@@ -5,7 +5,6 @@ using Moq;
 using Moq.Protected;
 using TMTProductizer.Models;
 using TMTProductizer.Services;
-using TMTProductizer.Services.TMT;
 using TMTProductizer.Utils;
 
 namespace TMTProductizer.UnitTests.Services;
@@ -29,11 +28,11 @@ public class JobServiceTests
             });
         var httpClient = new HttpClient(handler.Object) { BaseAddress = new Uri("http://localhost/") };
         var proxyClientFactory = new Mock<IProxyHttpClientFactory>();
-        proxyClientFactory.Setup(service => service.GetProxyClient(It.IsAny<AuthorizationPackage>())).Returns(httpClient);
+        proxyClientFactory.Setup(service => service.GetProxyClient(It.IsAny<APIAuthorizationPackage>())).Returns(httpClient);
         proxyClientFactory.SetupGet(service => service.BaseAddress).Returns(httpClient.BaseAddress);
-        var tmtAuthorizationService = new Mock<ITMTAPIAuthorizationService>();
-        tmtAuthorizationService.Setup(service => service.GetAuthorizationPackage())
-            .ReturnsAsync(new AuthorizationPackage());
+        var tmtAuthorizationService = new Mock<IAPIAuthorizationService>();
+        tmtAuthorizationService.Setup(service => service.GetAPIAuthorizationPackage())
+            .ReturnsAsync(new APIAuthorizationPackage());
 
         var query = new JobsRequest
         {
@@ -76,11 +75,11 @@ public class JobServiceTests
             });
         var httpClient = new HttpClient(handler.Object) { BaseAddress = new Uri("http://localhost/") };
         var proxyClientFactory = new Mock<IProxyHttpClientFactory>();
-        proxyClientFactory.Setup(service => service.GetProxyClient(It.IsAny<AuthorizationPackage>())).Returns(httpClient);
+        proxyClientFactory.Setup(service => service.GetProxyClient(It.IsAny<APIAuthorizationPackage>())).Returns(httpClient);
         proxyClientFactory.SetupGet(service => service.BaseAddress).Returns(httpClient.BaseAddress);
-        var tmtAuthorizationService = new Mock<ITMTAPIAuthorizationService>();
-        tmtAuthorizationService.Setup(service => service.GetAuthorizationPackage())
-            .ReturnsAsync(new AuthorizationPackage());
+        var tmtAuthorizationService = new Mock<IAPIAuthorizationService>();
+        tmtAuthorizationService.Setup(service => service.GetAPIAuthorizationPackage())
+            .ReturnsAsync(new APIAuthorizationPackage());
 
 
         var query = new JobsRequest
