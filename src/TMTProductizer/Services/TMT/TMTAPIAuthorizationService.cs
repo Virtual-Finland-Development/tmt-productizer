@@ -110,7 +110,6 @@ public class TMTAPIAuthorizationService : ITMTAPIAuthorizationService
 
     private async Task SaveTMTAPIAuthorizationDetailsToCache(TMTAPIAuthorizationDetails tmtAuthorizationDetails)
     {
-        _logger.LogInformation("Saving TMTAPIAuthorizationDetails to cache: {details}", tmtAuthorizationDetails.ToString());
         await _dynamoDBCache.SaveCacheItem<TMTAPIAuthorizationDetails>(_cacheKey, tmtAuthorizationDetails);
     }
 }
