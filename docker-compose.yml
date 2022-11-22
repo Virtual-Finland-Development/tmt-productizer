@@ -8,5 +8,6 @@ services:
       - ASPNETCORE_ENVIRONMENT=Local
       - ASPNETCORE_URLS=http://0.0.0.0:5286
       - AWS_PROFILE=virtualfinland
+      - AWS_REGION=eu-north-1
     volumes:
       - $HOME/.aws/credentials:/root/.aws/credentials:ro
