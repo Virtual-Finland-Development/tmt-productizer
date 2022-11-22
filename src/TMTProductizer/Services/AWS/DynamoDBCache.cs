@@ -2,6 +2,7 @@ using Amazon;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
 using System.Text.Json;
+using TMTProductizer.Utils;
 
 namespace TMTProductizer.Services.AWS;
 
@@ -30,7 +31,9 @@ public class DynamoDBCache : IDynamoDBCache
 
     public async Task<T?> GetCacheItem<T>(string cacheKey)
     {
-        var cacheItem = await _DDBContext.LoadAsync<DynamoDBCacheTableItem>(cacheKey);
+        var typedCacheKey = StringUtils.GetTypedCacheKey<T>(cacheKey);
+
+        var cacheItem = await _DDBContext.LoadAsync<DynamoDBCacheTableItem>(typedCacheKey);
         if (cacheItem != null)
         {
             return JsonSerializer.Deserialize<T>(cacheItem.CacheValue);
@@ -41,9 +44,11 @@ public class DynamoDBCache : IDynamoDBCache
     public async Task SaveCacheItem<T>(string cacheKey, T cacheValue)
     {
         var cacheTextValue = JsonSerializer.Serialize(cacheValue);
+        var typedCacheKey = StringUtils.GetTypedCacheKey<T>(cacheKey);
+
         await _DDBContext.SaveAsync<DynamoDBCacheTableItem>(new DynamoDBCacheTableItem
         {
-            CacheKey = cacheKey,
+            CacheKey = typedCacheKey,
             CacheValue = cacheTextValue,
             UpdatedAt = DateTimeOffset.UtcNow.ToUnixTimeSeconds()
         });
