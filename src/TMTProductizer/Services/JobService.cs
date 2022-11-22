@@ -25,7 +25,7 @@ public class JobService : IJobService
         var pageNumber = GetPageNumberFromOffsetAndLimit(query.Paging.Offset, query.Paging.Limit);
 
         // Get TMT Authorization Details
-        TMTAPIAuthorizationDetails tmtApiAuthorizationDetails = await _tmtApiAuthorizationService.GetTMTAPIAuthorizationDetails(); // Throws HttpRequestException;
+        AuthorizationPackage authorizationPackage = await _tmtApiAuthorizationService.GetAuthorizationPackage(); // Throws HttpRequestException;
 
         // Form the request
         var requestMessage = new HttpRequestMessage
@@ -33,10 +33,10 @@ public class JobService : IJobService
             RequestUri = new Uri($"{_clientFactory.BaseAddress}?sivu={pageNumber}&maara={query.Paging.Limit}"),
             Method = HttpMethod.Get,
         };
-        requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", tmtApiAuthorizationDetails.AccessToken);
+        requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", authorizationPackage.AccessToken);
 
         // Build a proxy client
-        var httpClient = _clientFactory.GetTMTProxyClient(tmtApiAuthorizationDetails);
+        var httpClient = _clientFactory.GetProxyClient(authorizationPackage);
 
         // Send request
         var response = await httpClient.SendAsync(requestMessage);

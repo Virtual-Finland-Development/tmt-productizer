@@ -11,18 +11,18 @@ public class ProxyHttpClientFactory : IProxyHttpClientFactory
         BaseAddress = baseAddress;
     }
 
-    public HttpClient GetTMTProxyClient(TMTAPIAuthorizationDetails tmtAuthorizationDetails)
+    public HttpClient GetProxyClient(AuthorizationPackage authorizationPackage)
     {
         WebProxy? proxy = null;
 
-        if (tmtAuthorizationDetails.ProxyAddress != null)
+        if (authorizationPackage.ProxyAddress != null)
         {
             proxy = new WebProxy
             {
-                Address = new Uri(tmtAuthorizationDetails.ProxyAddress),
+                Address = new Uri(authorizationPackage.ProxyAddress),
                 BypassProxyOnLocal = false,
                 UseDefaultCredentials = false,
-                Credentials = new NetworkCredential(userName: tmtAuthorizationDetails.ProxyUser, password: tmtAuthorizationDetails.ProxyPassword)
+                Credentials = new NetworkCredential(userName: authorizationPackage.ProxyUser, password: authorizationPackage.ProxyPassword)
             };
         }
 

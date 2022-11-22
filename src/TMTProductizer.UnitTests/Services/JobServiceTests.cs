@@ -29,11 +29,11 @@ public class JobServiceTests
             });
         var httpClient = new HttpClient(handler.Object) { BaseAddress = new Uri("http://localhost/") };
         var proxyClientFactory = new Mock<IProxyHttpClientFactory>();
-        proxyClientFactory.Setup(service => service.GetTMTProxyClient(It.IsAny<TMTAPIAuthorizationDetails>())).Returns(httpClient);
+        proxyClientFactory.Setup(service => service.GetProxyClient(It.IsAny<AuthorizationPackage>())).Returns(httpClient);
         proxyClientFactory.SetupGet(service => service.BaseAddress).Returns(httpClient.BaseAddress);
         var tmtAuthorizationService = new Mock<ITMTAPIAuthorizationService>();
-        tmtAuthorizationService.Setup(service => service.GetTMTAPIAuthorizationDetails())
-            .ReturnsAsync(new TMTAPIAuthorizationDetails());
+        tmtAuthorizationService.Setup(service => service.GetAuthorizationPackage())
+            .ReturnsAsync(new AuthorizationPackage());
 
         var query = new JobsRequest
         {
@@ -76,11 +76,11 @@ public class JobServiceTests
             });
         var httpClient = new HttpClient(handler.Object) { BaseAddress = new Uri("http://localhost/") };
         var proxyClientFactory = new Mock<IProxyHttpClientFactory>();
-        proxyClientFactory.Setup(service => service.GetTMTProxyClient(It.IsAny<TMTAPIAuthorizationDetails>())).Returns(httpClient);
+        proxyClientFactory.Setup(service => service.GetProxyClient(It.IsAny<AuthorizationPackage>())).Returns(httpClient);
         proxyClientFactory.SetupGet(service => service.BaseAddress).Returns(httpClient.BaseAddress);
         var tmtAuthorizationService = new Mock<ITMTAPIAuthorizationService>();
-        tmtAuthorizationService.Setup(service => service.GetTMTAPIAuthorizationDetails())
-            .ReturnsAsync(new TMTAPIAuthorizationDetails());
+        tmtAuthorizationService.Setup(service => service.GetAuthorizationPackage())
+            .ReturnsAsync(new AuthorizationPackage());
 
 
         var query = new JobsRequest

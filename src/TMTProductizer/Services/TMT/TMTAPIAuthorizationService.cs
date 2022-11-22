@@ -13,9 +13,9 @@ public class TMTAPIAuthorizationService : ITMTAPIAuthorizationService
     private readonly IDynamoDBCache _dynamoDBCache;
     private readonly ITMTSecretsManager _secretsManager;
     private readonly ILogger<TMTAPIAuthorizationService> _logger;
-    private TMTAPIAuthorizationDetails? _TMTAPIAuthorizationDetails = null;
+    private AuthorizationPackage? _authorizationPackage = null;
     private bool _skipAuthorizationCeck;
-    private const string _cacheKey = "TMTAPIAuthorizationDetails";
+    private const string _cacheKey = "AuthorizationPackage";
 
     public TMTAPIAuthorizationService(HttpClient client, IDynamoDBCache dynamoDBCache, ITMTSecretsManager secretsManager, ILogger<TMTAPIAuthorizationService> logger, IHostEnvironment env)
     {
@@ -27,26 +27,26 @@ public class TMTAPIAuthorizationService : ITMTAPIAuthorizationService
 
     }
 
-    public async Task<TMTAPIAuthorizationDetails> GetTMTAPIAuthorizationDetails()
+    public async Task<AuthorizationPackage> GetAuthorizationPackage()
     {
         // Skip on local mock development
-        if (_skipAuthorizationCeck) return new TMTAPIAuthorizationDetails();
+        if (_skipAuthorizationCeck) return new AuthorizationPackage();
 
         // If we have a valid token in the current lambda instance, return it
-        _TMTAPIAuthorizationDetails = await GetTMTAPIAuthorizationDetailsFromCache();
-        if (_TMTAPIAuthorizationDetails != null && DateUtils.UnixTimeStampToDateTime(_TMTAPIAuthorizationDetails.ExpiresOn) > DateTime.UtcNow)
+        _authorizationPackage = await GetAuthorizationPackageFromCache();
+        if (_authorizationPackage != null && DateUtils.UnixTimeStampToDateTime(_authorizationPackage.ExpiresOn) > DateTime.UtcNow)
         {
-            return _TMTAPIAuthorizationDetails;
+            return _authorizationPackage;
         }
 
-        _logger.LogInformation("Fetching new TMTAPIAuthorizationDetails");
-        _TMTAPIAuthorizationDetails = await FetchTMTAPIAuthorizationDetails();
-        await SaveTMTAPIAuthorizationDetailsToCache(_TMTAPIAuthorizationDetails);
+        _logger.LogInformation("Fetching new AuthorizationPackage");
+        _authorizationPackage = await FetchAuthorizationPackage();
+        await SaveAuthorizationPackageToCache(_authorizationPackage);
 
-        return _TMTAPIAuthorizationDetails;
+        return _authorizationPackage;
     }
 
-    private async Task<TMTAPIAuthorizationDetails> FetchTMTAPIAuthorizationDetails()
+    private async Task<AuthorizationPackage> FetchAuthorizationPackage()
     {
         // Fetch secrets
         TMTSecrets secrets = await _secretsManager.GetTMTSecrets(); // throws HttpRequestException
@@ -90,7 +90,7 @@ public class TMTAPIAuthorizationService : ITMTAPIAuthorizationService
         }
 
         // Return authorization details
-        var details = new TMTAPIAuthorizationDetails
+        var details = new AuthorizationPackage
         {
             AccessToken = responseContent.AccessToken,
             ExpiresOn = responseContent.ExpiresOn,
@@ -103,14 +103,14 @@ public class TMTAPIAuthorizationService : ITMTAPIAuthorizationService
     }
 
 
-    private async Task<TMTAPIAuthorizationDetails?> GetTMTAPIAuthorizationDetailsFromCache()
+    private async Task<AuthorizationPackage?> GetAuthorizationPackageFromCache()
     {
-        return await _dynamoDBCache.GetCacheItem<TMTAPIAuthorizationDetails>(_cacheKey);
+        return await _dynamoDBCache.GetCacheItem<AuthorizationPackage>(_cacheKey);
     }
 
-    private async Task SaveTMTAPIAuthorizationDetailsToCache(TMTAPIAuthorizationDetails tmtAuthorizationDetails)
+    private async Task SaveAuthorizationPackageToCache(AuthorizationPackage tmtAuthorizationDetails)
     {
-        await _dynamoDBCache.SaveCacheItem<TMTAPIAuthorizationDetails>(_cacheKey, tmtAuthorizationDetails);
+        await _dynamoDBCache.SaveCacheItem<AuthorizationPackage>(_cacheKey, tmtAuthorizationDetails);
     }
 }
 

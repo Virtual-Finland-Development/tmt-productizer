@@ -4,5 +4,5 @@ namespace TMTProductizer.Services.TMT;
 
 public interface ITMTAPIAuthorizationService
 {
-    Task<TMTAPIAuthorizationDetails> GetTMTAPIAuthorizationDetails();
+    Task<AuthorizationPackage> GetAuthorizationPackage();
 }
