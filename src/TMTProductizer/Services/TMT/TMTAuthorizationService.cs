@@ -11,13 +11,13 @@ public class TMTAuthorizationService : ITMTAuthorizationService
 {
     private readonly HttpClient _client;
     private readonly IDynamoDBCache _dynamoDBCache;
-    private readonly ISecretsManager _secretsManager;
+    private readonly ITMTSecretsManager _secretsManager;
     private readonly ILogger<TMTAuthorizationService> _logger;
     private TMTAuthorizationDetails? _TMTAuthorizationDetails = null;
     private bool _skipAuthorizationCeck;
     private const string _cacheKey = "TMTAuthorizationDetails";
 
-    public TMTAuthorizationService(HttpClient client, IDynamoDBCache dynamoDBCache, ISecretsManager secretsManager, ILogger<TMTAuthorizationService> logger, IHostEnvironment env)
+    public TMTAuthorizationService(HttpClient client, IDynamoDBCache dynamoDBCache, ITMTSecretsManager secretsManager, ILogger<TMTAuthorizationService> logger, IHostEnvironment env)
     {
         _client = client;
         _dynamoDBCache = dynamoDBCache;

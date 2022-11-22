@@ -53,37 +53,20 @@ public class TmtProductizerStack : Stack
             })
         });
 
-        // AWS Secrets Manager Policy
-        var secretsManagerPolicy = new Policy($"{projectName}-secrets-manager-policy-{environment}", new()
-        {
-            Description = "Read access to secrets manager",
-            PolicyDocument = @"{
-                ""Version"": ""2012-10-17"",
-                ""Statement"": [
-                    {
-                    ""Action"": [
-                        ""secretsmanager:GetSecretValue""
-                    ],
-                    ""Effect"": ""Allow"",
-                    ""Resource"": ""arn:aws:secretsmanager:eu-north-1:433482540854:secret:tmt-api/azure-b2c-auth/client-secrets-K7W9Iq""
-                    }
-                ]
-                }
-            ",
-            Tags = tags
-        });
-
-        // Attach secrets manager policy
+        // AWS Secrets Manager
+        var secretsManagerFactory = new SecretsManagerFactory();
+        var tmtSecretsManager = secretsManagerFactory.CreateTMTSecretManagerItem(tags);
+        SecretsManagerSecretName = tmtSecretsManager.Secret.Name; // For pulumi output
         new RolePolicyAttachment($"{projectName}-secrets-manager-policy-attachment-{environment}", new()
         {
             Role = role.Name,
-            PolicyArn = secretsManagerPolicy.Arn,
+            PolicyArn = tmtSecretsManager.Policy.Arn,
         });
 
         // DynamoDB
         var dynamoDBCacheFactory = new DynamoDBCacheFactory();
         var dynamoDBCache = dynamoDBCacheFactory.CreateDynamoDBTable(tags);
-        DynamoDBCacheTableName = dynamoDBCache.Table.Name; // Output
+        DynamoDBCacheTableName = dynamoDBCache.Table.Name; // For pulumi output
         new RolePolicyAttachment($"{projectName}-dynamodb-policy-attachment-{environment}", new()
         {
             Role = role.Name,
@@ -140,5 +123,5 @@ public class TmtProductizerStack : Stack
 
     [Output] public Output<string> ApplicationUrl { get; set; }
     [Output] public Output<string> DynamoDBCacheTableName { get; set; } // Use with local development
-    //[Output] public Output<string> SecretsManagerSecretName { get; set; } // TODO: Add secrets manager pulumi creation
+    [Output] public Output<string> SecretsManagerSecretName { get; set; } // TODO: Add secrets manager pulumi creation
 }

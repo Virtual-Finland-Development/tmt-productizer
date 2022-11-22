@@ -15,18 +15,24 @@ using TMTProductizer.Models;
 
 namespace TMTProductizer.Services.AWS;
 
-public class SecretsManager : ISecretsManager
+public class TMTSecretsManager : ITMTSecretsManager
 {
+    private readonly string _tmtSecretsName;
+    private readonly string _tmtSecretsRegion;
+
+    public TMTSecretsManager(string tmtSecretsName, string tmtSecretsRegion)
+    {
+        _tmtSecretsName = tmtSecretsName;
+        _tmtSecretsRegion = tmtSecretsRegion;
+    }
+
     public async Task<TMTSecrets> GetTMTSecrets()
     {
-        string secretName = "tmt-api/azure-b2c-auth/client-secrets";
-        string region = "eu-north-1";
-
-        IAmazonSecretsManager client = new AmazonSecretsManagerClient(RegionEndpoint.GetBySystemName(region));
+        IAmazonSecretsManager client = new AmazonSecretsManagerClient(RegionEndpoint.GetBySystemName(_tmtSecretsRegion));
 
         GetSecretValueRequest request = new GetSecretValueRequest
         {
-            SecretId = secretName,
+            SecretId = _tmtSecretsName,
             VersionStage = "AWSCURRENT", // VersionStage defaults to AWSCURRENT if unspecified.
         };
 
@@ -40,11 +46,12 @@ public class SecretsManager : ISecretsManager
         {
             // For a list of the exceptions thrown, see
             // https://docs.aws.amazon.com/secretsmanager/latest/apireference/API_GetSecretValue.html
-            throw new HttpRequestException("Error reading secrets", e, HttpStatusCode.Unauthorized); 
+            throw new HttpRequestException("Error reading secrets", e, HttpStatusCode.Unauthorized);
         }
 
         var parsedSecrets = JsonSerializer.Deserialize<TMTSecrets>(response.SecretString);
-        if (parsedSecrets == null) {
+        if (parsedSecrets == null)
+        {
             throw new HttpRequestException("Could not parse secrets", null, HttpStatusCode.Unauthorized); // Throw 401 if not authorized.
         }
 
