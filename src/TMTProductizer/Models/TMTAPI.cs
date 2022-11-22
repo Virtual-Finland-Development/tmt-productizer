@@ -16,7 +16,7 @@ public class TMTSecrets
     public string ProxyPassword { get; set; } = null!;
 }
 
-public class TMTAuthorizationResponse
+public class TMTAPIAuthorizationResponse
 {
     [JsonPropertyName("access_token")]
     public string? AccessToken { get; set; }
@@ -33,12 +33,12 @@ public class TMTAuthorizationResponse
 }
 
 
-public class TMTAuthorizationDetails
+public class TMTAPIAuthorizationDetails
 {
     public string? AccessToken { get; set; }
     public int ExpiresOn { get; set; }
     public string? ProxyAddress { get; set; }
     public string? ProxyUser { get; set; }
     public string? ProxyPassword { get; set; }
-    
+
 }

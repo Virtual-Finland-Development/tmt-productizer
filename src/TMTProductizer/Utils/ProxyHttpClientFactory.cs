@@ -3,18 +3,22 @@ using TMTProductizer.Models;
 
 namespace TMTProductizer.Utils;
 
-public class ProxyHttpClientFactory : IProxyHttpClientFactory {
+public class ProxyHttpClientFactory : IProxyHttpClientFactory
+{
     public Uri BaseAddress { get; set; }
-    public ProxyHttpClientFactory(Uri baseAddress) {
+    public ProxyHttpClientFactory(Uri baseAddress)
+    {
         BaseAddress = baseAddress;
     }
 
-    public HttpClient GetTMTProxyClient(TMTAuthorizationDetails tmtAuthorizationDetails)
-    {   
+    public HttpClient GetTMTProxyClient(TMTAPIAuthorizationDetails tmtAuthorizationDetails)
+    {
         WebProxy? proxy = null;
 
-        if (tmtAuthorizationDetails.ProxyAddress != null) {
-            proxy = new WebProxy {
+        if (tmtAuthorizationDetails.ProxyAddress != null)
+        {
+            proxy = new WebProxy
+            {
                 Address = new Uri(tmtAuthorizationDetails.ProxyAddress),
                 BypassProxyOnLocal = false,
                 UseDefaultCredentials = false,
@@ -22,7 +26,8 @@ public class ProxyHttpClientFactory : IProxyHttpClientFactory {
             };
         }
 
-        var httpClientHandler = new HttpClientHandler {
+        var httpClientHandler = new HttpClientHandler
+        {
             Proxy = proxy,
             UseProxy = true
         };

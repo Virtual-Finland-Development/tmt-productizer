@@ -29,11 +29,11 @@ public class JobServiceTests
             });
         var httpClient = new HttpClient(handler.Object) { BaseAddress = new Uri("http://localhost/") };
         var proxyClientFactory = new Mock<IProxyHttpClientFactory>();
-        proxyClientFactory.Setup(service => service.GetTMTProxyClient(It.IsAny<TMTAuthorizationDetails>())).Returns(httpClient);
+        proxyClientFactory.Setup(service => service.GetTMTProxyClient(It.IsAny<TMTAPIAuthorizationDetails>())).Returns(httpClient);
         proxyClientFactory.SetupGet(service => service.BaseAddress).Returns(httpClient.BaseAddress);
-        var tmtAuthorizationService = new Mock<ITMTAuthorizationService>();
-        tmtAuthorizationService.Setup(service => service.GetTMTAuthorizationDetails())
-            .ReturnsAsync(new TMTAuthorizationDetails());
+        var tmtAuthorizationService = new Mock<ITMTAPIAuthorizationService>();
+        tmtAuthorizationService.Setup(service => service.GetTMTAPIAuthorizationDetails())
+            .ReturnsAsync(new TMTAPIAuthorizationDetails());
 
         var query = new JobsRequest
         {
@@ -76,11 +76,11 @@ public class JobServiceTests
             });
         var httpClient = new HttpClient(handler.Object) { BaseAddress = new Uri("http://localhost/") };
         var proxyClientFactory = new Mock<IProxyHttpClientFactory>();
-        proxyClientFactory.Setup(service => service.GetTMTProxyClient(It.IsAny<TMTAuthorizationDetails>())).Returns(httpClient);
+        proxyClientFactory.Setup(service => service.GetTMTProxyClient(It.IsAny<TMTAPIAuthorizationDetails>())).Returns(httpClient);
         proxyClientFactory.SetupGet(service => service.BaseAddress).Returns(httpClient.BaseAddress);
-        var tmtAuthorizationService = new Mock<ITMTAuthorizationService>();
-        tmtAuthorizationService.Setup(service => service.GetTMTAuthorizationDetails())
-            .ReturnsAsync(new TMTAuthorizationDetails());
+        var tmtAuthorizationService = new Mock<ITMTAPIAuthorizationService>();
+        tmtAuthorizationService.Setup(service => service.GetTMTAPIAuthorizationDetails())
+            .ReturnsAsync(new TMTAPIAuthorizationDetails());
 
 
         var query = new JobsRequest

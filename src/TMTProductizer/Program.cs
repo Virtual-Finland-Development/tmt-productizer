@@ -9,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSingleton<IJobService, JobService>();
 builder.Services.AddSingleton<IAuthorizationService, AuthorizationService>();
 builder.Services.AddSingleton<ITMTSecretsManager>(new TMTSecretsManager(builder.Configuration.GetSection("TmtSecretsName").Value, builder.Configuration.GetSection("TmtSecretsRegion").Value));
-builder.Services.AddSingleton<ITMTAuthorizationService, TMTAuthorizationService>();
+builder.Services.AddSingleton<ITMTAPIAuthorizationService, TMTAPIAuthorizationService>();
 builder.Services.AddSingleton<IDynamoDBCache>(new DynamoDBCache(builder.Configuration.GetSection("DynamoDBCacheName").Value));
 builder.Services.AddSingleton<IProxyHttpClientFactory>(new ProxyHttpClientFactory(new Uri(builder.Configuration.GetSection("TmtApiEndpoint").Value)));
 

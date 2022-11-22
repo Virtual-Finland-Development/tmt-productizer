@@ -9,13 +9,13 @@ namespace TMTProductizer.Services;
 public class JobService : IJobService
 {
     private readonly IProxyHttpClientFactory _clientFactory;
-    private readonly ITMTAuthorizationService _tmtAuthorizationService;
+    private readonly ITMTAPIAuthorizationService _tmtApiAuthorizationService;
     private readonly ILogger<JobService> _logger;
 
-    public JobService(IProxyHttpClientFactory clientFactory, ITMTAuthorizationService tmtAuthorizationService, ILogger<JobService> logger)
+    public JobService(IProxyHttpClientFactory clientFactory, ITMTAPIAuthorizationService tmtApiAuthorizationService, ILogger<JobService> logger)
     {
         _clientFactory = clientFactory;
-        _tmtAuthorizationService = tmtAuthorizationService;
+        _tmtApiAuthorizationService = tmtApiAuthorizationService;
         _logger = logger;
     }
 
@@ -25,7 +25,7 @@ public class JobService : IJobService
         var pageNumber = GetPageNumberFromOffsetAndLimit(query.Paging.Offset, query.Paging.Limit);
 
         // Get TMT Authorization Details
-        TMTAuthorizationDetails tmtAuthorizationDetails = await _tmtAuthorizationService.GetTMTAuthorizationDetails(); // Throws HttpRequestException;
+        TMTAPIAuthorizationDetails tmtApiAuthorizationDetails = await _tmtApiAuthorizationService.GetTMTAPIAuthorizationDetails(); // Throws HttpRequestException;
 
         // Form the request
         var requestMessage = new HttpRequestMessage
@@ -33,10 +33,10 @@ public class JobService : IJobService
             RequestUri = new Uri($"{_clientFactory.BaseAddress}?sivu={pageNumber}&maara={query.Paging.Limit}"),
             Method = HttpMethod.Get,
         };
-        requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", tmtAuthorizationDetails.AccessToken);
+        requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", tmtApiAuthorizationDetails.AccessToken);
 
         // Build a proxy client
-        var httpClient = _clientFactory.GetTMTProxyClient(tmtAuthorizationDetails);
+        var httpClient = _clientFactory.GetTMTProxyClient(tmtApiAuthorizationDetails);
 
         // Send request
         var response = await httpClient.SendAsync(requestMessage);
