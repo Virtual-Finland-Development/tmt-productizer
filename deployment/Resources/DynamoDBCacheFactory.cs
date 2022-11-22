@@ -2,19 +2,18 @@ using Pulumi;
 using Pulumi.Aws.DynamoDB;
 using Pulumi.Aws.DynamoDB.Inputs;
 using Pulumi.Aws.Iam;
-using System.Text.Json;
-using System.Collections.Generic;
 
 namespace Deployment.Resources;
 
 public class DynamoDBCacheFactory
 {
-    public (Table Table, Policy Policy) CreateDynamoDBTable(InputMap<string> tags)
+    public Table CreateDynamoDBTable(InputMap<string> tags, Role role)
     {
         var environment = Pulumi.Deployment.Instance.StackName;
         var projectName = Pulumi.Deployment.Instance.ProjectName;
         var name = $"{projectName}-dynamodb-cache-{environment}";
 
+        // Create table
         var dynamoDbCacheTable = new Table(name, new()
         {
             Name = name, // Override the hashed pulumi name for a locally referenceable name
@@ -32,31 +31,39 @@ public class DynamoDBCacheFactory
             Tags = tags,
         });
 
+        // Prep policy
+        var policyDoc = Output.Format($@"{{
+            ""Version"": ""2012-10-17"",
+            ""Statement"": [
+                {{
+                    ""Effect"": ""Allow"",
+                    ""Action"": [
+                        ""dynamodb:UpdateItem"",
+                        ""dynamodb:PutItem"",
+                        ""dynamodb:GetItem"",
+                        ""dynamodb:DescribeTable""
+                    ],
+                    ""Resource"": [
+                        ""{dynamoDbCacheTable.Arn}""
+                    ]
+                }}
+            ]
+        }}");
+
         var dynamoDBpolicy = new Policy($"{projectName}-dynamodb-policy-attachment-{environment}", new()
         {
             Description = "DynamoDB policy for lambda function",
-            PolicyDocument = JsonSerializer.Serialize(new Dictionary<string, object?>
-            {
-                ["Version"] = "2012-10-17",
-                ["Statement"] = new[]
-                {
-                    new Dictionary<string, object?>
-                    {
-                        ["Action"] = new[]
-                        {
-                            "dynamodb:UpdateItem",
-                            "dynamodb:PutItem",
-                            "dynamodb:GetItem",
-                            "dynamodb:DescribeTable",
-                        },
-                        ["Effect"] = "Allow",
-                        ["Resource"] = dynamoDbCacheTable.Arn.Apply(arn => $"{arn}"),
-                    },
-                },
-            }),
+            PolicyDocument = policyDoc,
             Tags = tags,
         });
 
-        return (dynamoDbCacheTable, dynamoDBpolicy);
+        // Attach to role
+        new RolePolicyAttachment($"{projectName}-dynamodb-policy-attachment-{environment}", new()
+        {
+            Role = role.Name,
+            PolicyArn = dynamoDBpolicy.Arn,
+        });
+
+        return dynamoDbCacheTable;
     }
 }

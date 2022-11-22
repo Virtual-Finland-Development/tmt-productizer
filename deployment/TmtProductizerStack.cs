@@ -55,23 +55,13 @@ public class TmtProductizerStack : Stack
 
         // AWS Secrets Manager
         var secretsManagerFactory = new SecretsManagerFactory();
-        var tmtSecretsManager = secretsManagerFactory.CreateTMTSecretManagerItem(tags);
-        SecretsManagerSecretName = tmtSecretsManager.Secret.Name; // For pulumi output
-        new RolePolicyAttachment($"{projectName}-secrets-manager-policy-attachment-{environment}", new()
-        {
-            Role = role.Name,
-            PolicyArn = tmtSecretsManager.Policy.Arn,
-        });
+        var tmtSecretsManager = secretsManagerFactory.CreateTMTSecretManagerItem(tags, role);
+        SecretsManagerSecretName = tmtSecretsManager.Name; // For pulumi output
 
         // DynamoDB
         var dynamoDBCacheFactory = new DynamoDBCacheFactory();
-        var dynamoDBCache = dynamoDBCacheFactory.CreateDynamoDBTable(tags);
-        DynamoDBCacheTableName = dynamoDBCache.Table.Name; // For pulumi output
-        new RolePolicyAttachment($"{projectName}-dynamodb-policy-attachment-{environment}", new()
-        {
-            Role = role.Name,
-            PolicyArn = dynamoDBCache.Policy.Arn,
-        });
+        var dynamoDBCacheTable = dynamoDBCacheFactory.CreateDynamoDBTable(tags, role);
+        DynamoDBCacheTableName = dynamoDBCacheTable.Name; // For pulumi output
 
         var rolePolicyAttachment = new RolePolicyAttachment($"{projectName}-lambda-role-attachment-{environment}",
             new RolePolicyAttachmentArgs
@@ -86,12 +76,14 @@ public class TmtProductizerStack : Stack
             Runtime = "dotnet6",
             Handler = "TMTProductizer",
             Timeout = 15,
+            MemorySize = 1024,
             Environment = new FunctionEnvironmentArgs
             {
                 Variables =
                 {
                     { "ASPNETCORE_ENVIRONMENT", "Development" },
                     { "DynamoDBCacheName", DynamoDBCacheTableName }, // Override appsettings.json with staged value
+                    { "TmtSecretsName", SecretsManagerSecretName },
                 }
             },
             Code = new FileArchive(artifactPath),
