@@ -47,7 +47,8 @@ public class DynamoDBCacheFactory
                         ""dynamodb:UpdateItem"",
                         ""dynamodb:PutItem"",
                         ""dynamodb:GetItem"",
-                        ""dynamodb:DescribeTable""
+                        ""dynamodb:DescribeTable"",
+                        ""dynamodb:Scan""
                     ],
                     ""Resource"": [
                         ""{dynamoDbCacheTable.Arn}""
