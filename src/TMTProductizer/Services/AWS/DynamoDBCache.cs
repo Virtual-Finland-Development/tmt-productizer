@@ -11,6 +11,7 @@ public class DynamoDBCacheTableItem
     public string CacheKey { get; set; } = null!;
     public string CacheValue { get; set; } = null!; // JSON string
     public Int64 UpdatedAt { get; set; } // Unix timestamp
+    public Int64? TimeToLive { get; set; } // TTL seconds
 }
 
 public class DynamoDBCache : IDynamoDBCache
@@ -41,7 +42,7 @@ public class DynamoDBCache : IDynamoDBCache
         return default(T);
     }
 
-    public async Task SaveCacheItem<T>(string cacheKey, T cacheValue)
+    public async Task SaveCacheItem<T>(string cacheKey, T cacheValue, int expiresInSeconds = 0)
     {
         var cacheTextValue = JsonSerializer.Serialize(cacheValue);
         var typedCacheKey = StringUtils.GetTypedCacheKey<T>(cacheKey);
@@ -50,7 +51,8 @@ public class DynamoDBCache : IDynamoDBCache
         {
             CacheKey = typedCacheKey,
             CacheValue = cacheTextValue,
-            UpdatedAt = DateTimeOffset.UtcNow.ToUnixTimeSeconds()
+            UpdatedAt = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+            TimeToLive = expiresInSeconds > 0 ? DateTimeOffset.UtcNow.ToUnixTimeSeconds() + expiresInSeconds : null
         });
     }
 }

@@ -26,6 +26,12 @@ public class DynamoDBCacheFactory
                 },
             },
             HashKey = "CacheKey",
+            RangeKey = null,
+            Ttl = new TableTtlArgs
+            {
+                AttributeName = "TimeToLive",
+                Enabled = true,
+            },
             TableClass = "STANDARD",
             BillingMode = "PAY_PER_REQUEST",
             Tags = tags,
