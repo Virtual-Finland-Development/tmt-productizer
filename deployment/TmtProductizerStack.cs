@@ -114,6 +114,6 @@ public class TmtProductizerStack : Stack
     }
 
     [Output] public Output<string> ApplicationUrl { get; set; }
-    [Output] public Output<string> DynamoDBCacheTableName { get; set; } // Use with local development
-    [Output] public Output<string> SecretsManagerSecretName { get; set; } // TODO: Add secrets manager pulumi creation
+    [Output] public Output<string> DynamoDBCacheTableName { get; set; }
+    [Output] public Output<string> SecretsManagerSecretName { get; set; }
 }
