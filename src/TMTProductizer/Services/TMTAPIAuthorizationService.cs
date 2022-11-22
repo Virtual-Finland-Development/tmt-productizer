@@ -3,7 +3,7 @@ using System.Text;
 using System.Text.Json;
 using TMTProductizer.Models;
 using TMTProductizer.Services.AWS;
-using TMTProductizer.Utils.DateUtils;
+using TMTProductizer.Utils;
 
 namespace TMTProductizer.Services;
 
