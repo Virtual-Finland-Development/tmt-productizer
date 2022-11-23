@@ -6,6 +6,8 @@ using Pulumi.Aws.Lambda;
 using Pulumi.Aws.Lambda.Inputs;
 using Pulumi.Command.Local;
 
+using Deployment.Resources;
+
 namespace Deployment.TmtProductizerStack;
 
 public class TmtProductizerStack : Stack
@@ -51,32 +53,15 @@ public class TmtProductizerStack : Stack
             })
         });
 
-        // AWS Secrets Manager Policy
-        var secretsManagerPolicy = new Policy($"{projectName}-secrets-manager-policy-{environment}", new()
-        {
-            Description = "Read access to secrets manager",
-            PolicyDocument = @"{
-                ""Version"": ""2012-10-17"",
-                ""Statement"": [
-                    {
-                    ""Action"": [
-                        ""secretsmanager:GetSecretValue""
-                    ],
-                    ""Effect"": ""Allow"",
-                    ""Resource"": ""arn:aws:secretsmanager:eu-north-1:433482540854:secret:tmt-api/azure-b2c-auth/client-secrets-K7W9Iq""
-                    }
-                ]
-                }
-            ",
-            Tags = tags
-        });
+        // AWS Secrets Manager
+        var secretsManagerFactory = new SecretsManagerFactory();
+        var tmtSecretsManager = secretsManagerFactory.CreateTMTSecretManagerItem(tags, role);
+        SecretsManagerSecretName = tmtSecretsManager.Name; // For pulumi output
 
-        // Attach secrets manager policy
-        new RolePolicyAttachment($"{projectName}-secrets-manager-policy-attachment-{environment}", new()
-        {
-            Role = role.Name,
-            PolicyArn = secretsManagerPolicy.Arn,
-        });
+        // DynamoDB
+        var dynamoDBCacheFactory = new DynamoDBCacheFactory();
+        var dynamoDBCacheTable = dynamoDBCacheFactory.CreateDynamoDBTable(tags, role);
+        DynamoDBCacheTableName = dynamoDBCacheTable.Name; // For pulumi output
 
         var rolePolicyAttachment = new RolePolicyAttachment($"{projectName}-lambda-role-attachment-{environment}",
             new RolePolicyAttachmentArgs
@@ -91,11 +76,14 @@ public class TmtProductizerStack : Stack
             Runtime = "dotnet6",
             Handler = "TMTProductizer",
             Timeout = 15,
+            MemorySize = 1024,
             Environment = new FunctionEnvironmentArgs
             {
                 Variables =
                 {
-                    { "ASPNETCORE_ENVIRONMENT", "Development" }
+                    { "ASPNETCORE_ENVIRONMENT", "Development" },
+                    { "DynamoDBCacheName", DynamoDBCacheTableName }, // Override appsettings.json with staged value
+                    { "TmtSecretsName", SecretsManagerSecretName },
                 }
             },
             Code = new FileArchive(artifactPath),
@@ -126,4 +114,6 @@ public class TmtProductizerStack : Stack
     }
 
     [Output] public Output<string> ApplicationUrl { get; set; }
+    [Output] public Output<string> DynamoDBCacheTableName { get; set; }
+    [Output] public Output<string> SecretsManagerSecretName { get; set; }
 }

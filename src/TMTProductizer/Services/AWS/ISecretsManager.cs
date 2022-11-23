@@ -1,8 +1,6 @@
-using TMTProductizer.Models;
-
 namespace TMTProductizer.Services.AWS;
 
 public interface ISecretsManager
 {
-    Task<TMTSecrets> GetTMTSecrets();
+    Task<T> GetSecrets<T>(string secretsName, string secretsRegion);
 }

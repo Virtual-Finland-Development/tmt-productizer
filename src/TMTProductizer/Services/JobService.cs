@@ -1,7 +1,7 @@
 using System.Net.Http.Headers;
 using CodeGen.Api.TMT.Model;
+using Microsoft.AspNetCore.Http.Extensions;
 using TMTProductizer.Models;
-using TMTProductizer.Services.TMT;
 using TMTProductizer.Utils;
 
 namespace TMTProductizer.Services;
@@ -9,33 +9,33 @@ namespace TMTProductizer.Services;
 public class JobService : IJobService
 {
     private readonly IProxyHttpClientFactory _clientFactory;
-    private readonly ITMTAuthorizationService _tmtAuthorizationService;
+    private readonly IAPIAuthorizationService _tmtApiAuthorizationService;
     private readonly ILogger<JobService> _logger;
 
-    public JobService(IProxyHttpClientFactory clientFactory, ITMTAuthorizationService tmtAuthorizationService, ILogger<JobService> logger)
+    public JobService(IProxyHttpClientFactory clientFactory, IAPIAuthorizationService tmtApiAuthorizationService, ILogger<JobService> logger)
     {
         _clientFactory = clientFactory;
-        _tmtAuthorizationService = tmtAuthorizationService;
+        _tmtApiAuthorizationService = tmtApiAuthorizationService;
         _logger = logger;
     }
 
     public async Task<(List<Job> jobs, long totalCount)> Find(JobsRequest query)
     {
-        var pageNumber = GetPageNumberFromOffsetAndLimit(query.Paging.Offset, query.Paging.Limit);
+        var queryParamsString = TransformJobRequestToQueryParams(query);
 
         // Get TMT Authorization Details
-        TMTAuthorizationDetails tmtAuthorizationDetails = await _tmtAuthorizationService.GetTMTAuthorizationDetails(); // Throws HttpRequestException;
+        APIAuthorizationPackage authorizationPackage = await _tmtApiAuthorizationService.GetAPIAuthorizationPackage(); // Throws HttpRequestException;
 
         // Form the request
         var requestMessage = new HttpRequestMessage
         {
-            RequestUri = new Uri($"{_clientFactory.BaseAddress}?sivu={pageNumber}&maara={query.Paging.Limit}"),
+            RequestUri = new Uri($"{_clientFactory.BaseAddress}?{queryParamsString}"),
             Method = HttpMethod.Get,
         };
-        requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", tmtAuthorizationDetails.AccessToken);
+        requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", authorizationPackage.AccessToken);
 
         // Build a proxy client
-        var httpClient = _clientFactory.GetTMTProxyClient(tmtAuthorizationDetails);
+        var httpClient = _clientFactory.GetProxyClient(authorizationPackage);
 
         // Send request
         var response = await httpClient.SendAsync(requestMessage);
@@ -95,6 +95,37 @@ public class JobService : IJobService
         }
 
         return (jobs, result.IlmoituksienMaara);
+    }
+
+    /// <summary>
+    /// Transforms a JobsRequest to a query string that can be used in a TMT API request.
+    /// </summary>
+    private QueryString TransformJobRequestToQueryParams(JobsRequest query)
+    {
+        var pageNumber = GetPageNumberFromOffsetAndLimit(query.Paging.Offset, query.Paging.Limit);
+
+        var parameters = new Dictionary<string, string> {
+            { "sivu", pageNumber.ToString() },
+            { "maara", query.Paging.Limit.ToString() }
+        };
+
+        var queryBuilder = new QueryBuilder(parameters);
+
+        // note: maybe loopify
+        if (query.Location.Countries != null && query.Location.Countries.Any())
+        {
+            queryBuilder.Add("maa", string.Join(",", query.Location.Countries));
+        }
+        if (query.Location.Regions != null && query.Location.Regions.Any())
+        {
+            queryBuilder.Add("maakunta", string.Join(",", query.Location.Regions));
+        }
+        if (query.Location.Municipalities != null && query.Location.Municipalities.Any())
+        {
+            queryBuilder.Add("kunta", string.Join(",", query.Location.Municipalities));
+        }
+
+        return queryBuilder.ToQueryString();
     }
 
     private int GetPageNumberFromOffsetAndLimit(int pagingOffset, int pagingLimit)
