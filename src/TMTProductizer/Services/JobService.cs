@@ -19,7 +19,7 @@ public class JobService : IJobService
         _logger = logger;
     }
 
-    public async Task<(List<Job> jobs, long IlmoituksienMaara)> Find(JobsRequest query)
+    public async Task<(List<Job> jobs, long totalCount)> Find(JobsRequest query)
     {
         var pageNumber = GetPageNumberFromOffsetAndLimit(query.Paging.Offset, query.Paging.Limit);
 

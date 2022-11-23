@@ -4,5 +4,5 @@ namespace TMTProductizer.Services;
 
 public interface IJobService
 {
-    Task<(List<Job> jobs, long IlmoituksienMaara)> Find(JobsRequest query);
+    Task<(List<Job> jobs, long totalCount)> Find(JobsRequest query);
 }
