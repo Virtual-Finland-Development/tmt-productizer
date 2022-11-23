@@ -13,7 +13,8 @@ public class AuthorizationServiceTests
     /**
     * Mockup service for testing
     */
-    private IAuthorizationService GetAuthorizationServiceMock() {
+    private IAuthorizationService GetAuthorizationServiceMock()
+    {
         var handler = new Mock<HttpMessageHandler>(MockBehavior.Strict);
         handler.Protected()
             .Setup<Task<HttpResponseMessage>>(
@@ -26,7 +27,7 @@ public class AuthorizationServiceTests
                 Content = new StringContent("")
             });
         var httpClient = new HttpClient(handler.Object) { BaseAddress = new Uri("http://localhost/") };
-        var authorizationService = new AuthorizationService(httpClient, new Mock<IHostEnvironment>().Object);
+        var authorizationService = new AuthGWAuthorizationService(httpClient, new Mock<IHostEnvironment>().Object);
 
         return authorizationService;
     }
@@ -35,8 +36,10 @@ public class AuthorizationServiceTests
     public void TryingToAuthorize_BadHeaders_ReturnsAccessDeniedException()
     {
         // Test bad headers
-        Action badHeadersAction = () => {
-            var httpContext = new DefaultHttpContext {
+        Action badHeadersAction = () =>
+        {
+            var httpContext = new DefaultHttpContext
+            {
                 Request = {
                     Headers = {
                         { "Authorization", "Bearer: fake_token" },
@@ -55,8 +58,10 @@ public class AuthorizationServiceTests
     public void TryingToAuthorize_InvalidHeaders_ReturnsAccessDeniedException()
     {
         // Test good, but invalid headers
-        Action invalidHeadersAction = () => {
-            var httpContext = new DefaultHttpContext {
+        Action invalidHeadersAction = () =>
+        {
+            var httpContext = new DefaultHttpContext
+            {
                 Request = {
                     Headers = {
                         { "Authorization", "Bearer abba-bubba-cobra" },

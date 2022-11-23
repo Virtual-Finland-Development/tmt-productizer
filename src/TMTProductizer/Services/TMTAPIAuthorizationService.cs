@@ -3,46 +3,55 @@ using System.Text;
 using System.Text.Json;
 using TMTProductizer.Models;
 using TMTProductizer.Services.AWS;
-using TMTProductizer.Utils.DateUtils;
+using TMTProductizer.Utils;
 
-namespace TMTProductizer.Services.TMT;
+namespace TMTProductizer.Services;
 
-public class TMTAuthorizationService : ITMTAuthorizationService
+public class TMTAPIAuthorizationService : IAPIAuthorizationService
 {
     private readonly HttpClient _client;
+    private readonly IDynamoDBCache _dynamoDBCache;
     private readonly ISecretsManager _secretsManager;
-    private readonly ILogger<TMTAuthorizationService> _logger;
-    private TMTAuthorizationDetails? _TMTAuthorizationDetails = null;
+    private readonly ILogger<TMTAPIAuthorizationService> _logger;
+    private APIAuthorizationPackage? _authorizationPackage = null;
     private bool _skipAuthorizationCeck;
+    private (string SecretsName, string SecretsRegion) _tmtSecretFields;
 
-    public TMTAuthorizationService(HttpClient client, ISecretsManager secretsManager, ILogger<TMTAuthorizationService> logger, IHostEnvironment env)
+    private const string _cacheKey = "APIAuthorizationPackage";
+
+    public TMTAPIAuthorizationService(HttpClient client, IDynamoDBCache dynamoDBCache, ISecretsManager secretsManager, ILogger<TMTAPIAuthorizationService> logger, IHostEnvironment env, (string SecretsName, string SecretsRegion) tmtSecretFields)
     {
         _client = client;
+        _dynamoDBCache = dynamoDBCache;
         _secretsManager = secretsManager;
         _logger = logger;
         _skipAuthorizationCeck = env.IsEnvironment("Mock");
-
+        _tmtSecretFields = tmtSecretFields;
     }
 
-    public async Task<TMTAuthorizationDetails> GetTMTAuthorizationDetails()
+    public async Task<APIAuthorizationPackage> GetAPIAuthorizationPackage()
     {
         // Skip on local mock development
-        if (_skipAuthorizationCeck) return new TMTAuthorizationDetails();
+        if (_skipAuthorizationCeck) return new APIAuthorizationPackage();
 
         // If we have a valid token in the current lambda instance, return it
-        // @TODO: cache the token for time period over the lambda instance lifetime
-        if (_TMTAuthorizationDetails != null && DateUtils.UnixTimeStampToDateTime(_TMTAuthorizationDetails.ExpiresOn) > DateTime.UtcNow)
+        _authorizationPackage = await GetAPIAuthorizationPackageFromCache();
+        if (_authorizationPackage != null && DateUtils.UnixTimeStampToDateTime(_authorizationPackage.ExpiresOn) > DateTime.UtcNow)
         {
-            return _TMTAuthorizationDetails;
+            return _authorizationPackage;
         }
-        _TMTAuthorizationDetails = await FetchTMTAuthorizationDetails();
-        return _TMTAuthorizationDetails;
+
+        _logger.LogInformation("Fetching new APIAuthorizationPackage");
+        _authorizationPackage = await FetchAPIAuthorizationPackage();
+        await SaveAPIAuthorizationPackageToCache(_authorizationPackage);
+
+        return _authorizationPackage;
     }
 
-    private async Task<TMTAuthorizationDetails> FetchTMTAuthorizationDetails()
+    private async Task<APIAuthorizationPackage> FetchAPIAuthorizationPackage()
     {
         // Fetch secrets
-        TMTSecrets secrets = await _secretsManager.GetTMTSecrets(); // throws HttpRequestException
+        TMTSecrets secrets = await _secretsManager.GetSecrets<TMTSecrets>(_tmtSecretFields.SecretsName, _tmtSecretFields.SecretsRegion); // throws HttpRequestException
 
         // Prep authorization request
         // @see: https://learn.microsoft.com/en-us/azure/active-directory-b2c/authorization-code-flow#2-get-an-access-token
@@ -75,7 +84,7 @@ public class TMTAuthorizationService : ITMTAuthorizationService
 
         // Parse response
         var responseBody = await response.Content.ReadAsStringAsync();
-        var responseContent = JsonSerializer.Deserialize<TMTAuthorizationResponse>(responseBody);
+        var responseContent = JsonSerializer.Deserialize<TMTAPIAuthorizationResponse>(responseBody);
 
         if (responseContent == null)
         {
@@ -83,7 +92,7 @@ public class TMTAuthorizationService : ITMTAuthorizationService
         }
 
         // Return authorization details
-        var details = new TMTAuthorizationDetails
+        var details = new APIAuthorizationPackage
         {
             AccessToken = responseContent.AccessToken,
             ExpiresOn = responseContent.ExpiresOn,
@@ -93,6 +102,24 @@ public class TMTAuthorizationService : ITMTAuthorizationService
         };
 
         return details;
+    }
+
+
+    private async Task<APIAuthorizationPackage?> GetAPIAuthorizationPackageFromCache()
+    {
+        return await _dynamoDBCache.GetCacheItem<APIAuthorizationPackage>(_cacheKey);
+    }
+
+    private async Task SaveAPIAuthorizationPackageToCache(APIAuthorizationPackage authorizationPackage)
+    {
+        // Set expiration time the same as the token
+        var expiresInSeconds = 0;
+        DateTime expiresOn = DateUtils.UnixTimeStampToDateTime(authorizationPackage.ExpiresOn);
+        if (expiresOn > DateTime.UtcNow)
+        {
+            expiresInSeconds = (int)expiresOn.Subtract(DateTime.UtcNow).TotalSeconds;
+        }
+        await _dynamoDBCache.SaveCacheItem<APIAuthorizationPackage>(_cacheKey, authorizationPackage, expiresInSeconds);
     }
 }
 

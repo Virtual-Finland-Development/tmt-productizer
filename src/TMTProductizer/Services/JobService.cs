@@ -1,7 +1,6 @@
 using System.Net.Http.Headers;
 using CodeGen.Api.TMT.Model;
 using TMTProductizer.Models;
-using TMTProductizer.Services.TMT;
 using TMTProductizer.Utils;
 
 namespace TMTProductizer.Services;
@@ -9,13 +8,13 @@ namespace TMTProductizer.Services;
 public class JobService : IJobService
 {
     private readonly IProxyHttpClientFactory _clientFactory;
-    private readonly ITMTAuthorizationService _tmtAuthorizationService;
+    private readonly IAPIAuthorizationService _tmtApiAuthorizationService;
     private readonly ILogger<JobService> _logger;
 
-    public JobService(IProxyHttpClientFactory clientFactory, ITMTAuthorizationService tmtAuthorizationService, ILogger<JobService> logger)
+    public JobService(IProxyHttpClientFactory clientFactory, IAPIAuthorizationService tmtApiAuthorizationService, ILogger<JobService> logger)
     {
         _clientFactory = clientFactory;
-        _tmtAuthorizationService = tmtAuthorizationService;
+        _tmtApiAuthorizationService = tmtApiAuthorizationService;
         _logger = logger;
     }
 
@@ -25,7 +24,7 @@ public class JobService : IJobService
         var pageNumber = GetPageNumberFromOffsetAndLimit(query.Paging.Offset, query.Paging.Limit);
 
         // Get TMT Authorization Details
-        TMTAuthorizationDetails tmtAuthorizationDetails = await _tmtAuthorizationService.GetTMTAuthorizationDetails(); // Throws HttpRequestException;
+        APIAuthorizationPackage authorizationPackage = await _tmtApiAuthorizationService.GetAPIAuthorizationPackage(); // Throws HttpRequestException;
 
         // Form the request
         var requestMessage = new HttpRequestMessage
@@ -33,10 +32,10 @@ public class JobService : IJobService
             RequestUri = new Uri($"{_clientFactory.BaseAddress}?sivu={pageNumber}&maara={query.Paging.Limit}"),
             Method = HttpMethod.Get,
         };
-        requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", tmtAuthorizationDetails.AccessToken);
+        requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", authorizationPackage.AccessToken);
 
         // Build a proxy client
-        var httpClient = _clientFactory.GetTMTProxyClient(tmtAuthorizationDetails);
+        var httpClient = _clientFactory.GetProxyClient(authorizationPackage);
 
         // Send request
         var response = await httpClient.SendAsync(requestMessage);
