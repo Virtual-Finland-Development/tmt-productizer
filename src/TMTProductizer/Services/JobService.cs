@@ -1,5 +1,6 @@
 using System.Net.Http.Headers;
 using CodeGen.Api.TMT.Model;
+using Microsoft.AspNetCore.Http.Extensions;
 using TMTProductizer.Models;
 using TMTProductizer.Utils;
 
@@ -21,7 +22,7 @@ public class JobService : IJobService
     public async Task<IReadOnlyList<Job>> Find(JobsRequest query)
     {
         var jobs = new List<Job>();
-        var pageNumber = GetPageNumberFromOffsetAndLimit(query.Paging.Offset, query.Paging.Limit);
+        var queryParamsString = TransformJobRequestToQueryParams(query);
 
         // Get TMT Authorization Details
         APIAuthorizationPackage authorizationPackage = await _tmtApiAuthorizationService.GetAPIAuthorizationPackage(); // Throws HttpRequestException;
@@ -29,7 +30,7 @@ public class JobService : IJobService
         // Form the request
         var requestMessage = new HttpRequestMessage
         {
-            RequestUri = new Uri($"{_clientFactory.BaseAddress}?sivu={pageNumber}&maara={query.Paging.Limit}"),
+            RequestUri = new Uri($"{_clientFactory.BaseAddress}?{queryParamsString}"),
             Method = HttpMethod.Get,
         };
         requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", authorizationPackage.AccessToken);
@@ -95,6 +96,37 @@ public class JobService : IJobService
 
 
         return jobs;
+    }
+
+    /// <summary>
+    /// Transforms a JobsRequest to a query string that can be used in a TMT API request.
+    /// </summary>
+    private QueryString TransformJobRequestToQueryParams(JobsRequest query)
+    {
+        var pageNumber = GetPageNumberFromOffsetAndLimit(query.Paging.Offset, query.Paging.Limit);
+
+        var parameters = new Dictionary<string, string> {
+            { "sivu", pageNumber.ToString() },
+            { "maara", query.Paging.Limit.ToString() }
+        };
+
+        var queryBuilder = new QueryBuilder(parameters);
+
+        // note: maybe loopify
+        if (query.Location.Countries != null && query.Location.Countries.Any())
+        {
+            queryBuilder.Add("maa", string.Join(",", query.Location.Countries));
+        }
+        if (query.Location.Regions != null && query.Location.Regions.Any())
+        {
+            queryBuilder.Add("maakunta", string.Join(",", query.Location.Regions));
+        }
+        if (query.Location.Municipalities != null && query.Location.Municipalities.Any())
+        {
+            queryBuilder.Add("kunta", string.Join(",", query.Location.Municipalities));
+        }
+
+        return queryBuilder.ToQueryString();
     }
 
     private int GetPageNumberFromOffsetAndLimit(int pagingOffset, int pagingLimit)
