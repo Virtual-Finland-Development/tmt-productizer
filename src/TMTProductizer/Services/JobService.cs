@@ -19,9 +19,8 @@ public class JobService : IJobService
         _logger = logger;
     }
 
-    public async Task<IReadOnlyList<Job>> Find(JobsRequest query)
+    public async Task<(List<Job> jobs, long totalCount)> Find(JobsRequest query)
     {
-        var jobs = new List<Job>();
         var queryParamsString = TransformJobRequestToQueryParams(query);
 
         // Get TMT Authorization Details
@@ -43,9 +42,9 @@ public class JobService : IJobService
         if (!response.IsSuccessStatusCode)
         {
             _logger.LogError("TMT API responded with: {StatusCode}", response.StatusCode);
-            _logger.LogError("Content: {content}", await response.Content.ReadAsStringAsync());
-            return jobs;
-        };
+            _logger.LogError("Content: {Content}", await response.Content.ReadAsStringAsync());
+            return (new List<Job>(), 0);
+        }
 
         // Parse response
         Hakutulos? result;
@@ -58,11 +57,12 @@ public class JobService : IJobService
             _logger.LogError(e, "Failed to parse TMT API response");
             await File.WriteAllTextAsync("TMTResponseOutputDebug.txt", await response.Content.ReadAsStringAsync());
             _logger.LogError("Wrote a response output debug file to TMTResponseOutputDebug.txt");
-            return jobs;
+            return (new List<Job>(), 0);
         }
 
-        if (result == null) return jobs;
+        if (result == null) return (new List<Job>(), 0);
 
+        var jobs = new List<Job>();
         jobs.AddRange(result.Ilmoitukset.Select(ilmoitus => new Job
         {
             Employer = ilmoitus.IlmoittajanNimi.FirstOrDefault(x => x.KieliKoodi == "fi")?.Arvo.ToString() ?? string.Empty,
@@ -94,8 +94,7 @@ public class JobService : IJobService
             });
         }
 
-
-        return jobs;
+        return (jobs, result.IlmoituksienMaara);
     }
 
     /// <summary>

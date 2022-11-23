@@ -55,8 +55,8 @@ public class JobServiceTests
         var result = sut.Find(query);
 
         result.Should().NotBeNull();
-        result.Result.Should().BeOfType<List<Job>>();
-        result.Result.Count.Should().BeGreaterThan(0);
+        result.Result.Should().BeOfType<(List<Job>, long)>();
+        result.Result.jobs.Count.Should().BeGreaterThan(0);
     }
 
     [Test]
@@ -102,8 +102,8 @@ public class JobServiceTests
         var result = sut.Find(query);
 
         result.Should().NotBeNull();
-        result.Result.Should().BeOfType<List<Job>>();
-        result.Result.Count.Should().Be(0);
+        result.Result.Should().BeOfType<(List<Job>, long)>();
+        result.Result.jobs.Count.Should().Be(0);
     }
 
 

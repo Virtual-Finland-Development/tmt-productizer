@@ -58,9 +58,10 @@ app.MapPost("/test/lassipatanen/Job/JobPosting", async (HttpRequest request, Job
         }
 
         IReadOnlyList<Job> jobs;
+        long totalCount;
         try
         {
-            jobs = await service.Find(requestModel);
+            (jobs, totalCount) = await service.Find(requestModel);
         }
         catch (HttpRequestException e)
         {
@@ -76,7 +77,7 @@ app.MapPost("/test/lassipatanen/Job/JobPosting", async (HttpRequest request, Job
         var response = new
         {
             Results = jobs,
-            TotalCount = jobs.Count
+            TotalCount = totalCount
         };
 
         return Results.Ok(response);
