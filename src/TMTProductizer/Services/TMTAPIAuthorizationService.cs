@@ -110,9 +110,16 @@ public class TMTAPIAuthorizationService : IAPIAuthorizationService
         return await _dynamoDBCache.GetCacheItem<APIAuthorizationPackage>(_cacheKey);
     }
 
-    private async Task SaveAPIAuthorizationPackageToCache(APIAuthorizationPackage tmtAuthorizationDetails)
+    private async Task SaveAPIAuthorizationPackageToCache(APIAuthorizationPackage authorizationPackage)
     {
-        await _dynamoDBCache.SaveCacheItem<APIAuthorizationPackage>(_cacheKey, tmtAuthorizationDetails);
+        // Set expiration time the same as the token
+        var expiresInSeconds = 0;
+        DateTime expiresOn = DateUtils.UnixTimeStampToDateTime(authorizationPackage.ExpiresOn);
+        if (expiresOn > DateTime.UtcNow)
+        {
+            expiresInSeconds = (int)expiresOn.Subtract(DateTime.UtcNow).TotalSeconds;
+        }
+        await _dynamoDBCache.SaveCacheItem<APIAuthorizationPackage>(_cacheKey, authorizationPackage, expiresInSeconds);
     }
 }
 
