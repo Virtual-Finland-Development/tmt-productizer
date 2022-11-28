@@ -64,8 +64,7 @@ public class AuthorizationServiceTests
             {
                 Request = {
                     Headers = {
-                        { "Authorization", "Bearer abba-bubba-cobra" },
-                        { "X-Authorization-Provider", "fake_provider" },
+                        { "Authorization", "Bearer abba-bubba-cobra" }
                     }
                 }
             };
