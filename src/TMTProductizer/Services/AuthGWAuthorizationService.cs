@@ -19,9 +19,9 @@ public class AuthGWAuthorizationService : IAuthorizationService
         var originHeaders = request.Headers.ToDictionary(x => x.Key.ToLowerInvariant(), x => x.Value.ToString());
 
         // Prep authorization request
-        if (!originHeaders.ContainsKey("authorization") || !originHeaders.ContainsKey("x-authorization-provider"))
+        if (!originHeaders.ContainsKey("authorization"))
         {
-            throw new HttpRequestException("Missing headers", null, HttpStatusCode.Unauthorized); // Throws 401 if no auth headers
+            throw new HttpRequestException("Missing authorization headers", null, HttpStatusCode.Unauthorized); // Throws 401 if no auth headers
         }
 
         // Skip on local development, but require headers present (above)
@@ -33,7 +33,6 @@ public class AuthGWAuthorizationService : IAuthorizationService
             Method = HttpMethod.Post,
             Headers = {
                 { "authorization", originHeaders["authorization"] },
-                { "x-authorization-provider", originHeaders["x-authorization-provider"] },
                 { "x-authorization-context", "TMT-productizer" },
             }
         };
