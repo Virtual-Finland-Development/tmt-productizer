@@ -33,28 +33,6 @@ public class AuthorizationServiceTests
     }
 
     [Test]
-    public void TryingToAuthorize_BadHeaders_ReturnsAccessDeniedException()
-    {
-        // Test bad headers
-        Action badHeadersAction = () =>
-        {
-            var httpContext = new DefaultHttpContext
-            {
-                Request = {
-                    Headers = {
-                        { "Authorization", "Bearer: fake_token" },
-                    }
-                }
-            };
-            var authorizationService = GetAuthorizationServiceMock();
-            authorizationService.Authorize(httpContext.Request).Wait();
-        };
-        badHeadersAction.Should().Throw<HttpRequestException>()
-            .WithMessage("Missing headers");
-
-    }
-
-    [Test]
     public void TryingToAuthorize_InvalidHeaders_ReturnsAccessDeniedException()
     {
         // Test good, but invalid headers
