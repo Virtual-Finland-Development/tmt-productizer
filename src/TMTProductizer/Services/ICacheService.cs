@@ -11,5 +11,5 @@ public interface ICacheService
     /// Converts item to json string and save to DynamoDB
     /// <param>expiresInSeconds: 0 means no expiration</param>
     /// </summary>
-    Task<bool> SaveCacheItem<T>(string cacheKey, T cacheValue, int expiresInSeconds = 0);
+    Task SaveCacheItem<T>(string cacheKey, T cacheValue, int expiresInSeconds = 0);
 }

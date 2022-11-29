@@ -2,10 +2,9 @@ using Amazon.S3;
 using Amazon.S3.Model;
 using System.Text;
 using System.Text.Json;
+using TMTProductizer.Models;
 using TMTProductizer.Utils;
-
 namespace TMTProductizer.Services.AWS;
-
 
 public class S3BucketCache : IS3BucketCache
 {
@@ -43,11 +42,16 @@ public class S3BucketCache : IS3BucketCache
                 string contents = reader.ReadToEnd();
                 try
                 {
-                    cacheItem = JsonSerializer.Deserialize<T>(contents);
+                    // Try to serialize the cache item from the container
+                    var cacheItemContainer = JsonSerializer.Deserialize<CachedDataContainer>(contents);
+                    if (cacheItemContainer != null && (cacheItemContainer.TimeToLive == null || cacheItemContainer.TimeToLive > DateTimeOffset.UtcNow.ToUnixTimeSeconds()))
+                    {
+                        cacheItem = JsonSerializer.Deserialize<T>(cacheItemContainer.CacheValue);
+                    }
                 }
                 catch (JsonException)
                 {
-                    // Ignore
+                    // Ignore: the cache item is not a container, will be overwritten the next query
                 }
             }
         }
@@ -55,21 +59,24 @@ public class S3BucketCache : IS3BucketCache
         return cacheItem;
     }
 
-    public async Task<bool> SaveCacheItem<T>(string cacheKey, T cacheValue, int expiresInSeconds = 0)
+    /// <summary>
+    /// Save cache item to S3 bucket.
+    /// </summary>
+    public async Task SaveCacheItem<T>(string cacheKey, T cacheValue, int expiresInSeconds = 0)
     {
-        var cacheTextValue = JsonSerializer.Serialize(cacheValue);
-        var typedCacheKey = StringUtils.GetTypedCacheKey<T>(cacheKey);
+        // Transform data value to a known cache container type
+        var cachedDataContainer = CachedDataContainer.FromCacheItem<T>(cacheKey, cacheValue, expiresInSeconds);
+        var cacheTextValue = JsonSerializer.Serialize<CachedDataContainer>(cachedDataContainer);
 
+        // Upload the json object
         var request = new PutObjectRequest
         {
             BucketName = _bucketName,
-            Key = typedCacheKey,
+            Key = cachedDataContainer.CacheKey,
             InputStream = new MemoryStream(Encoding.UTF8.GetBytes(cacheTextValue)),
             ContentType = "application/json",
         };
 
-        var response = await _client.PutObjectAsync(request);
-
-        return response.HttpStatusCode == System.Net.HttpStatusCode.OK;
+        await _client.PutObjectAsync(request);
     }
 }
