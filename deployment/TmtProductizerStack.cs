@@ -63,6 +63,11 @@ public class TmtProductizerStack : Stack
         var dynamoDBCacheTable = dynamoDBCacheFactory.CreateDynamoDBTable(tags, role);
         DynamoDBCacheTableName = dynamoDBCacheTable.Name; // For pulumi output
 
+        // S3 Bucket for cache
+        var s3BucketCacheFactory = new S3BucketCacheFactory();
+        var s3BucketCache = s3BucketCacheFactory.CreateS3BucketCache(tags, role);
+        S3BucketCacheName = s3BucketCache.BucketName; // For pulumi output
+
         var rolePolicyAttachment = new RolePolicyAttachment($"{projectName}-lambda-role-attachment-{environment}",
             new RolePolicyAttachmentArgs
             {
@@ -84,6 +89,7 @@ public class TmtProductizerStack : Stack
                     { "ASPNETCORE_ENVIRONMENT", "Development" },
                     { "DynamoDBCacheName", DynamoDBCacheTableName }, // Override appsettings.json with staged value
                     { "TmtSecretsName", SecretsManagerSecretName },
+                    { "S3BucketCacheName", SecretsManagerSecretName },
                 }
             },
             Code = new FileArchive(artifactPath),
@@ -115,5 +121,6 @@ public class TmtProductizerStack : Stack
 
     [Output] public Output<string> ApplicationUrl { get; set; }
     [Output] public Output<string> DynamoDBCacheTableName { get; set; }
+    [Output] public Output<string> S3BucketCacheName { get; set; }
     [Output] public Output<string> SecretsManagerSecretName { get; set; }
 }
