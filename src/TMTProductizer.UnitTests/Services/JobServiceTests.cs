@@ -5,6 +5,7 @@ using Moq;
 using Moq.Protected;
 using TMTProductizer.Models;
 using TMTProductizer.Services;
+using TMTProductizer.Services.AWS;
 using TMTProductizer.Utils;
 
 namespace TMTProductizer.UnitTests.Services;
@@ -33,6 +34,7 @@ public class JobServiceTests
         var tmtAuthorizationService = new Mock<IAPIAuthorizationService>();
         tmtAuthorizationService.Setup(service => service.GetAPIAuthorizationPackage())
             .ReturnsAsync(new APIAuthorizationPackage());
+        var tmtApiResultsCacheService = new Mock<IS3BucketCache>();
 
         var query = new JobsRequest
         {
@@ -50,7 +52,7 @@ public class JobServiceTests
             }
         };
 
-        var sut = new JobService(proxyClientFactory.Object, tmtAuthorizationService.Object, new Logger<JobService>(new LoggerFactory()));
+        var sut = new JobService(proxyClientFactory.Object, tmtAuthorizationService.Object, tmtApiResultsCacheService.Object, new Logger<JobService>(new LoggerFactory()));
 
         var result = sut.Find(query);
 
@@ -80,7 +82,7 @@ public class JobServiceTests
         var tmtAuthorizationService = new Mock<IAPIAuthorizationService>();
         tmtAuthorizationService.Setup(service => service.GetAPIAuthorizationPackage())
             .ReturnsAsync(new APIAuthorizationPackage());
-
+        var tmtApiResultsCacheService = new Mock<IS3BucketCache>();
 
         var query = new JobsRequest
         {
@@ -97,7 +99,7 @@ public class JobServiceTests
                 Offset = 20
             }
         };
-        var sut = new JobService(proxyClientFactory.Object, tmtAuthorizationService.Object, new Logger<JobService>(new LoggerFactory()));
+        var sut = new JobService(proxyClientFactory.Object, tmtAuthorizationService.Object, tmtApiResultsCacheService.Object, new Logger<JobService>(new LoggerFactory()));
 
         var result = sut.Find(query);
 

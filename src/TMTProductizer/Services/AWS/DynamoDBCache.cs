@@ -65,7 +65,7 @@ public class DynamoDBCache : IDynamoDBCache
         return cacheItem;
     }
 
-    public async Task SaveCacheItem<T>(string cacheKey, T cacheValue, int expiresInSeconds = 0)
+    public async Task<bool> SaveCacheItem<T>(string cacheKey, T cacheValue, int expiresInSeconds = 0)
     {
         var cacheTextValue = JsonSerializer.Serialize(cacheValue);
         var typedCacheKey = StringUtils.GetTypedCacheKey<T>(cacheKey);
@@ -77,5 +77,7 @@ public class DynamoDBCache : IDynamoDBCache
             UpdatedAt = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
             TimeToLive = expiresInSeconds > 0 ? DateTimeOffset.UtcNow.ToUnixTimeSeconds() + expiresInSeconds : null
         });
+
+        return true;
     }
 }
