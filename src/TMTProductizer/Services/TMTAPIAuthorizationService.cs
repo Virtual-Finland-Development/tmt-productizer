@@ -1,6 +1,5 @@
 using System.Net;
 using System.Text;
-using System.Text.Json;
 using TMTProductizer.Models;
 using TMTProductizer.Services.AWS;
 using TMTProductizer.Utils;
@@ -84,7 +83,7 @@ public class TMTAPIAuthorizationService : IAPIAuthorizationService
 
         // Parse response
         var responseBody = await response.Content.ReadAsStringAsync();
-        var responseContent = JsonSerializer.Deserialize<TMTAPIAuthorizationResponse>(responseBody);
+        var responseContent = StringUtils.JsonDeserialiseObject<TMTAPIAuthorizationResponse>(responseBody);
 
         if (responseContent == null)
         {

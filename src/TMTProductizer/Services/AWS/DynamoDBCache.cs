@@ -2,7 +2,6 @@ using Amazon;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
 using Amazon.DynamoDBv2.DocumentModel;
-using System.Text.Json;
 using TMTProductizer.Models;
 using TMTProductizer.Utils;
 
@@ -52,7 +51,7 @@ public class DynamoDBCache : IDynamoDBCache
             var items = await search.GetNextSetAsync();
             if (items.Any<CachedDataContainer>())
             {
-                cacheItem = JsonSerializer.Deserialize<T>(items[0].CacheValue);
+                cacheItem = StringUtils.JsonDeserialiseObject<T>(items[0].CacheValue);
                 break;
             }
         } while (!search.IsDone);
