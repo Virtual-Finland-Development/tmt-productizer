@@ -33,10 +33,7 @@ public class S3BucketCacheFactory
                     ""Resource"": [
                         ""{bucket.Arn}"",
                         ""{bucket.Arn}/*""
-                    ],
-                    ""Principal"": {{
-                        ""AWS"": [""{role.Arn}""]
-                    }}
+                    ]
                 }}
             ]
         }}");

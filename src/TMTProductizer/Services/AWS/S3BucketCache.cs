@@ -45,7 +45,7 @@ public class S3BucketCache : IS3BucketCache
                     return default(T);
                 }
 
-                using (StreamReader reader = new StreamReader(response.ResponseStream))
+                using (StreamReader reader = new StreamReader(response.ResponseStream, Encoding.UTF8))
                 {
                     string contents = reader.ReadToEnd();
                     try
