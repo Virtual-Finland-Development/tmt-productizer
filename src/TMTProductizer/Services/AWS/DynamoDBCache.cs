@@ -51,7 +51,7 @@ public class DynamoDBCache : IDynamoDBCache
             var items = await search.GetNextSetAsync();
             if (items.Any<CachedDataContainer>())
             {
-                cacheItem = StringUtils.JsonDeserialiseObject<T>(items[0].CacheValue);
+                cacheItem = StringUtils.JsonDeserializeObject<T>(items[0].CacheValue);
                 break;
             }
         } while (!search.IsDone);

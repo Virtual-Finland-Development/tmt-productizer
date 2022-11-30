@@ -17,14 +17,14 @@ public class UtilityTests
     public void EnsureJsonSerialisationWorks()
     {
         var testModel = new TestModel { Name = "test" };
-        var json = StringUtils.JsonSerialiseObject(testModel);
+        var json = StringUtils.JsonSerializeObject(testModel);
         Assert.AreEqual("{\"name\":\"test\"}", json);
 
-        var deserialised = StringUtils.JsonDeserialiseObject<TestModel>(json);
-        Assert.AreEqual("test", deserialised?.Name);
+        var deserialized = StringUtils.JsonDeserializeObject<TestModel>(json);
+        Assert.AreEqual("test", deserialized?.Name);
 
         string TmtJson = MockUtils.GetTMTTestResponse();
-        var tmtDeserialised = StringUtils.JsonDeserialiseObject<Hakutulos>(TmtJson);
-        Assert.AreEqual(tmtDeserialised?.IlmoituksienMaara, 3);
+        var tmtDeserialized = StringUtils.JsonDeserializeObject<Hakutulos>(TmtJson);
+        Assert.AreEqual(tmtDeserialized?.IlmoituksienMaara, tmtDeserialized?.Ilmoitukset?.Count);
     }
 }

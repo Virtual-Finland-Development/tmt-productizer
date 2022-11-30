@@ -83,7 +83,7 @@ public class TMTAPIAuthorizationService : IAPIAuthorizationService
 
         // Parse response
         var responseBody = await response.Content.ReadAsStringAsync();
-        var responseContent = StringUtils.JsonDeserialiseObject<TMTAPIAuthorizationResponse>(responseBody);
+        var responseContent = StringUtils.JsonDeserializeObject<TMTAPIAuthorizationResponse>(responseBody);
 
         if (responseContent == null)
         {

@@ -1,5 +1,6 @@
-
+using System.Text.Json;
 using Newtonsoft.Json;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace TMTProductizer.Utils;
 
@@ -16,25 +17,45 @@ public static class StringUtils
     }
 
     /// <summary>
-    /// JSON Serialise object using newtonsoft tools.
+    /// JSON serialize object using newtonsoft tools.
     /// </summary>
-    public static string JsonSerialiseObject<T>(T obj)
+    public static string JsonSerializeObject<T>(T obj, bool useNewtonsoftJsonSerializer = false)
     {
-        return JsonConvert.SerializeObject(obj, typeof(T), GetJsonSerializerSettings());
+        if (useNewtonsoftJsonSerializer)
+        {
+            return JsonConvert.SerializeObject(obj, typeof(T), GetNewtonsoftJsonSerializerSettings());
+        }
+        return JsonSerializer.Serialize<T>(obj, GetJsonSerializerOptions());
     }
 
     /// <summary>
-    /// JSON Deserialise using newtonsoft tools.
+    /// JSON deserialize using newtonsoft tools.
     /// </summary>
-    public static T? JsonDeserialiseObject<T>(string json)
+    public static T? JsonDeserializeObject<T>(string json, bool useNewtonsoftJsonSerializer = false)
     {
-        return JsonConvert.DeserializeObject<T>(json, GetJsonSerializerSettings());
+        if (useNewtonsoftJsonSerializer)
+        {
+            return JsonConvert.DeserializeObject<T>(json, GetNewtonsoftJsonSerializerSettings());
+        }
+        return JsonSerializer.Deserialize<T>(json, GetJsonSerializerOptions());
     }
 
     /// <summary>
     /// Get shared newjson serialization settings
     /// </summary>
-    public static JsonSerializerSettings GetJsonSerializerSettings()
+    public static JsonSerializerOptions GetJsonSerializerOptions()
+    {
+        return new JsonSerializerOptions
+        {
+            WriteIndented = false,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        };
+    }
+
+    /// <summary>
+    /// Get shared newjson serialization settings
+    /// </summary>
+    public static JsonSerializerSettings GetNewtonsoftJsonSerializerSettings()
     {
         return new JsonSerializerSettings
         {

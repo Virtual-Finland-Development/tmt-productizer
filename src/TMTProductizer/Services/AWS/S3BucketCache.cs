@@ -50,10 +50,10 @@ public class S3BucketCache : IS3BucketCache
                     try
                     {
                         // Try to serialize the cache item from the container
-                        var cacheItemContainer = StringUtils.JsonDeserialiseObject<CachedDataContainer>(contents);
+                        var cacheItemContainer = StringUtils.JsonDeserializeObject<CachedDataContainer>(contents);
                         if (cacheItemContainer != null && (cacheItemContainer.TimeToLive == null || cacheItemContainer.TimeToLive > DateTimeOffset.UtcNow.ToUnixTimeSeconds()))
                         {
-                            return StringUtils.JsonDeserialiseObject<T>(cacheItemContainer.CacheValue);
+                            return StringUtils.JsonDeserializeObject<T>(cacheItemContainer.CacheValue, true);
                         }
                         _logger.LogInformation($"Cache miss for {typedCacheKey}");
                         return default(T);
@@ -80,8 +80,8 @@ public class S3BucketCache : IS3BucketCache
     public async Task SaveCacheItem<T>(string cacheKey, T cacheValue, int expiresInSeconds = 0)
     {
         // Transform data value to a known cache container type
-        var cachedDataContainer = CachedDataContainer.FromCacheItem<T>(cacheKey, cacheValue, expiresInSeconds);
-        var cacheTextValue = StringUtils.JsonSerialiseObject<CachedDataContainer>(cachedDataContainer);
+        var cachedDataContainer = CachedDataContainer.FromCacheItem<T>(cacheKey, cacheValue, expiresInSeconds, true);
+        var cacheTextValue = StringUtils.JsonSerializeObject<CachedDataContainer>(cachedDataContainer);
 
         // Upload the json object
         var request = new PutObjectRequest

@@ -37,7 +37,7 @@ public class SecretsManager : ISecretsManager
             throw new HttpRequestException("Error reading secrets", e, HttpStatusCode.Unauthorized);
         }
 
-        var parsedSecrets = StringUtils.JsonDeserialiseObject<T>(response.SecretString);
+        var parsedSecrets = StringUtils.JsonDeserializeObject<T>(response.SecretString);
         if (parsedSecrets == null)
         {
             throw new HttpRequestException("Could not parse secrets", null, HttpStatusCode.Unauthorized); // Throw 401 if not authorized.
