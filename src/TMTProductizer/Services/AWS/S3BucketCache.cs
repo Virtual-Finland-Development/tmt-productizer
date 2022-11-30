@@ -31,7 +31,7 @@ public class S3BucketCache : IS3BucketCache
         var request = new GetObjectRequest
         {
             BucketName = _bucketName,
-            Key = $"{typedCacheKey}.json",
+            Key = $"{typedCacheKey}.json.gz",
         };
 
         // Issue request and remember to dispose of the response
@@ -92,7 +92,7 @@ public class S3BucketCache : IS3BucketCache
             var request = new PutObjectRequest
             {
                 BucketName = _bucketName,
-                Key = $"{cachedDataContainer.CacheKey}.json",
+                Key = $"{cachedDataContainer.CacheKey}.json.gz",
                 InputStream = inputStream,
                 ContentType = "application/json",
             };
