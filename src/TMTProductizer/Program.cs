@@ -17,7 +17,8 @@ builder.Services.AddSingleton<IAPIAuthorizationService>(sp => new TMTAPIAuthoriz
     (SecretsName: builder.Configuration.GetSection("TmtSecretsName").Value, SecretsRegion: builder.Configuration.GetSection("TmtSecretsRegion").Value)
 ));
 builder.Services.AddSingleton<IDynamoDBCache>(new DynamoDBCache(builder.Configuration.GetSection("DynamoDBCacheName").Value));
-builder.Services.AddSingleton<IS3BucketCache>(new S3BucketCache(builder.Configuration.GetSection("S3BucketCacheName").Value));
+builder.Services.AddSingleton<IS3BucketCache>(sp => new S3BucketCache(
+    builder.Configuration.GetSection("S3BucketCacheName").Value, sp.GetRequiredService<ILogger<S3BucketCache>>()));
 builder.Services.AddSingleton<IProxyHttpClientFactory>(new ProxyHttpClientFactory(new Uri(builder.Configuration.GetSection("TmtApiEndpoint").Value)));
 
 builder.Services.AddHttpClient<IAuthorizationService, AuthGWAuthorizationService>(client =>

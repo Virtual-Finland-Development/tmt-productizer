@@ -8,14 +8,16 @@ namespace TMTProductizer.Services.AWS;
 
 public class S3BucketCache : IS3BucketCache
 {
-    private IAmazonS3 _client { get; set; }
+    private IAmazonS3 _s3client { get; set; }
 
     private string _bucketName;
+    private ILogger<S3BucketCache> _logger;
 
-    public S3BucketCache(string bucketName)
+    public S3BucketCache(string bucketName, ILogger<S3BucketCache> logger)
     {
         _bucketName = bucketName;
-        _client = new AmazonS3Client();
+        _logger = logger;
+        _s3client = new AmazonS3Client();
     }
 
     /// <summary>
@@ -23,8 +25,6 @@ public class S3BucketCache : IS3BucketCache
     /// </summary>
     public async Task<T?> GetCacheItem<T>(string cacheKey)
     {
-        var cacheItem = default(T);
-
         var typedCacheKey = StringUtils.GetTypedCacheKey<T>(cacheKey);
 
         // Create a GetObject request
@@ -35,8 +35,14 @@ public class S3BucketCache : IS3BucketCache
         };
 
         // Issue request and remember to dispose of the response
-        using (GetObjectResponse response = await _client.GetObjectAsync(request))
+        using (GetObjectResponse response = await _s3client.GetObjectAsync(request))
         {
+            if (response.HttpStatusCode != System.Net.HttpStatusCode.OK)
+            {
+                _logger.LogWarning($"Bad response for cache key: {typedCacheKey}");
+                return default(T);
+            }
+
             using (StreamReader reader = new StreamReader(response.ResponseStream))
             {
                 string contents = reader.ReadToEnd();
@@ -46,17 +52,19 @@ public class S3BucketCache : IS3BucketCache
                     var cacheItemContainer = JsonSerializer.Deserialize<CachedDataContainer>(contents);
                     if (cacheItemContainer != null && (cacheItemContainer.TimeToLive == null || cacheItemContainer.TimeToLive > DateTimeOffset.UtcNow.ToUnixTimeSeconds()))
                     {
-                        cacheItem = JsonSerializer.Deserialize<T>(cacheItemContainer.CacheValue);
+                        return JsonSerializer.Deserialize<T>(cacheItemContainer.CacheValue);
                     }
+                    _logger.LogInformation($"Cache deserialization miss for {typedCacheKey}");
+                    return default(T);
                 }
                 catch (JsonException)
                 {
-                    // Ignore: the cache item is not a container, will be overwritten the next query
+                    // Ignore: the cache item is not a container, will be overwritten the next query where saving succeeds
+                    _logger.LogInformation("Bad cache item found, will be overwritten.");
+                    return default(T);
                 }
             }
         }
-
-        return cacheItem;
     }
 
     /// <summary>
@@ -77,6 +85,6 @@ public class S3BucketCache : IS3BucketCache
             ContentType = "application/json",
         };
 
-        await _client.PutObjectAsync(request);
+        await _s3client.PutObjectAsync(request);
     }
 }
