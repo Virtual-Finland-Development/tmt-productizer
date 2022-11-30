@@ -12,8 +12,8 @@ public class JobService : IJobService
     private readonly IAPIAuthorizationService _tmtApiAuthorizationService;
     private readonly IS3BucketCache _tmtApiResultsCacheService;
     private readonly ILogger<JobService> _logger;
-    private string _tmtCacheKey = "TMTJobResults";
-    private int _tmtCacheTTL = 24 * 60 * 60; // 24 h
+    private readonly string _tmtCacheKey = "TMTJobResults";
+    private readonly int _tmtCacheTTL = 24 * 60 * 60; // 24 h
 
     public JobService(IProxyHttpClientFactory clientFactory, IAPIAuthorizationService tmtApiAuthorizationService, IS3BucketCache tmtApiResultsCacheService, ILogger<JobService> logger)
     {
@@ -26,7 +26,7 @@ public class JobService : IJobService
     public async Task<(List<Job> jobs, long totalCount)> Find(JobsRequest query)
     {
         // Fetch hakutulos results
-        var results = await GetTMTAPIResultsFromCache();
+        var results = await GetTMTAPIResults();
 
         // Transform the results to a list of jobs
         var jobs = TransformTMTResultsToJobs(results);
@@ -38,7 +38,7 @@ public class JobService : IJobService
     /// <summary>
     /// Fetches the results from the cache or from the TMT API if the cache is empty.
     /// </summary>
-    private async Task<Hakutulos> GetTMTAPIResultsFromCache()
+    private async Task<Hakutulos> GetTMTAPIResults()
     {
         var cachedResults = await _tmtApiResultsCacheService.GetCacheItem<Hakutulos>(_tmtCacheKey);
         if (cachedResults != null)

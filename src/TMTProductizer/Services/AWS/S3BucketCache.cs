@@ -41,7 +41,7 @@ public class S3BucketCache : IS3BucketCache
             {
                 if (response.HttpStatusCode != System.Net.HttpStatusCode.OK)
                 {
-                    _logger.LogWarning($"Bad response for cache key: {typedCacheKey}");
+                    _logger.LogWarning($"Bad response for cache key: {typedCacheKey}", typedCacheKey);
                     return default(T);
                 }
 
@@ -57,7 +57,7 @@ public class S3BucketCache : IS3BucketCache
                         {
                             return StringUtils.JsonDeserializeObject<T>(cacheItemContainer.CacheValue, true);
                         }
-                        _logger.LogInformation($"Cache miss for {typedCacheKey}");
+                        _logger.LogInformation($"Cache miss for {typedCacheKey}", typedCacheKey);
                         return default(T);
                     }
                     catch (Exception)
