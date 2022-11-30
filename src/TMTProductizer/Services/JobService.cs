@@ -13,6 +13,7 @@ public class JobService : IJobService
     private readonly IS3BucketCache _tmtApiResultsCacheService;
     private readonly ILogger<JobService> _logger;
     private string _tmtCacheKey = "TMTJobResults";
+    private int _tmtCacheTTL = 24 * 60 * 60; // 24 h
 
     public JobService(IProxyHttpClientFactory clientFactory, IAPIAuthorizationService tmtApiAuthorizationService, IS3BucketCache tmtApiResultsCacheService, ILogger<JobService> logger)
     {
@@ -63,7 +64,7 @@ public class JobService : IJobService
         if (results != null)
         {
             _logger.LogInformation("Saving TMT API results to cache");
-            await _tmtApiResultsCacheService.SaveCacheItem(_tmtCacheKey, results);
+            await _tmtApiResultsCacheService.SaveCacheItem(_tmtCacheKey, results, _tmtCacheTTL);
         }
 
         return results;
