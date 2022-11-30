@@ -53,7 +53,8 @@ public class JobServiceTests
             }
         };
 
-        var sut = new JobService(proxyClientFactory.Object, tmtAuthorizationService.Object, tmtApiResultsCacheService.Object, new Logger<JobService>(new LoggerFactory()));
+        var jobFetcher = new TMTJobsFetcher(proxyClientFactory.Object, tmtAuthorizationService.Object, tmtApiResultsCacheService.Object, new Logger<TMTJobsFetcher>(new LoggerFactory()));
+        var sut = new JobService(jobFetcher, new Logger<JobService>(new LoggerFactory()));
 
         var result = sut.Find(query);
 
@@ -100,7 +101,8 @@ public class JobServiceTests
                 Offset = 20
             }
         };
-        var sut = new JobService(proxyClientFactory.Object, tmtAuthorizationService.Object, tmtApiResultsCacheService.Object, new Logger<JobService>(new LoggerFactory()));
+        var jobFetcher = new TMTJobsFetcher(proxyClientFactory.Object, tmtAuthorizationService.Object, tmtApiResultsCacheService.Object, new Logger<TMTJobsFetcher>(new LoggerFactory()));
+        var sut = new JobService(jobFetcher, new Logger<JobService>(new LoggerFactory()));
 
         var result = sut.Find(query);
 

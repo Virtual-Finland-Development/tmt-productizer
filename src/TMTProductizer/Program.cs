@@ -6,6 +6,7 @@ using TMTProductizer.Utils;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSingleton<IJobService, JobService>();
+builder.Services.AddSingleton<ITMTJobsFetcher, TMTJobsFetcher>();
 builder.Services.AddSingleton<IAuthorizationService, AuthGWAuthorizationService>();
 builder.Services.AddSingleton<ISecretsManager, SecretsManager>();
 builder.Services.AddSingleton<IAPIAuthorizationService>(sp => new TMTAPIAuthorizationService(
