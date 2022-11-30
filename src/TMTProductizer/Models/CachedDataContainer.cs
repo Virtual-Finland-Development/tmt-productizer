@@ -1,5 +1,3 @@
-
-using System.Text.Json;
 using TMTProductizer.Utils;
 
 namespace TMTProductizer.Models;
@@ -13,7 +11,7 @@ public class CachedDataContainer
 
     public static CachedDataContainer FromCacheItem<T>(string cacheKey, T cacheValue, int expiresInSeconds = 0)
     {
-        var cacheTextValue = JsonSerializer.Serialize<T>(cacheValue);
+        var cacheTextValue = StringUtils.JsonSerialiseObject<T>(cacheValue);
         var typedCacheKey = StringUtils.GetTypedCacheKey<T>(cacheKey);
         return new CachedDataContainer
         {

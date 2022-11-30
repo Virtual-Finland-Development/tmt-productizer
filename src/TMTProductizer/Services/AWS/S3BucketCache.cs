@@ -1,7 +1,6 @@
 using Amazon.S3;
 using Amazon.S3.Model;
 using System.Text;
-using System.Text.Json;
 using TMTProductizer.Models;
 using TMTProductizer.Utils;
 namespace TMTProductizer.Services.AWS;
@@ -51,18 +50,18 @@ public class S3BucketCache : IS3BucketCache
                     try
                     {
                         // Try to serialize the cache item from the container
-                        var cacheItemContainer = JsonSerializer.Deserialize<CachedDataContainer>(contents);
+                        var cacheItemContainer = StringUtils.JsonDeserialiseObject<CachedDataContainer>(contents);
                         if (cacheItemContainer != null && (cacheItemContainer.TimeToLive == null || cacheItemContainer.TimeToLive > DateTimeOffset.UtcNow.ToUnixTimeSeconds()))
                         {
-                            return JsonSerializer.Deserialize<T>(cacheItemContainer.CacheValue);
+                            return StringUtils.JsonDeserialiseObject<T>(cacheItemContainer.CacheValue);
                         }
-                        _logger.LogInformation($"Cache deserialization miss for {typedCacheKey}");
+                        _logger.LogInformation($"Cache miss for {typedCacheKey}");
                         return default(T);
                     }
-                    catch (JsonException)
+                    catch (Exception)
                     {
                         // Ignore: the cache item is not a container, will be overwritten the next query where saving succeeds
-                        _logger.LogInformation("Bad cache item found, will be overwritten.");
+                        _logger.LogInformation("Bad cache item, will be overwritten.");
                         return default(T);
                     }
                 }
@@ -70,7 +69,7 @@ public class S3BucketCache : IS3BucketCache
         }
         catch (AmazonS3Exception)
         {
-            _logger.LogError("Error when fetching cache item from S3");
+            _logger.LogWarning("Error when fetching cache item from S3");
             return default(T);
         }
     }
@@ -82,7 +81,7 @@ public class S3BucketCache : IS3BucketCache
     {
         // Transform data value to a known cache container type
         var cachedDataContainer = CachedDataContainer.FromCacheItem<T>(cacheKey, cacheValue, expiresInSeconds);
-        var cacheTextValue = JsonSerializer.Serialize<CachedDataContainer>(cachedDataContainer);
+        var cacheTextValue = StringUtils.JsonSerialiseObject<CachedDataContainer>(cachedDataContainer);
 
         // Upload the json object
         var request = new PutObjectRequest
