@@ -13,9 +13,9 @@ public class S3BucketCache : IS3BucketCache
     private string _bucketName;
     private ILogger<S3BucketCache> _logger;
 
-    public S3BucketCache(string bucketName, ILogger<S3BucketCache> logger)
+    public S3BucketCache(IConfiguration configuration, ILogger<S3BucketCache> logger)
     {
-        _bucketName = bucketName;
+        _bucketName = configuration.GetSection("S3BucketCacheName").Value;
         _logger = logger;
         _s3client = new AmazonS3Client();
     }

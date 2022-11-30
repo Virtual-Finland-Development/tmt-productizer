@@ -12,8 +12,9 @@ public class DynamoDBCache : IDynamoDBCache
 {
     private IDynamoDBContext _DDBContext { get; set; }
 
-    public DynamoDBCache(string dynamoDbCacheName)
+    public DynamoDBCache(IConfiguration configuration)
     {
+        var dynamoDbCacheName = configuration.GetSection("DynamoDBCacheName").Value;
         if (string.IsNullOrEmpty(dynamoDbCacheName))
         {
             throw new ArgumentNullException("DynamoDB cache table name is null or empty.");

@@ -18,14 +18,14 @@ public class TMTAPIAuthorizationService : IAPIAuthorizationService
 
     private const string _cacheKey = "APIAuthorizationPackage";
 
-    public TMTAPIAuthorizationService(HttpClient client, IDynamoDBCache dynamoDBCache, ISecretsManager secretsManager, ILogger<TMTAPIAuthorizationService> logger, IHostEnvironment env, (string SecretsName, string SecretsRegion) tmtSecretFields)
+    public TMTAPIAuthorizationService(HttpClient client, IDynamoDBCache dynamoDBCache, ISecretsManager secretsManager, ILogger<TMTAPIAuthorizationService> logger, IHostEnvironment env, IConfiguration configuration)
     {
         _client = client;
         _dynamoDBCache = dynamoDBCache;
         _secretsManager = secretsManager;
         _logger = logger;
         _skipAuthorizationCeck = env.IsEnvironment("Mock");
-        _tmtSecretFields = tmtSecretFields;
+        _tmtSecretFields = (SecretsName: configuration.GetSection("TmtSecretsName").Value, SecretsRegion: configuration.GetSection("TmtSecretsRegion").Value);
     }
 
     public async Task<APIAuthorizationPackage> GetAPIAuthorizationPackage()
