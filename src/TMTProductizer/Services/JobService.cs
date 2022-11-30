@@ -72,7 +72,7 @@ public class JobService : IJobService
         // Fetch all the pages with a loop, merge to a single Hakutulos object
         var results = new Hakutulos(new List<Tyopaikkailmoitus>(), 0);
         var pagingOffset = 0;
-        var pagingLimit = 400;
+        var pagingLimit = 500;
         Hakutulos? pageResults = null;
 
         do
@@ -83,6 +83,7 @@ public class JobService : IJobService
                 results.Ilmoitukset.AddRange(pageResults.Ilmoitukset);
                 pagingOffset = pagingOffset + pagingLimit;
             }
+
         } while (pageResults != null && pageResults.IlmoituksienMaara == pagingLimit); // have results and not be on the last page
 
         results.IlmoituksienMaara = results.Ilmoitukset.Count;

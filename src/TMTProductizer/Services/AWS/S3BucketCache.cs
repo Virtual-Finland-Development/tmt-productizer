@@ -1,5 +1,6 @@
 using Amazon.S3;
 using Amazon.S3.Model;
+using System.IO.Compression;
 using System.Text;
 using TMTProductizer.Models;
 using TMTProductizer.Utils;
@@ -44,7 +45,8 @@ public class S3BucketCache : IS3BucketCache
                     return default(T);
                 }
 
-                using (StreamReader reader = new StreamReader(response.ResponseStream, Encoding.UTF8))
+                using (var decompressedStream = DecompressStream(response.ResponseStream))
+                using (StreamReader reader = new StreamReader(decompressedStream, Encoding.UTF8))
                 {
                     string contents = reader.ReadToEnd();
                     try
@@ -83,15 +85,49 @@ public class S3BucketCache : IS3BucketCache
         var cachedDataContainer = CachedDataContainer.FromCacheItem<T>(cacheKey, cacheValue, expiresInSeconds, true);
         var cacheTextValue = StringUtils.JsonSerializeObject<CachedDataContainer>(cachedDataContainer);
 
-        // Upload the json object
-        var request = new PutObjectRequest
+        using (var decompressed = new MemoryStream(Encoding.UTF8.GetBytes(cacheTextValue)))
+        using (var inputStream = CompressSteram(decompressed))
         {
-            BucketName = _bucketName,
-            Key = $"{cachedDataContainer.CacheKey}.json",
-            InputStream = new MemoryStream(Encoding.UTF8.GetBytes(cacheTextValue)),
-            ContentType = "application/json",
-        };
+            // Upload the json object
+            var request = new PutObjectRequest
+            {
+                BucketName = _bucketName,
+                Key = $"{cachedDataContainer.CacheKey}.json",
+                InputStream = inputStream,
+                ContentType = "application/json",
+            };
 
-        await _s3client.PutObjectAsync(request);
+            await _s3client.PutObjectAsync(request);
+        }
+    }
+
+    /// <summary>
+    /// Compress stream using GZip. Leave the stream open.
+    /// @see: https://stackoverflow.com/a/39157149
+    /// </summary>
+    private Stream CompressSteram(Stream decompressed)
+    {
+        var compressed = new MemoryStream();
+        using (var zip = new GZipStream(compressed, CompressionLevel.SmallestSize, true))
+        {
+            decompressed.CopyTo(zip);
+        }
+        compressed.Seek(0, SeekOrigin.Begin);
+        return compressed;
+    }
+
+    /// <summary>
+    /// Decompress stream using GZip. Leave the stream open.
+    /// @see: https://stackoverflow.com/a/39157149
+    /// </summary>
+    private Stream DecompressStream(Stream compressed)
+    {
+        var decompressed = new MemoryStream();
+        using (var zip = new GZipStream(compressed, CompressionMode.Decompress))
+        {
+            zip.CopyTo(decompressed);
+        }
+        decompressed.Seek(0, SeekOrigin.Begin);
+        return decompressed;
     }
 }
