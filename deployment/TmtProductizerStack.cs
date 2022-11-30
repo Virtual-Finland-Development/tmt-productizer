@@ -7,6 +7,7 @@ using Pulumi.Aws.Lambda.Inputs;
 using Pulumi.Command.Local;
 
 using Deployment.Resources;
+using Pulumi.Aws.CloudWatch;
 
 namespace Deployment.TmtProductizerStack;
 
@@ -96,6 +97,38 @@ public class TmtProductizerStack : Stack
             Tags = tags
         });
 
+        // Create cache updating schedule
+        var cacheUpdatingLambdaFunction = new Function($"{projectName}-cache-updater-{environment}", new FunctionArgs
+        {
+            Role = role.Arn,
+            Runtime = "dotnet6",
+            Handler = "TMTCacheUpdater",
+            Timeout = 120,
+            MemorySize = 1024,
+            Environment = lambdaFunction.Environment.Apply(env => new FunctionEnvironmentArgs
+            {
+                Variables = env?.Variables ?? new InputMap<string>()
+            }),
+            Code = new FileArchive(artifactPath),
+            Tags = tags
+        });
+        var cacheUpdateSchedule = new EventRule($"{projectName}-cache-updater-schedule-{environment}", new EventRuleArgs
+        {
+            Description = "Schedule cache update",
+            ScheduleExpression = "rate(1 day)",
+            Tags = tags,
+        });
+        var cacheUpdateScheduleTarget = new EventTarget($"{projectName}-cache-updater-target-{environment}", new EventTargetArgs
+        {
+            Rule = cacheUpdateSchedule.Name,
+            Arn = cacheUpdatingLambdaFunction.Arn,
+            Input = JsonSerializer.Serialize(new Dictionary<string, object?>
+            {
+                { "action", "update" }
+            })
+        });
+
+        // Lambda function URL
         var functionUrl = new FunctionUrl($"{projectName}-function-url-{environment}", new FunctionUrlArgs
         {
             FunctionName = lambdaFunction.Arn,

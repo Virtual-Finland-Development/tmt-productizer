@@ -42,9 +42,33 @@ public class TMTJobsFetcher : ITMTJobsFetcher
         {
             _logger.LogInformation("Saving TMT API results to cache");
             await _tmtApiResultsCacheService.SaveCacheItem(_tmtCacheKey, results, _tmtCacheTTL);
+            _logger.LogInformation("Saving complete");
+        }
+        else
+        {
+            _logger.LogWarning("Received no results from TMT API");
         }
 
         return results;
+    }
+
+    /// <summary>
+    /// Updates the cache with the latest results from the TMT API.
+    /// </summary>
+    public async Task UpdateTMTAPICache()
+    {
+        _logger.LogInformation("Fetching TMT API results from TMT API");
+        var results = await GetTMTResultsFromAPI();
+        if (results.IlmoituksienMaara > 0)
+        {
+            _logger.LogInformation("Saving results to cache");
+            await _tmtApiResultsCacheService.SaveCacheItem(_tmtCacheKey, results, _tmtCacheTTL);
+            _logger.LogInformation("Saving complete");
+        }
+        else
+        {
+            _logger.LogWarning("No results found from TMT API");
+        }
     }
 
     /// <summary>
