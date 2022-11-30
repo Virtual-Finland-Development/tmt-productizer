@@ -121,11 +121,7 @@ public class TmtProductizerStack : Stack
         var cacheUpdateScheduleTarget = new EventTarget($"{projectName}-cache-updater-target-{environment}", new EventTargetArgs
         {
             Rule = cacheUpdateSchedule.Name,
-            Arn = cacheUpdatingLambdaFunction.Arn,
-            Input = JsonSerializer.Serialize(new Dictionary<string, object?>
-            {
-                { "action", "update" }
-            })
+            Arn = cacheUpdatingLambdaFunction.Arn
         });
 
         // Lambda function URL
