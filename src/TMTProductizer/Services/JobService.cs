@@ -86,11 +86,24 @@ public class JobService : IJobService
         // TODO: TMT API doesn't support keyword search so we have to do proper in-memory filtering instead. This isn't it.
         if (query.Query != "")
         {
+            var searchKeys = query.Query.Split(',').ToList();
+
             jobs = jobs.FindAll(j =>
             {
-                // The ! operator does not seem to work at runtime, like it says: https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/null-forgiving
-                // Use null-comparison instead
-                return (j.BasicInfo.Description != null && j.BasicInfo.Description.Contains(query.Query)) || (j.BasicInfo.Title != null && j.BasicInfo.Title.Contains(query.Query));
+                var isMatch = false;
+
+                foreach (var k in searchKeys)
+                {
+                    // The ! operator does not seem to work at runtime, like it says: https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/null-forgiving
+                    // Use null-comparison instead
+                    if ((j.BasicInfo.Description != null && j.BasicInfo.Description.Contains(k)) || (j.BasicInfo.Title != null && j.BasicInfo.Title.Contains(k)))
+                    {
+                        isMatch = true;
+                        break;
+                    }
+                }
+
+                return isMatch;
             });
         }
 
