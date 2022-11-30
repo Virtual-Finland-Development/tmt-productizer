@@ -25,6 +25,7 @@ public class S3BucketCacheFactory
                 {{
                     ""Effect"": ""Allow"",
                     ""Action"": [
+                        ""s3:ListBucket"",
                         ""s3:PutObject"",
                         ""s3:GetObject"",
                         ""s3:DeleteObject""
@@ -32,7 +33,10 @@ public class S3BucketCacheFactory
                     ""Resource"": [
                         ""{bucket.Arn}"",
                         ""{bucket.Arn}/*""
-                    ]
+                    ],
+                    ""Principal"": {{
+                        ""AWS"": [""{role.Arn}""]
+                    }}
                 }}
             ]
         }}");

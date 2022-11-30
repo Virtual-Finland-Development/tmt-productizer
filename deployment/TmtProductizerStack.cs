@@ -89,7 +89,7 @@ public class TmtProductizerStack : Stack
                     { "ASPNETCORE_ENVIRONMENT", "Development" },
                     { "DynamoDBCacheName", DynamoDBCacheTableName }, // Override appsettings.json with staged value
                     { "TmtSecretsName", SecretsManagerSecretName },
-                    { "S3BucketCacheName", SecretsManagerSecretName },
+                    { "S3BucketCacheName", S3BucketCacheName },
                 }
             },
             Code = new FileArchive(artifactPath),
