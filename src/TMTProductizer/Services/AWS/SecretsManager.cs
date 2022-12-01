@@ -8,6 +8,7 @@ using Amazon;
 using Amazon.SecretsManager;
 using Amazon.SecretsManager.Model;
 using System.Net;
+using TMTProductizer.Exceptions;
 using TMTProductizer.Utils;
 
 namespace TMTProductizer.Services.AWS;
@@ -37,14 +38,14 @@ public class SecretsManager : ISecretsManager
             throw new HttpRequestException("Error reading secrets", e, HttpStatusCode.Unauthorized);
         }
 
-        var parsedSecrets = StringUtils.JsonDeserializeObject<T>(response.SecretString);
-        if (parsedSecrets == null)
+        try
         {
-            throw new HttpRequestException("Could not parse secrets", null, HttpStatusCode.Unauthorized); // Throw 401 if not authorized.
+            return StringUtils.JsonDeserializeObject<T>(response.SecretString);
         }
-
-
-        return parsedSecrets;
+        catch (JSONParseException e)
+        {
+            throw new HttpRequestException("Could not parse secrets", e, HttpStatusCode.Unauthorized); // Throw 401 if not authorized.
+        }
     }
 }
 

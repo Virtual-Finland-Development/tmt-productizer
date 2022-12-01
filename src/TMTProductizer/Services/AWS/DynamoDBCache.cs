@@ -30,7 +30,7 @@ public class DynamoDBCache : IDynamoDBCache
     /// </summary>
     public async Task<T?> GetCacheItem<T>(string cacheKey)
     {
-        var typedCacheKey = StringUtils.GetTypedCacheKey<T>(cacheKey);
+        var typedCacheKey = CacheUtils.GetTypedCacheKey<T>(cacheKey);
 
         var search = _DDBContext.FromScanAsync<CachedDataContainer>(new ScanOperationConfig
         {

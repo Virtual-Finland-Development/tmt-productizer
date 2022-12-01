@@ -1,5 +1,6 @@
 using System.Net.Http.Headers;
 using CodeGen.Api.TMT.Model;
+using TMTProductizer.Exceptions;
 using TMTProductizer.Models;
 using TMTProductizer.Services.AWS;
 using TMTProductizer.Utils;
@@ -122,7 +123,7 @@ public class TMTJobsFetcher : ITMTJobsFetcher
         {
             return StringUtils.JsonDeserializeObject<Hakutulos>(responseAsString);
         }
-        catch (Exception e)
+        catch (JSONParseException e)
         {
             if (pageNumber == 0)
             {

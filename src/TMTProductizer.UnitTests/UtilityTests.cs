@@ -9,8 +9,8 @@ public class UtilityTests
     [Test]
     public void EnsureTypedCacheKeysWork()
     {
-        Assert.AreEqual("test::System.String", StringUtils.GetTypedCacheKey<string>("test"));
-        Assert.AreEqual("test::TMTProductizer.UnitTests.Mocks.TestModel", StringUtils.GetTypedCacheKey<TestModel>("test"));
+        Assert.AreEqual("test::System.String", CacheUtils.GetTypedCacheKey<string>("test"));
+        Assert.AreEqual("test::TMTProductizer.UnitTests.Mocks.TestModel", CacheUtils.GetTypedCacheKey<TestModel>("test"));
     }
 
     [Test]

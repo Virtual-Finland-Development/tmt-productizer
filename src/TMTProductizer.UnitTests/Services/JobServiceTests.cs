@@ -1,4 +1,5 @@
 using System.Net;
+using CodeGen.Api.TMT.Model;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -16,7 +17,9 @@ public class JobServiceTests
     [Test]
     public void TryingToFindJob_WithTmtApiUp_ReturnsListWithData()
     {
-        string TmtJson = MockUtils.GetTMTTestResponse();
+        string tmtJson = MockUtils.GetTMTTestResponse();
+        Hakutulos tmtResults = StringUtils.JsonDeserializeObject<Hakutulos>(tmtJson);
+
         var handler = new Mock<HttpMessageHandler>(MockBehavior.Strict);
         handler.Protected()
             .Setup<Task<HttpResponseMessage>>(
@@ -26,7 +29,7 @@ public class JobServiceTests
             .ReturnsAsync(new HttpResponseMessage
             {
                 StatusCode = HttpStatusCode.OK,
-                Content = new StringContent(TmtJson)
+                Content = new StringContent(tmtJson)
             });
         var httpClient = new HttpClient(handler.Object) { BaseAddress = new Uri("http://localhost/") };
         var proxyClientFactory = new Mock<IProxyHttpClientFactory>();
@@ -36,6 +39,8 @@ public class JobServiceTests
         tmtAuthorizationService.Setup(service => service.GetAPIAuthorizationPackage())
             .ReturnsAsync(new APIAuthorizationPackage());
         var tmtApiResultsCacheService = new Mock<IS3BucketCache>();
+        var jobFetcher = new Mock<ITMTJobsFetcher>();
+        jobFetcher.Setup(service => service.FetchTMTAPIResults()).ReturnsAsync(tmtResults);
 
         var query = new JobsRequest
         {
@@ -53,8 +58,7 @@ public class JobServiceTests
             }
         };
 
-        var jobFetcher = new TMTJobsFetcher(proxyClientFactory.Object, tmtAuthorizationService.Object, tmtApiResultsCacheService.Object, new Logger<TMTJobsFetcher>(new LoggerFactory()));
-        var sut = new JobService(jobFetcher, new Logger<JobService>(new LoggerFactory()));
+        var sut = new JobService(jobFetcher.Object, new Logger<JobService>(new LoggerFactory()));
 
         var result = sut.Find(query);
 

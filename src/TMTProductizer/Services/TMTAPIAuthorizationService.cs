@@ -1,5 +1,6 @@
 using System.Net;
 using System.Text;
+using TMTProductizer.Exceptions;
 using TMTProductizer.Models;
 using TMTProductizer.Services.AWS;
 using TMTProductizer.Utils;
@@ -83,24 +84,24 @@ public class TMTAPIAuthorizationService : IAPIAuthorizationService
 
         // Parse response
         var responseBody = await response.Content.ReadAsStringAsync();
-        var responseContent = StringUtils.JsonDeserializeObject<TMTAPIAuthorizationResponse>(responseBody);
-
-        if (responseContent == null)
+        try
         {
-            throw new HttpRequestException("TMT: Bad Response", null, HttpStatusCode.Unauthorized); // Throw 401 if not authorized.
+            // Parse response
+            var responseContent = StringUtils.JsonDeserializeObject<TMTAPIAuthorizationResponse>(responseBody);
+            // Return authorization details
+            return new APIAuthorizationPackage
+            {
+                AccessToken = responseContent.AccessToken,
+                ExpiresOn = responseContent.ExpiresOn,
+                ProxyAddress = secrets.ProxyAddress,
+                ProxyUser = secrets.ProxyUser,
+                ProxyPassword = secrets.ProxyPassword
+            };
         }
-
-        // Return authorization details
-        var details = new APIAuthorizationPackage
+        catch (JSONParseException e)
         {
-            AccessToken = responseContent.AccessToken,
-            ExpiresOn = responseContent.ExpiresOn,
-            ProxyAddress = secrets.ProxyAddress,
-            ProxyUser = secrets.ProxyUser,
-            ProxyPassword = secrets.ProxyPassword
-        };
-
-        return details;
+            throw new HttpRequestException("TMT: bad authentication package response", e, HttpStatusCode.Unauthorized); // Throw 401 if not authorized.
+        }
     }
 
 

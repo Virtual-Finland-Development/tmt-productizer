@@ -12,7 +12,7 @@ public class CachedDataContainer
     public static CachedDataContainer FromCacheItem<T>(string cacheKey, T cacheValue, int expiresInSeconds = 0, bool useNewtonsoftJsonSerializer = false)
     {
         var cacheTextValue = StringUtils.JsonSerializeObject<T>(cacheValue, useNewtonsoftJsonSerializer);
-        var typedCacheKey = StringUtils.GetTypedCacheKey<T>(cacheKey);
+        var typedCacheKey = CacheUtils.GetTypedCacheKey<T>(cacheKey);
         return new CachedDataContainer
         {
             CacheKey = typedCacheKey,

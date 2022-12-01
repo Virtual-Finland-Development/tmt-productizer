@@ -18,3 +18,5 @@ _ReSharper*/
 out/
 TMTResponseOutputDebug.txt
 release/
+
+.fake

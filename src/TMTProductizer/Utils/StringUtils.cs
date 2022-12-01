@@ -1,21 +1,12 @@
 using System.Text.Json;
 using Newtonsoft.Json;
+using TMTProductizer.Exceptions;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace TMTProductizer.Utils;
 
 public static class StringUtils
 {
-    /// <summary>
-    /// Get a cache key that is unique to the type of the cache value.
-    /// </summary>
-    public static string GetTypedCacheKey<T>(string cacheKey)
-    {
-        Type t = typeof(T);
-        var typedKey = cacheKey + "::" + t.ToString();
-        return typedKey;
-    }
-
     /// <summary>
     /// JSON serialize object using newtonsoft tools.
     /// </summary>
@@ -31,13 +22,13 @@ public static class StringUtils
     /// <summary>
     /// JSON deserialize using newtonsoft tools.
     /// </summary>
-    public static T? JsonDeserializeObject<T>(string json, bool useNewtonsoftJsonSerializer = false)
+    public static T JsonDeserializeObject<T>(string json, bool useNewtonsoftJsonSerializer = false)
     {
         if (useNewtonsoftJsonSerializer)
         {
-            return JsonConvert.DeserializeObject<T>(json, GetNewtonsoftJsonSerializerSettings());
+            return JsonConvert.DeserializeObject<T>(json, GetNewtonsoftJsonSerializerSettings()) ?? throw new JSONParseException("Failed to deserialize json");
         }
-        return JsonSerializer.Deserialize<T>(json, GetJsonSerializerOptions());
+        return JsonSerializer.Deserialize<T>(json, GetJsonSerializerOptions()) ?? throw new JSONParseException("Failed to deserialize json");
     }
 
     /// <summary>

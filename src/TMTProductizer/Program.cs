@@ -12,6 +12,7 @@ builder.Services.AddSingleton<ISecretsManager, SecretsManager>();
 builder.Services.AddSingleton<IAPIAuthorizationService, TMTAPIAuthorizationService>();
 builder.Services.AddSingleton<IDynamoDBCache, DynamoDBCache>();
 builder.Services.AddSingleton<IS3BucketCache, S3BucketCache>();
+builder.Services.AddSingleton<ILocalFileCache, LocalFileCache>();
 builder.Services.AddSingleton<IProxyHttpClientFactory, ProxyHttpClientFactory>();
 builder.Services.AddSingleton<HttpClient>(sp => new HttpClient());
 

@@ -1,23 +1,24 @@
 using Amazon.S3;
 using Amazon.S3.Model;
-using System.IO.Compression;
 using System.Text;
 using TMTProductizer.Models;
 using TMTProductizer.Utils;
+
 namespace TMTProductizer.Services.AWS;
 
 public class S3BucketCache : IS3BucketCache
 {
-    private IAmazonS3 _s3client { get; set; }
+    private readonly IAmazonS3 _s3client;
+    private readonly string _bucketName;
+    private readonly ILogger<S3BucketCache> _logger;
+    private readonly ILocalFileCache _localFileCache;
 
-    private string _bucketName;
-    private ILogger<S3BucketCache> _logger;
-
-    public S3BucketCache(IConfiguration configuration, ILogger<S3BucketCache> logger)
+    public S3BucketCache(IConfiguration configuration, ILogger<S3BucketCache> logger, ILocalFileCache localFileCache)
     {
         _bucketName = configuration.GetSection("S3BucketCacheName").Value;
         _logger = logger;
         _s3client = new AmazonS3Client();
+        _localFileCache = localFileCache;
     }
 
     /// <summary>
@@ -25,7 +26,7 @@ public class S3BucketCache : IS3BucketCache
     /// </summary>
     public async Task<T?> GetCacheItem<T>(string cacheKey)
     {
-        var typedCacheKey = StringUtils.GetTypedCacheKey<T>(cacheKey);
+        var typedCacheKey = CacheUtils.GetTypedCacheKey<T>(cacheKey);
 
         // Create a GetObject request
         var request = new GetObjectRequest
@@ -34,40 +35,48 @@ public class S3BucketCache : IS3BucketCache
             Key = $"{typedCacheKey}.json.gz",
         };
 
-        _logger.LogInformation($"Fetch for cache key: {typedCacheKey}", typedCacheKey);
-        // Issue request and remember to dispose of the response
+        // First try from the faster local cache
+        var response = await _localFileCache.GetCacheItem<T>(typedCacheKey);
+        if (response != null)
+        {
+            return response;
+        }
+
+        // If not found, try from S3
+        return await GetCacheItemFromS3Bucket<T>(request);
+    }
+
+    /// <summary>
+    /// Fetch cache item from S3 bucket, store to local cache if success
+    /// </summary>
+    private async Task<T?> GetCacheItemFromS3Bucket<T>(GetObjectRequest request)
+    {
+        var cacheKey = request.Key;
+        _logger.LogInformation("Get from S3 cache: {cacheKey}", cacheKey);
+
         try
         {
             using (GetObjectResponse response = await _s3client.GetObjectAsync(request))
             {
                 if (response.HttpStatusCode != System.Net.HttpStatusCode.OK)
                 {
-                    _logger.LogWarning($"Bad response for cache key: {typedCacheKey}", typedCacheKey);
+                    _logger.LogWarning("Bad response for cache key: {cacheKey}", cacheKey);
                     return default(T);
                 }
 
-                using (var decompressedStream = DecompressStream(response.ResponseStream))
-                using (StreamReader reader = new StreamReader(decompressedStream, Encoding.UTF8))
+                var cacheContainer = CacheUtils.ReadCachedContentStream(response.ResponseStream);
+                if (cacheContainer != null)
                 {
-                    string contents = reader.ReadToEnd();
-                    try
+                    var cacheItem = CacheUtils.GetCacheItemFromContainer<T>(cacheContainer);
+                    if (cacheItem != null)
                     {
-                        // Try to serialize the cache item from the container
-                        var cacheItemContainer = StringUtils.JsonDeserializeObject<CachedDataContainer>(contents);
-                        if (cacheItemContainer != null && (cacheItemContainer.TimeToLive == null || cacheItemContainer.TimeToLive > DateTimeOffset.UtcNow.ToUnixTimeSeconds()))
-                        {
-                            return StringUtils.JsonDeserializeObject<T>(cacheItemContainer.CacheValue, true);
-                        }
-                        _logger.LogInformation($"Cache miss for {typedCacheKey}", typedCacheKey);
-                        return default(T);
+                        // Save to local cache for faster access next time
+                        await _localFileCache.SaveCacheItem<T>(cacheKey, cacheItem);
                     }
-                    catch (Exception e)
-                    {
-                        // Ignore: the cache item is not a container, will be overwritten the next query where saving succeeds
-                        _logger.LogInformation(e, "Bad cache item, will be overwritten.");
-                        return default(T);
-                    }
+                    return cacheItem;
                 }
+
+                return default(T);
             }
         }
         catch (AmazonS3Exception)
@@ -87,48 +96,18 @@ public class S3BucketCache : IS3BucketCache
         var cacheTextValue = StringUtils.JsonSerializeObject<CachedDataContainer>(cachedDataContainer);
 
         using (var decompressed = new MemoryStream(Encoding.UTF8.GetBytes(cacheTextValue)))
-        using (var inputStream = CompressSteram(decompressed))
+        using (var compressed = CacheUtils.CompressSteram(decompressed))
         {
             // Upload the json object
             var request = new PutObjectRequest
             {
                 BucketName = _bucketName,
                 Key = $"{cachedDataContainer.CacheKey}.json.gz",
-                InputStream = inputStream,
+                InputStream = compressed,
                 ContentType = "application/json",
             };
 
             await _s3client.PutObjectAsync(request);
         }
-    }
-
-    /// <summary>
-    /// Compress stream using GZip. Leave the stream open.
-    /// @see: https://stackoverflow.com/a/39157149
-    /// </summary>
-    private Stream CompressSteram(Stream decompressed)
-    {
-        var compressed = new MemoryStream();
-        using (var zip = new GZipStream(compressed, CompressionLevel.SmallestSize, true))
-        {
-            decompressed.CopyTo(zip);
-        }
-        compressed.Seek(0, SeekOrigin.Begin);
-        return compressed;
-    }
-
-    /// <summary>
-    /// Decompress stream using GZip. Leave the stream open.
-    /// @see: https://stackoverflow.com/a/39157149
-    /// </summary>
-    private Stream DecompressStream(Stream compressed)
-    {
-        var decompressed = new MemoryStream();
-        using (var zip = new GZipStream(compressed, CompressionMode.Decompress))
-        {
-            zip.CopyTo(decompressed);
-        }
-        decompressed.Seek(0, SeekOrigin.Begin);
-        return decompressed;
     }
 }
