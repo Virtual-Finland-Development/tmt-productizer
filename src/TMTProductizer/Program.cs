@@ -13,11 +13,7 @@ builder.Services.AddSingleton<IAPIAuthorizationService, TMTAPIAuthorizationServi
 builder.Services.AddSingleton<IDynamoDBCache, DynamoDBCache>();
 builder.Services.AddSingleton<IS3BucketCache, S3BucketCache>();
 builder.Services.AddSingleton<IProxyHttpClientFactory, ProxyHttpClientFactory>();
-
-builder.Services.AddHttpClient<IAuthorizationService, AuthGWAuthorizationService>(client =>
-{
-    client.BaseAddress = new Uri(builder.Configuration.GetSection("AuthGWEndpoint").Value);
-});
+builder.Services.AddSingleton<HttpClient>(sp => new HttpClient());
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
