@@ -26,33 +26,33 @@ public class S3BucketCache : IS3BucketCache
     /// </summary>
     public async Task<T?> GetCacheItem<T>(string cacheKey)
     {
-        var typedCacheKey = CacheUtils.GetTypedCacheKey<T>(cacheKey);
-
-        // Create a GetObject request
-        var request = new GetObjectRequest
-        {
-            BucketName = _bucketName,
-            Key = $"{typedCacheKey}.json.gz",
-        };
-
         // First try from the faster local cache
-        var response = await _localFileCache.GetCacheItem<T>(typedCacheKey);
+        var response = await _localFileCache.GetCacheItem<T>(cacheKey);
         if (response != null)
         {
             return response;
         }
 
         // If not found, try from S3
-        return await GetCacheItemFromS3Bucket<T>(request);
+        return await GetCacheItemFromS3Bucket<T>(cacheKey);
     }
 
     /// <summary>
     /// Fetch cache item from S3 bucket, store to local cache if success
     /// </summary>
-    private async Task<T?> GetCacheItemFromS3Bucket<T>(GetObjectRequest request)
+    private async Task<T?> GetCacheItemFromS3Bucket<T>(string cacheKey)
     {
-        var cacheKey = request.Key;
-        _logger.LogInformation("Get from S3 cache: {cacheKey}", cacheKey);
+        var typedCacheKey = CacheUtils.GetTypedCacheKey<T>(cacheKey);
+        var cacheFileName = $"{typedCacheKey}.json.gz";
+
+        // Create a GetObject request
+        var request = new GetObjectRequest
+        {
+            BucketName = _bucketName,
+            Key = cacheFileName,
+        };
+
+        _logger.LogInformation("Get from S3 cache: {cacheFileName}", cacheFileName);
 
         try
         {
@@ -60,7 +60,7 @@ public class S3BucketCache : IS3BucketCache
             {
                 if (response.HttpStatusCode != System.Net.HttpStatusCode.OK)
                 {
-                    _logger.LogWarning("Bad response for cache key: {cacheKey}", cacheKey);
+                    _logger.LogWarning("Bad response for cache key: {cacheFileName}", cacheFileName);
                     return default(T);
                 }
 
@@ -79,9 +79,9 @@ public class S3BucketCache : IS3BucketCache
                 return default(T);
             }
         }
-        catch (AmazonS3Exception)
+        catch (AmazonS3Exception e)
         {
-            _logger.LogWarning("Error when fetching cache item from S3");
+            _logger.LogWarning(e, "Error when fetching cache item from S3: {cacheFileName}", cacheFileName);
             return default(T);
         }
     }
@@ -93,6 +93,7 @@ public class S3BucketCache : IS3BucketCache
     {
         // Transform data value to a known cache container type
         var cachedDataContainer = CachedDataContainer.FromCacheItem<T>(cacheKey, cacheValue, expiresInSeconds, true);
+        var cacheFileName = $"{cachedDataContainer.CacheKey}.json.gz";
         var cacheTextValue = StringUtils.JsonSerializeObject<CachedDataContainer>(cachedDataContainer);
 
         using (var decompressed = new MemoryStream(Encoding.UTF8.GetBytes(cacheTextValue)))
@@ -102,7 +103,7 @@ public class S3BucketCache : IS3BucketCache
             var request = new PutObjectRequest
             {
                 BucketName = _bucketName,
-                Key = $"{cachedDataContainer.CacheKey}.json.gz",
+                Key = cacheFileName,
                 InputStream = compressed,
                 ContentType = "application/json",
             };

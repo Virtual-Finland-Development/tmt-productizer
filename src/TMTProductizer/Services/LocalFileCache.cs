@@ -18,9 +18,10 @@ public class LocalFileCache : ILocalFileCache
     public async Task<T?> GetCacheItem<T>(string cacheKey)
     {
         var typedCacheKey = CacheUtils.GetTypedCacheKey<T>(cacheKey);
+        var cacheFileName = $"{typedCacheKey}.json";
 
-        _logger.LogInformation("Get from local cache: {cacheKey}", cacheKey);
-        var cachePath = Path.Combine(Path.GetTempPath(), cacheKey);
+        _logger.LogInformation("Get from local cache: {cacheFileName}", cacheFileName);
+        var cachePath = Path.Combine(Path.GetTempPath(), cacheFileName);
         if (File.Exists(cachePath))
         {
             try
@@ -32,11 +33,11 @@ public class LocalFileCache : ILocalFileCache
                     var cacheItem = CacheUtils.GetCacheItemFromContainer<T>(cacheContainer);
                     if (cacheItem != null)
                     {
-                        _logger.LogInformation($"Local cache match: {cacheKey}", cacheKey);
+                        _logger.LogInformation($"Local cache match: {cacheFileName}", cacheFileName);
                         return await Task.FromResult(cacheItem);
                     }
 
-                    _logger.LogInformation("Local cache file {cacheKey} is too old, delete it", cacheKey);
+                    _logger.LogInformation("Local cache file {cacheFileName} is too old, delete it", cacheFileName);
                     File.Delete(cachePath);
                 }
             }
@@ -45,6 +46,8 @@ public class LocalFileCache : ILocalFileCache
                 _logger.LogError(e, "Error operating on a local cache file");
             }
         }
+
+        _logger.LogInformation("No local cache layer for: {cacheFileName}", cacheFileName);
         return await Task.FromResult(default(T));
     }
 
@@ -53,11 +56,15 @@ public class LocalFileCache : ILocalFileCache
     /// </summary>
     public async Task SaveCacheItem<T>(string cacheKey, T cacheValue, int expiresInSeconds = 0)
     {
+        var typedCacheKey = CacheUtils.GetTypedCacheKey<T>(cacheKey);
+        var cacheFileName = $"{typedCacheKey}.json";
+
+        _logger.LogInformation("Saving to local cache: {cacheFileName}", cacheFileName);
 
         // Transform data value to a known cache container type
         var cachedDataContainer = CachedDataContainer.FromCacheItem<T>(cacheKey, cacheValue, expiresInSeconds, true);
         var cacheTextValue = StringUtils.JsonSerializeObject<CachedDataContainer>(cachedDataContainer);
-        var cachePath = Path.Combine(Path.GetTempPath(), cacheKey);
+        var cachePath = Path.Combine(Path.GetTempPath(), cacheFileName);
 
         try
         {
