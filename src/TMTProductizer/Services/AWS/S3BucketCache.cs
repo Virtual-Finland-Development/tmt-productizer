@@ -34,6 +34,7 @@ public class S3BucketCache : IS3BucketCache
             Key = $"{typedCacheKey}.json.gz",
         };
 
+        _logger.LogInformation($"Fetch for cache key: {typedCacheKey}", typedCacheKey);
         // Issue request and remember to dispose of the response
         try
         {
@@ -60,11 +61,12 @@ public class S3BucketCache : IS3BucketCache
                         _logger.LogInformation($"Cache miss for {typedCacheKey}", typedCacheKey);
                         return default(T);
                     }
-                    catch (Exception)
+                    catch (Exception e)
                     {
                         // Ignore: the cache item is not a container, will be overwritten the next query where saving succeeds
-                        _logger.LogInformation("Bad cache item, will be overwritten.");
-                        return default(T);
+                        _logger.LogInformation(e, "Bad cache item, will be overwritten.");
+                        // return default(T);
+                        throw e; // Panic for now
                     }
                 }
             }
