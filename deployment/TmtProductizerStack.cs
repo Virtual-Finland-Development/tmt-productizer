@@ -82,7 +82,7 @@ public class TmtProductizerStack : Stack
             Runtime = "dotnet6",
             Handler = "TMTProductizer",
             Timeout = 30,
-            MemorySize = 4096,
+            MemorySize = 5120,
             Environment = new FunctionEnvironmentArgs
             {
                 Variables =
@@ -104,7 +104,7 @@ public class TmtProductizerStack : Stack
             Runtime = "dotnet6",
             Handler = "TMTCacheUpdater",
             Timeout = 120,
-            MemorySize = 1024,
+            MemorySize = 5120,
             Environment = lambdaFunction.Environment.Apply(env => new FunctionEnvironmentArgs
             {
                 Variables = env?.Variables ?? new InputMap<string>()

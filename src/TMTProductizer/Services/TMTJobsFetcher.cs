@@ -36,20 +36,8 @@ public class TMTJobsFetcher : ITMTJobsFetcher
             return cachedResults;
         }
 
-        _logger.LogInformation("Fetching TMT API results from TMT API");
-        var results = await GetTMTResultsFromAPI();
-        if (results.IlmoituksienMaara > 0)
-        {
-            _logger.LogInformation("Saving TMT API results to cache");
-            await _tmtApiResultsCacheService.SaveCacheItem(_tmtCacheKey, results, _tmtCacheTTL);
-            _logger.LogInformation("Saving complete");
-        }
-        else
-        {
-            _logger.LogWarning("Received no results from TMT API");
-        }
-
-        return results;
+        _logger.LogInformation("TMT API results not found from cache, send an empty response");
+        return new Hakutulos(new List<Tyopaikkailmoitus>(), 0);
     }
 
     /// <summary>

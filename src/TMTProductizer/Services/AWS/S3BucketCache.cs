@@ -65,8 +65,7 @@ public class S3BucketCache : IS3BucketCache
                     {
                         // Ignore: the cache item is not a container, will be overwritten the next query where saving succeeds
                         _logger.LogInformation(e, "Bad cache item, will be overwritten.");
-                        // return default(T);
-                        throw e; // Panic for now
+                        return default(T);
                     }
                 }
             }
