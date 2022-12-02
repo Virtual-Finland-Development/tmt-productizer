@@ -6,3 +6,9 @@ test: build
 
 deploy: build
 	pulumi -C deployment up --yes --config tmt-productizer:artifactPath=release/
+
+run:
+	dotnet run --project ./src/TMTProductizer/TMTProductizer.csproj
+
+update-cache:
+	dotnet run --project ./src/TMTCacheUpdater/TMTCacheUpdater.csproj

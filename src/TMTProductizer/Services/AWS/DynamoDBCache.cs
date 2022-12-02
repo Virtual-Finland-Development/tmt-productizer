@@ -2,7 +2,7 @@ using Amazon;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
 using Amazon.DynamoDBv2.DocumentModel;
-using TMTProductizer.Models;
+using TMTProductizer.Models.Cache;
 using TMTProductizer.Utils;
 
 namespace TMTProductizer.Services.AWS;

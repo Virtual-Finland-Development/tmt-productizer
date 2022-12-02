@@ -1,7 +1,7 @@
 using System.IO.Compression;
 using System.Text;
 using TMTProductizer.Exceptions;
-using TMTProductizer.Models;
+using TMTProductizer.Models.Cache;
 
 namespace TMTProductizer.Utils;
 

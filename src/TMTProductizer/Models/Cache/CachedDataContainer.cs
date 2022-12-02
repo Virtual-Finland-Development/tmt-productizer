@@ -1,6 +1,6 @@
 using TMTProductizer.Utils;
 
-namespace TMTProductizer.Models;
+namespace TMTProductizer.Models.Cache;
 
 public class CachedDataContainer
 {

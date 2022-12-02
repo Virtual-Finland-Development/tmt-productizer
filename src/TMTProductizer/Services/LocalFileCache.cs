@@ -1,4 +1,4 @@
-using TMTProductizer.Models;
+using TMTProductizer.Models.Cache;
 using TMTProductizer.Utils;
 
 namespace TMTProductizer.Services;

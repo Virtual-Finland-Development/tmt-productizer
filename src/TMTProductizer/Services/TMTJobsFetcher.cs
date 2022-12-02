@@ -2,6 +2,7 @@ using System.Net.Http.Headers;
 using CodeGen.Api.TMT.Model;
 using TMTProductizer.Exceptions;
 using TMTProductizer.Models;
+using TMTProductizer.Models.Cache;
 using TMTProductizer.Services.AWS;
 using TMTProductizer.Utils;
 
@@ -28,17 +29,17 @@ public class TMTJobsFetcher : ITMTJobsFetcher
     /// <summary>
     /// Fetches the results from the cache or from the TMT API if the cache is empty.
     /// </summary>
-    public async Task<Hakutulos> FetchTMTAPIResults()
+    public async Task<CachedHakutulos> FetchTMTAPIResults()
     {
-        var cachedResults = await _tmtApiResultsCacheService.GetCacheItem<Hakutulos>(_tmtCacheKey);
+        var cachedResults = await _tmtApiResultsCacheService.GetCacheItem<CachedHakutulos>(_tmtCacheKey);
         if (cachedResults != null)
         {
             _logger.LogInformation("Found TMT API results from cache");
             return cachedResults;
         }
 
-        _logger.LogInformation("TMT API results not found from cache, send an empty response");
-        return new Hakutulos(new List<Tyopaikkailmoitus>(), 0);
+        _logger.LogError("TMT API results not found from cache, respond with an empty list"); // Cache can't be rebuilt from an API call
+        return new CachedHakutulos(new Hakutulos(new List<Tyopaikkailmoitus>(), 0));
     }
 
     /// <summary>
@@ -51,7 +52,10 @@ public class TMTJobsFetcher : ITMTJobsFetcher
         if (results.IlmoituksienMaara > 0)
         {
             _logger.LogInformation("Saving results to cache");
-            await _tmtApiResultsCacheService.SaveCacheItem(_tmtCacheKey, results, _tmtCacheTTL);
+            // Transform the Hakutulos to CachedHakutulos
+            var cachedResults = new CachedHakutulos(results);
+            // Save the results to cache
+            await _tmtApiResultsCacheService.SaveCacheItem(_tmtCacheKey, cachedResults, _tmtCacheTTL);
             _logger.LogInformation("Saving complete");
         }
         else

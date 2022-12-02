@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using Moq.Protected;
 using TMTProductizer.Models;
+using TMTProductizer.Models.Cache;
 using TMTProductizer.Services;
 using TMTProductizer.Services.AWS;
 using TMTProductizer.UnitTests.Mocks;
@@ -19,6 +20,7 @@ public class JobServiceTests
     {
         string tmtJson = MockUtils.GetTMTTestResponse();
         Hakutulos tmtResults = StringUtils.JsonDeserializeObject<Hakutulos>(tmtJson);
+        CachedHakutulos cachedResults = new CachedHakutulos(tmtResults);
 
         var handler = new Mock<HttpMessageHandler>(MockBehavior.Strict);
         handler.Protected()
@@ -40,7 +42,7 @@ public class JobServiceTests
             .ReturnsAsync(new APIAuthorizationPackage());
         var tmtApiResultsCacheService = new Mock<IS3BucketCache>();
         var jobFetcher = new Mock<ITMTJobsFetcher>();
-        jobFetcher.Setup(service => service.FetchTMTAPIResults()).ReturnsAsync(tmtResults);
+        jobFetcher.Setup(service => service.FetchTMTAPIResults()).ReturnsAsync(cachedResults);
 
         var query = new JobsRequest
         {

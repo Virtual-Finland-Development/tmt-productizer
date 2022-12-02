@@ -1,7 +1,8 @@
 using Amazon.S3;
 using Amazon.S3.Model;
 using System.Text;
-using TMTProductizer.Models;
+using TMTProductizer.Exceptions;
+using TMTProductizer.Models.Cache;
 using TMTProductizer.Utils;
 
 namespace TMTProductizer.Services.AWS;
@@ -81,7 +82,12 @@ public class S3BucketCache : IS3BucketCache
         }
         catch (AmazonS3Exception e)
         {
-            _logger.LogWarning(e, "Error when fetching cache item from S3: {cacheFileName}", cacheFileName);
+            _logger.LogError(e, "Error when fetching cache item from S3: {cacheFileName}", cacheFileName);
+            return default(T);
+        }
+        catch (JSONParseException e)
+        {
+            _logger.LogError(e, "Failed in parsing the cached json contents: {cacheFileName}", cacheFileName);
             return default(T);
         }
     }
