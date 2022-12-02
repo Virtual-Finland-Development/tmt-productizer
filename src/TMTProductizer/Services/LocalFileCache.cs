@@ -33,7 +33,7 @@ public class LocalFileCache : ILocalFileCache
                     var cacheItem = CacheUtils.GetCacheItemFromContainer<T>(cacheContainer);
                     if (cacheItem != null)
                     {
-                        _logger.LogInformation($"Local cache match: {cacheFileName}", cacheFileName);
+                        _logger.LogInformation("Local cache match: {cacheFileName}", cacheFileName);
                         return await Task.FromResult(cacheItem);
                     }
 
