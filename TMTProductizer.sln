@@ -1,5 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+# 
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TMTProductizer", "src\TMTProductizer\TMTProductizer.csproj", "{353957EE-849A-4D35-B361-9E7750EB5D8C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeGen.Api.TMT", "src\CodeGen.Api.TMT\CodeGen.Api.TMT.csproj", "{83491B17-0455-46A5-86E5-E829BEA967B5}"
@@ -8,7 +9,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TMTProductizer.Infrastructu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TMTProductizer.UnitTests", "src\TMTProductizer.UnitTests\TMTProductizer.UnitTests.csproj", "{EEF149AB-CDFE-4ADD-9DF3-9D11641B211A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TMTCacheUpdater", "src\TMTCacheUpdater\TMTCacheUpdater.csproj", "{TMTCacheUpdater}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{E0F44791-DABD-40CC-9212-3C4467177BAF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TMTCacheUpdater", "src\TMTCacheUpdater\TMTCacheUpdater.csproj", "{686CD17D-F1F0-4520-8AB8-AD0ACB98ED5D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,9 +35,12 @@ Global
 		{EEF149AB-CDFE-4ADD-9DF3-9D11641B211A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EEF149AB-CDFE-4ADD-9DF3-9D11641B211A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EEF149AB-CDFE-4ADD-9DF3-9D11641B211A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{TMTCacheUpdater}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{TMTCacheUpdater}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{TMTCacheUpdater}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{TMTCacheUpdater}.Release|Any CPU.Build.0 = Release|Any CPU
+		{686CD17D-F1F0-4520-8AB8-AD0ACB98ED5D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{686CD17D-F1F0-4520-8AB8-AD0ACB98ED5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{686CD17D-F1F0-4520-8AB8-AD0ACB98ED5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{686CD17D-F1F0-4520-8AB8-AD0ACB98ED5D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{686CD17D-F1F0-4520-8AB8-AD0ACB98ED5D} = {E0F44791-DABD-40CC-9212-3C4467177BAF}
 	EndGlobalSection
 EndGlobal
