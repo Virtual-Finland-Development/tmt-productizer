@@ -5,6 +5,7 @@ using Moq.Protected;
 using Microsoft.AspNetCore.Http;
 using FluentAssertions;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Configuration;
 
 namespace TMTProductizer.UnitTests.Services;
 
@@ -26,8 +27,14 @@ public class AuthorizationServiceTests
                 StatusCode = HttpStatusCode.Unauthorized,
                 Content = new StringContent("")
             });
-        var httpClient = new HttpClient(handler.Object) { BaseAddress = new Uri("http://localhost/") };
-        var authorizationService = new AuthGWAuthorizationService(httpClient, new Mock<IHostEnvironment>().Object);
+        var httpClient = new HttpClient(handler.Object) { };
+        var configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(new Dictionary<string, string>
+            {
+                {"AuthGWEndpoint", "http://localhost/"}
+            })
+            .Build();
+        var authorizationService = new AuthGWAuthorizationService(httpClient, configuration, new Mock<IHostEnvironment>().Object);
 
         return authorizationService;
     }

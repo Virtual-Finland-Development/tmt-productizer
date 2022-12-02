@@ -7,6 +7,7 @@ using Pulumi.Aws.Lambda.Inputs;
 using Pulumi.Command.Local;
 
 using Deployment.Resources;
+using Pulumi.Aws.CloudWatch;
 
 namespace Deployment.TmtProductizerStack;
 
@@ -63,6 +64,11 @@ public class TmtProductizerStack : Stack
         var dynamoDBCacheTable = dynamoDBCacheFactory.CreateDynamoDBTable(tags, role);
         DynamoDBCacheTableName = dynamoDBCacheTable.Name; // For pulumi output
 
+        // S3 Bucket for cache
+        var s3BucketCacheFactory = new S3BucketCacheFactory();
+        var s3BucketCache = s3BucketCacheFactory.CreateS3BucketCache(tags, role);
+        S3BucketCacheName = s3BucketCache.BucketName; // For pulumi output
+
         var rolePolicyAttachment = new RolePolicyAttachment($"{projectName}-lambda-role-attachment-{environment}",
             new RolePolicyAttachmentArgs
             {
@@ -75,8 +81,8 @@ public class TmtProductizerStack : Stack
             Role = role.Arn,
             Runtime = "dotnet6",
             Handler = "TMTProductizer",
-            Timeout = 15,
-            MemorySize = 1024,
+            Timeout = 30,
+            MemorySize = 5120,
             Environment = new FunctionEnvironmentArgs
             {
                 Variables =
@@ -84,12 +90,41 @@ public class TmtProductizerStack : Stack
                     { "ASPNETCORE_ENVIRONMENT", "Development" },
                     { "DynamoDBCacheName", DynamoDBCacheTableName }, // Override appsettings.json with staged value
                     { "TmtSecretsName", SecretsManagerSecretName },
+                    { "S3BucketCacheName", S3BucketCacheName },
                 }
             },
             Code = new FileArchive(artifactPath),
             Tags = tags
         });
 
+        // Create cache updating schedule
+        var cacheUpdatingLambdaFunction = new Function($"{projectName}-cache-updater-{environment}", new FunctionArgs
+        {
+            Role = role.Arn,
+            Runtime = "dotnet6",
+            Handler = "TMTCacheUpdater",
+            Timeout = 120,
+            MemorySize = 5120,
+            Environment = lambdaFunction.Environment.Apply(env => new FunctionEnvironmentArgs
+            {
+                Variables = env?.Variables ?? new InputMap<string>()
+            }),
+            Code = new FileArchive(artifactPath),
+            Tags = tags
+        });
+        var cacheUpdateSchedule = new EventRule($"{projectName}-cache-updater-schedule-{environment}", new EventRuleArgs
+        {
+            Description = "Schedule cache update",
+            ScheduleExpression = "rate(1 day)",
+            Tags = tags,
+        });
+        var cacheUpdateScheduleTarget = new EventTarget($"{projectName}-cache-updater-target-{environment}", new EventTargetArgs
+        {
+            Rule = cacheUpdateSchedule.Name,
+            Arn = cacheUpdatingLambdaFunction.Arn
+        });
+
+        // Lambda function URL
         var functionUrl = new FunctionUrl($"{projectName}-function-url-{environment}", new FunctionUrlArgs
         {
             FunctionName = lambdaFunction.Arn,
@@ -115,5 +150,6 @@ public class TmtProductizerStack : Stack
 
     [Output] public Output<string> ApplicationUrl { get; set; }
     [Output] public Output<string> DynamoDBCacheTableName { get; set; }
+    [Output] public Output<string> S3BucketCacheName { get; set; }
     [Output] public Output<string> SecretsManagerSecretName { get; set; }
 }
