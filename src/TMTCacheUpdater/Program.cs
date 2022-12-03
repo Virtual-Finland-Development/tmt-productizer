@@ -11,7 +11,7 @@ internal class Program
     private static async Task Main(string[] args)
     {
         IConfiguration configuration = new ConfigurationBuilder()
-            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+            .AddJsonFile("appsettings.json")
             .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json", optional: true)
             .AddEnvironmentVariables()
             .Build();
@@ -27,6 +27,7 @@ internal class Program
                     .AddScoped<IAPIAuthorizationService, TMTAPIAuthorizationService>()
                     .AddScoped<IDynamoDBCache, DynamoDBCache>()
                     .AddScoped<IS3BucketCache, S3BucketCache>()
+                    .AddScoped<ILocalFileCache, LocalFileCache>()
                     .AddScoped<IProxyHttpClientFactory, ProxyHttpClientFactory>()
                     .AddScoped<HttpClient>(sp => new HttpClient())
                 );
