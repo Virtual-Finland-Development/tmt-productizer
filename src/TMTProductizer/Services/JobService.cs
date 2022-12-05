@@ -16,14 +16,16 @@ public class JobService : IJobService
 
     public async Task<(List<Job> jobs, long totalCount)> Find(JobsRequest query)
     {
+        string requestedKielikoodi = "fi"; // @TODO: Make this configurable
+
         // Fetch hakutulos results
         var results = await _jobsFetcher.FetchTMTAPIResults();
 
         // Filter and paginate the results
-        var filteredResults = FilterAndPaginateResults(results, query);
+        var filteredResults = FilterAndPaginateResults(results, query, requestedKielikoodi);
 
         // Transform the results to a list of jobs
-        var jobs = TransformTMTResultsToJobs(filteredResults);
+        var jobs = TransformTMTResultsToJobs(filteredResults, requestedKielikoodi);
 
         return (jobs, results.IlmoituksienMaara);
     }
@@ -32,13 +34,20 @@ public class JobService : IJobService
     /// <summary>
     /// Transforms the TMT API results to a list of jobs.
     /// </summary>
-    private List<Job> TransformTMTResultsToJobs(Hakutulos results)
+    private List<Job> TransformTMTResultsToJobs(Hakutulos results, string requestedKielikoodi)
     {
+
+        // Creates a tmt link for the job based on the työmarkkinatori url template
+        string GenerateApplicationUrl(Tyopaikkailmoitus ilmoitus, string kielikoodi)
+        {
+            return $"https://tyomarkkinatori.fi/henkiloasiakkaat/avoimet-tyopaikat/{ilmoitus.IlmoituksenID}/{kielikoodi}";
+        }
+
         var jobs = new List<Job>();
 
         jobs.AddRange(results.Ilmoitukset.Select(ilmoitus => new Job
         {
-            Employer = ilmoitus.IlmoittajanNimi.FirstOrDefault(x => x.KieliKoodi == "fi")?.Arvo.ToString() ?? string.Empty,
+            Employer = ilmoitus.IlmoittajanNimi.FirstOrDefault(x => x.KieliKoodi == requestedKielikoodi)?.Arvo.ToString() ?? string.Empty,
             Location = new Location
             {
                 Municipality = ilmoitus.Sijainti.Toimipaikka.Postitoimipaikka,
@@ -46,13 +55,13 @@ public class JobService : IJobService
             },
             BasicInfo = new BasicInfo
             {
-                Title = ilmoitus.Perustiedot.TyonOtsikko.FirstOrDefault(x => x.KieliKoodi == "fi")?.Arvo.ToString() ?? string.Empty,
+                Title = ilmoitus.Perustiedot.TyonOtsikko.FirstOrDefault(x => x.KieliKoodi == requestedKielikoodi)?.Arvo.ToString() ?? string.Empty,
                 Description =
-                    ilmoitus.Perustiedot.TyonKuvaus.FirstOrDefault(x => x.KieliKoodi == "fi")?.Arvo.ToString() ?? string.Empty,
+                    ilmoitus.Perustiedot.TyonKuvaus.FirstOrDefault(x => x.KieliKoodi == requestedKielikoodi)?.Arvo.ToString() ?? string.Empty,
                 WorkTimeType = ilmoitus.Perustiedot.TyoAika
             },
             PublishedAt = ilmoitus.Julkaisupvm,
-            ApplicationUrl = ilmoitus.Hakeminen.HakemuksenUrl,
+            ApplicationUrl = GenerateApplicationUrl(ilmoitus, requestedKielikoodi),
             ApplicationEndDate = ilmoitus.Hakeminen.HakuaikaPaattyy
         }));
 
@@ -62,15 +71,15 @@ public class JobService : IJobService
     /// <summary>
     /// Filters and paginates the results, by mutation
     /// </summary>
-    private Hakutulos FilterAndPaginateResults(Hakutulos results, JobsRequest query)
+    private Hakutulos FilterAndPaginateResults(Hakutulos results, JobsRequest query, string requestedKielikoodi)
     {
         // Filter by search phase
         if (query.Query != "")
         {
             results.Ilmoitukset = results.Ilmoitukset.FindAll(ilmoitus =>
             {
-                var title = ilmoitus.Perustiedot.TyonOtsikko.FirstOrDefault(x => x.KieliKoodi == "fi")?.Arvo.ToString() ?? string.Empty;
-                var description = ilmoitus.Perustiedot.TyonKuvaus.FirstOrDefault(x => x.KieliKoodi == "fi")?.Arvo.ToString() ?? string.Empty;
+                var title = ilmoitus.Perustiedot.TyonOtsikko.FirstOrDefault(x => x.KieliKoodi == requestedKielikoodi)?.Arvo.ToString() ?? string.Empty;
+                var description = ilmoitus.Perustiedot.TyonKuvaus.FirstOrDefault(x => x.KieliKoodi == requestedKielikoodi)?.Arvo.ToString() ?? string.Empty;
                 return (description != null && description.Contains(query.Query)) || (title != null && title.Contains(query.Query));
             });
         }
