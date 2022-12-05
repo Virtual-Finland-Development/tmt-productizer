@@ -5,6 +5,9 @@ namespace TMTProductizer.Models.Cache.TMT;
 
 public class CachedTyopaikkailmoitus
 {
+    /// <summary>
+    /// Purkka for deserialization
+    /// </summary>
     public CachedTyopaikkailmoitus()
     {
 

@@ -4,6 +4,9 @@ namespace TMTProductizer.Models.Cache.TMT;
 
 public class CachedHakutulos
 {
+    /// <summary>
+    /// Purkka for deserialization
+    /// </summary>
     public CachedHakutulos()
     {
 
