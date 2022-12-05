@@ -5,12 +5,28 @@ namespace TMTProductizer.Models.Cache.TMT;
 
 public class CachedPerustiedot
 {
-    public CachedPerustiedot(List<LokalisoituArvo> tyonOtsikko, List<LokalisoituArvo> tyonKuvaus, string tyoAika)
+    /// <summary>
+    /// Purkka for deserialization
+    /// </summary>
+    public CachedPerustiedot()
     {
-        TyonOtsikko = tyonOtsikko;
-        TyonKuvaus = tyonKuvaus;
-        TyoAika = tyoAika;
+
     }
+
+    public CachedPerustiedot(Perustiedot perustiedot)
+    {
+        TyonOtsikko = perustiedot.TyonOtsikko;
+        TyonKuvaus = perustiedot.TyonKuvaus;
+        TyoAika = perustiedot.TyoAika;
+    }
+
+    public CachedPerustiedot(CachedPerustiedot perustiedot)
+    {
+        TyonOtsikko = perustiedot.TyonOtsikko;
+        TyonKuvaus = perustiedot.TyonKuvaus;
+        TyoAika = perustiedot.TyoAika;
+    }
+
 
     [DataMember(Name = "tyonOtsikko")]
     public List<LokalisoituArvo> TyonOtsikko { get; set; }

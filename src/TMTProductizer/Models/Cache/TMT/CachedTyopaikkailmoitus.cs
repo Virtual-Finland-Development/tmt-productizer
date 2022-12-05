@@ -16,11 +16,11 @@ public class CachedTyopaikkailmoitus
     public CachedTyopaikkailmoitus(Tyopaikkailmoitus tyopaikkailmoitus)
     {
         IlmoituksenID = tyopaikkailmoitus.IlmoituksenID;
-        Perustiedot = new CachedPerustiedot(tyopaikkailmoitus.Perustiedot.TyonOtsikko, tyopaikkailmoitus.Perustiedot.TyonKuvaus, tyopaikkailmoitus.Perustiedot.TyoAika);
-        Sijainti = tyopaikkailmoitus.Sijainti;
+        Perustiedot = new CachedPerustiedot(tyopaikkailmoitus.Perustiedot);
+        Sijainti = new CachedSijainti(tyopaikkailmoitus.Sijainti);
         IlmoittajanNimi = tyopaikkailmoitus.IlmoittajanNimi;
         Julkaisupvm = tyopaikkailmoitus.Julkaisupvm;
-        Hakeminen = new CachedHakeminen(tyopaikkailmoitus.Hakeminen?.HakemuksenUrl ?? string.Empty, tyopaikkailmoitus.Hakeminen?.HakuaikaPaattyy ?? default(DateTime));
+        Hakeminen = new CachedHakeminen(tyopaikkailmoitus.Hakeminen);
     }
 
     public CachedTyopaikkailmoitus(CachedTyopaikkailmoitus tyopaikkailmoitus)
@@ -39,18 +39,14 @@ public class CachedTyopaikkailmoitus
     [DataMember(Name = "perustiedot")]
     public CachedPerustiedot Perustiedot { get; set; }
 
-
     [DataMember(Name = "sijainti")]
-    public Sijainti Sijainti { get; set; }
-
+    public CachedSijainti Sijainti { get; set; }
 
     [DataMember(Name = "ilmoittajanNimi")]
     public List<LokalisoituArvo> IlmoittajanNimi { get; set; }
 
-
     [DataMember(Name = "julkaisupvm")]
     public DateTime Julkaisupvm { get; set; }
-
 
     [DataMember(Name = "hakeminen")]
     public CachedHakeminen Hakeminen { get; set; }
