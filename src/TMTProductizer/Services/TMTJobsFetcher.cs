@@ -2,7 +2,7 @@ using System.Net.Http.Headers;
 using CodeGen.Api.TMT.Model;
 using TMTProductizer.Exceptions;
 using TMTProductizer.Models;
-using TMTProductizer.Models.Cache;
+using TMTProductizer.Models.Cache.TMT;
 using TMTProductizer.Services.AWS;
 using TMTProductizer.Utils;
 

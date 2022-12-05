@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using Moq.Protected;
 using TMTProductizer.Models;
-using TMTProductizer.Models.Cache;
+using TMTProductizer.Models.Cache.TMT;
 using TMTProductizer.Services;
 using TMTProductizer.Services.AWS;
 using TMTProductizer.UnitTests.Mocks;

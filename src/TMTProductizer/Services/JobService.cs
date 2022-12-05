@@ -1,5 +1,5 @@
 using TMTProductizer.Models;
-using TMTProductizer.Models.Cache;
+using TMTProductizer.Models.Cache.TMT;
 
 namespace TMTProductizer.Services;
 
