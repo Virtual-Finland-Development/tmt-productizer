@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using System.Diagnostics;
 using TMTProductizer.Services;
 using TMTProductizer.Services.AWS;
@@ -32,10 +31,12 @@ internal class Program
                     .AddScoped<HttpClient>(sp => new HttpClient())
                 );
 
-        using var host = builder.Build();
-
-        Stopwatch watch = Stopwatch.StartNew();
-        await host.RunAsync();
-        Console.WriteLine($"Elapsed time {watch.ElapsedMilliseconds} ms.");
+        using (var host = builder.Build())
+        {
+            Console.WriteLine("Running CacheUpdateWorker...");
+            Stopwatch watch = Stopwatch.StartNew();
+            await host.RunAsync();
+            Console.WriteLine($"Elapsed time {watch.ElapsedMilliseconds} ms.");
+        }
     }
 }
