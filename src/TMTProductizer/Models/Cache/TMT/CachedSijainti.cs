@@ -10,7 +10,10 @@ public class CachedSijainti
     /// </summary>
     public CachedSijainti()
     {
-
+        Kunta = new List<string>();
+        Maa = new List<string>();
+        Maakunta = new List<string>();
+        Toimipaikka = new CachedToimipaikka();
     }
 
     public CachedSijainti(Sijainti sijainti)

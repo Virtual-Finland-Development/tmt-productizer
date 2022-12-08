@@ -9,7 +9,8 @@ public class CachedHakutulos
     /// </summary>
     public CachedHakutulos()
     {
-
+        Ilmoitukset = new List<CachedTyopaikkailmoitus>();
+        IlmoituksienMaara = 0;
     }
 
     public CachedHakutulos(Hakutulos hakutulos)

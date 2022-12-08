@@ -11,7 +11,8 @@ public class CachedHakeminen
 
     public CachedHakeminen()
     {
-
+        HakemuksenUrl = string.Empty;
+        HakuaikaPaattyy = DateTime.MinValue;
     }
 
     public CachedHakeminen(Hakeminen hakeminen)

@@ -10,7 +10,8 @@ public class CachedToimipaikka
     /// </summary>
     public CachedToimipaikka()
     {
-
+        Postitoimipaikka = string.Empty;
+        Postinumero = string.Empty;
     }
 
     public CachedToimipaikka(Toimipaikka toimipaikka)

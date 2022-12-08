@@ -10,7 +10,9 @@ public class CachedPerustiedot
     /// </summary>
     public CachedPerustiedot()
     {
-
+        TyonOtsikko = new List<LokalisoituArvo>();
+        TyonKuvaus = new List<LokalisoituArvo>();
+        TyoAika = string.Empty;
     }
 
     public CachedPerustiedot(Perustiedot perustiedot)

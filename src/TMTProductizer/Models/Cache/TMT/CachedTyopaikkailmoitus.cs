@@ -10,7 +10,12 @@ public class CachedTyopaikkailmoitus
     /// </summary>
     public CachedTyopaikkailmoitus()
     {
-
+        IlmoituksenID = string.Empty;
+        Perustiedot = new CachedPerustiedot();
+        Sijainti = new CachedSijainti();
+        IlmoittajanNimi = new List<LokalisoituArvo>();
+        Julkaisupvm = DateTime.MinValue;
+        Hakeminen = new CachedHakeminen();
     }
 
     public CachedTyopaikkailmoitus(Tyopaikkailmoitus tyopaikkailmoitus)
