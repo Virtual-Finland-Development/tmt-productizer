@@ -83,7 +83,7 @@ public class TmtProductizerStack : Stack
             Runtime = "dotnet6",
             Handler = "TMTProductizer",
             Timeout = 30,
-            MemorySize = 5120,
+            MemorySize = 4096,
             Environment = new FunctionEnvironmentArgs
             {
                 Variables =
