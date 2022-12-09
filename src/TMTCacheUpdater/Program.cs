@@ -29,7 +29,7 @@ internal class Program
                     .AddScoped<ILocalFileCache, LocalFileCache>()
                     .AddScoped<IProxyHttpClientFactory, ProxyHttpClientFactory>()
                     .AddScoped<HttpClient>(sp => new HttpClient())
-                );
+                ).UseConsoleLifetime();
 
         using (var host = builder.Build())
         {
