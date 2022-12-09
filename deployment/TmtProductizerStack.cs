@@ -115,13 +115,20 @@ public class TmtProductizerStack : Stack
         var cacheUpdateSchedule = new EventRule($"{projectName}-cache-updater-schedule-{environment}", new EventRuleArgs
         {
             Description = "Schedule cache update",
-            ScheduleExpression = "rate(1 day)",
+            ScheduleExpression = "cron(30 4 * * ? *)",
             Tags = tags,
         });
-        var cacheUpdateScheduleTarget = new EventTarget($"{projectName}-cache-updater-target-{environment}", new EventTargetArgs
+        new EventTarget($"{projectName}-cache-updater-target-{environment}", new EventTargetArgs
         {
             Rule = cacheUpdateSchedule.Name,
             Arn = cacheUpdatingLambdaFunction.Arn
+        });
+        new Permission($"{projectName}-cache-updater-permission-{environment}", new()
+        {
+            Action = "lambda:InvokeFunction",
+            Function = cacheUpdatingLambdaFunction.Name,
+            Principal = "events.amazonaws.com",
+            SourceArn = cacheUpdatingLambdaFunction.Arn,
         });
 
         // Lambda function URL
@@ -131,7 +138,7 @@ public class TmtProductizerStack : Stack
             AuthorizationType = "NONE"
         });
 
-        var command = new Command($"{projectName}-add-permissions-command-{environment}", new CommandArgs
+        new Command($"{projectName}-add-permissions-command-{environment}", new CommandArgs
         {
             Create = Output.Format(
                 $"aws lambda add-permission --function-name {lambdaFunction.Arn} --action lambda:InvokeFunctionUrl --principal '*' --function-url-auth-type NONE --statement-id FunctionUrlAllowAccess")

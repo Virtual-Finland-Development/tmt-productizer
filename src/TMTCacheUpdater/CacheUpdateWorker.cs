@@ -19,11 +19,12 @@ public class CacheUpdateWorker : BackgroundService
         try
         {
             await _tmtJobsFetcher.UpdateTMTAPICache();
+            Environment.ExitCode = 0; // Notify lambda runner that a success occurred
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
-
+            Environment.ExitCode = 1;
         }
         _lifeTime.StopApplication();
     }
