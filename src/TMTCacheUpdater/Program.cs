@@ -7,7 +7,7 @@ namespace TMTCacheUpdater;
 
 internal class Program
 {
-    private static async Task Main(string[] args)
+    private static async Task<int> Main(string[] args)
     {
         IConfiguration configuration = new ConfigurationBuilder()
             .AddJsonFile("appsettings.json")
@@ -38,5 +38,7 @@ internal class Program
             await host.RunAsync();
             Console.WriteLine($"Elapsed time {watch.ElapsedMilliseconds} ms.");
         }
+
+        return 0; // Signal success for lambda runner
     }
 }

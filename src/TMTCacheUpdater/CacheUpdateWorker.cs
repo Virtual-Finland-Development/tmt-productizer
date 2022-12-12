@@ -16,16 +16,7 @@ public class CacheUpdateWorker : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        try
-        {
-            await _tmtJobsFetcher.UpdateTMTAPICache();
-            Environment.ExitCode = 0; // Notify lambda runner that a success occurred
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            Environment.ExitCode = 1;
-        }
+        await _tmtJobsFetcher.UpdateTMTAPICache();
         _lifeTime.StopApplication();
     }
 }

@@ -8,6 +8,7 @@ using Pulumi.Command.Local;
 
 using Deployment.Resources;
 using Pulumi.Aws.CloudWatch;
+using Pulumi.Aws.CloudWatch.Inputs;
 
 namespace Deployment.TmtProductizerStack;
 
@@ -112,7 +113,7 @@ public class TmtProductizerStack : Stack
             Code = new FileArchive(artifactPath),
             Tags = tags
         });
-        var cacheUpdateSchedule = new EventRule($"{projectName}-cache-updater-schedule-{environment}", new EventRuleArgs
+        var cacheUpdateScheduleRule = new EventRule($"{projectName}-cache-updater-schedule-{environment}", new EventRuleArgs
         {
             Description = "Schedule cache update",
             ScheduleExpression = "cron(30 4 * * ? *)",
@@ -120,15 +121,20 @@ public class TmtProductizerStack : Stack
         });
         new EventTarget($"{projectName}-cache-updater-target-{environment}", new EventTargetArgs
         {
-            Rule = cacheUpdateSchedule.Name,
-            Arn = cacheUpdatingLambdaFunction.Arn
+            Rule = cacheUpdateScheduleRule.Name,
+            Arn = cacheUpdatingLambdaFunction.Arn,
+            RetryPolicy = new EventTargetRetryPolicyArgs
+            {
+                MaximumEventAgeInSeconds = 120,
+                MaximumRetryAttempts = 0
+            }
         });
         new Permission($"{projectName}-cache-updater-permission-{environment}", new()
         {
             Action = "lambda:InvokeFunction",
             Function = cacheUpdatingLambdaFunction.Name,
             Principal = "events.amazonaws.com",
-            SourceArn = cacheUpdatingLambdaFunction.Arn,
+            SourceArn = cacheUpdateScheduleRule.Arn,
         });
 
         // Lambda function URL
