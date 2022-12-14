@@ -4,5 +4,8 @@ build:
 test: build
 	dotnet test ./deployment/release/TMTProductizer.UnitTests.dll --no-build --verbosity normal
 
+run:
+	dotnet run --project ./src/TMTProductizer/TMTProductizer.csproj
+
 deploy: build
 	pulumi -C deployment up --yes --config tmt-productizer:artifactPath=release/

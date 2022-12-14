@@ -1,13 +1,18 @@
 using System.Diagnostics;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using TMTProductizer.Services;
 using TMTProductizer.Services.AWS;
 using TMTProductizer.Utils;
 
 namespace TMTCacheUpdater;
 
-internal class Program
+public class Function
 {
-    private static async Task<int> Main(string[] args)
+    IHostBuilder _builder;
+
+    public Function()
     {
         IConfiguration configuration = new ConfigurationBuilder()
             .AddJsonFile("appsettings.json")
@@ -15,11 +20,10 @@ internal class Program
             .AddEnvironmentVariables()
             .Build();
 
-        var builder = Host.CreateDefaultBuilder(args);
-        builder.ConfigureServices(
+        _builder = Host.CreateDefaultBuilder();
+        _builder.ConfigureServices(
             services =>
-                services.AddHostedService<CacheUpdateWorker>()
-                    .AddScoped<IConfiguration>(i => configuration)
+                services.AddScoped<IConfiguration>(i => configuration)
                     .AddScoped<ITMTJobsFetcher, TMTJobsFetcher>()
                     .AddScoped<IAuthorizationService, AuthGWAuthorizationService>()
                     .AddScoped<ISecretsManager, SecretsManager>()
@@ -29,16 +33,18 @@ internal class Program
                     .AddScoped<ILocalFileCache, LocalFileCache>()
                     .AddScoped<IProxyHttpClientFactory, ProxyHttpClientFactory>()
                     .AddScoped<HttpClient>(sp => new HttpClient())
-                ).UseConsoleLifetime();
+                );
+    }
 
-        using (var host = builder.Build())
+    public async Task FunctionHandler()
+    {
+        using (var host = _builder.Build())
         {
             Console.WriteLine("Running CacheUpdateWorker...");
             Stopwatch watch = Stopwatch.StartNew();
-            await host.RunAsync();
+            var tmtJobsFetcher = host.Services.GetRequiredService<ITMTJobsFetcher>();
+            await tmtJobsFetcher.UpdateTMTAPICache();
             Console.WriteLine($"Elapsed time {watch.ElapsedMilliseconds} ms.");
         }
-
-        return 0; // Signal success for lambda runner
     }
 }
