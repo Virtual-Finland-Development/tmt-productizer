@@ -69,3 +69,5 @@ jobs:
       - name: Run Pulumi deployment
         working-directory: ./deployment
         run: pulumi up -y
+      - name: Update cache
+        run: make update-cache
