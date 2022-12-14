@@ -10,18 +10,14 @@ public class CachedTyopaikkailmoitus
     /// </summary>
     public CachedTyopaikkailmoitus()
     {
-        IlmoituksenID = string.Empty;
-        Perustiedot = new CachedPerustiedot();
-        Sijainti = new CachedSijainti();
-        IlmoittajanNimi = new List<LokalisoituArvo>();
-        Julkaisupvm = DateTime.MinValue;
-        Hakeminen = new CachedHakeminen();
+
     }
 
     public CachedTyopaikkailmoitus(Tyopaikkailmoitus tyopaikkailmoitus)
     {
         IlmoituksenID = tyopaikkailmoitus.IlmoituksenID;
         Perustiedot = new CachedPerustiedot(tyopaikkailmoitus.Perustiedot);
+        Osaamisvaatimukset = new CachedOsaamisvaatimukset(tyopaikkailmoitus.Osaamisvaatimukset);
         Sijainti = new CachedSijainti(tyopaikkailmoitus.Sijainti);
         IlmoittajanNimi = tyopaikkailmoitus.IlmoittajanNimi;
         Julkaisupvm = tyopaikkailmoitus.Julkaisupvm;
@@ -32,6 +28,7 @@ public class CachedTyopaikkailmoitus
     {
         IlmoituksenID = tyopaikkailmoitus.IlmoituksenID;
         Perustiedot = tyopaikkailmoitus.Perustiedot;
+        Osaamisvaatimukset = tyopaikkailmoitus.Osaamisvaatimukset;
         Sijainti = tyopaikkailmoitus.Sijainti;
         IlmoittajanNimi = tyopaikkailmoitus.IlmoittajanNimi;
         Julkaisupvm = tyopaikkailmoitus.Julkaisupvm;
@@ -39,20 +36,23 @@ public class CachedTyopaikkailmoitus
     }
 
     [DataMember(Name = "ilmoituksenID")]
-    public string IlmoituksenID { get; set; }
+    public string IlmoituksenID { get; set; } = string.Empty;
 
     [DataMember(Name = "perustiedot")]
-    public CachedPerustiedot Perustiedot { get; set; }
+    public CachedPerustiedot Perustiedot { get; set; } = new CachedPerustiedot();
+
+    [DataMember(Name = "osaamisvaatimukset")]
+    public CachedOsaamisvaatimukset Osaamisvaatimukset { get; set; } = new CachedOsaamisvaatimukset();
 
     [DataMember(Name = "sijainti")]
-    public CachedSijainti Sijainti { get; set; }
+    public CachedSijainti Sijainti { get; set; } = new CachedSijainti();
 
     [DataMember(Name = "ilmoittajanNimi")]
-    public List<LokalisoituArvo> IlmoittajanNimi { get; set; }
+    public List<LokalisoituArvo> IlmoittajanNimi { get; set; } = new List<LokalisoituArvo>();
 
     [DataMember(Name = "julkaisupvm")]
-    public DateTime Julkaisupvm { get; set; }
+    public DateTime Julkaisupvm { get; set; } = DateTime.MinValue;
 
     [DataMember(Name = "hakeminen")]
-    public CachedHakeminen Hakeminen { get; set; }
+    public CachedHakeminen Hakeminen { get; set; } = new CachedHakeminen();
 }

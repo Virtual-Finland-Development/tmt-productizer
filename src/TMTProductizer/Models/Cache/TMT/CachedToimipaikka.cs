@@ -10,8 +10,7 @@ public class CachedToimipaikka
     /// </summary>
     public CachedToimipaikka()
     {
-        Postitoimipaikka = string.Empty;
-        Postinumero = string.Empty;
+
     }
 
     public CachedToimipaikka(Toimipaikka toimipaikka)
@@ -27,8 +26,8 @@ public class CachedToimipaikka
     }
 
     [DataMember(Name = "postitoimipaikka")]
-    public string Postitoimipaikka { get; set; }
+    public string Postitoimipaikka { get; set; } = string.Empty;
 
     [DataMember(Name = "postinumero")]
-    public string Postinumero { get; set; }
+    public string Postinumero { get; set; } = string.Empty;
 }
