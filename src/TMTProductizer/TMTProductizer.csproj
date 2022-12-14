@@ -4,11 +4,6 @@
         <TargetFramework>net6.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
-        <AWSProjectType>Lambda</AWSProjectType>
-        <!-- Makes the build directory similar to a publish directory and helps the AWS .NET Lambda Mock Test Tool find project dependencies. -->
-        <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-        <!-- Generate ready to run images during publishing to improve cold start time. -->
-        <PublishReadyToRun>true</PublishReadyToRun>
     </PropertyGroup>
 
     <ItemGroup>
