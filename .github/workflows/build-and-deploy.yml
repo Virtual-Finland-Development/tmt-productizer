@@ -22,8 +22,10 @@ jobs:
         run: dotnet build --no-restore
         env:
           AuthGWEndpoint: ${{ secrets.AUTHENTICATION_GW_URL }}
-      - name: Publish
+      - name: Publish TMTProductizer
         run: dotnet publish src/TMTProductizer/TMTProductizer.csproj -c Release -o release --nologo
+      - name: Publish TMTCacheUpdater
+        run: dotnet publish src/TMTCacheUpdater/TMTCacheUpdater.csproj -c Release -o release --nologo
       - name: Upload build artifact
         uses: actions/upload-artifact@v3
         with:
@@ -67,3 +69,5 @@ jobs:
       - name: Run Pulumi deployment
         working-directory: ./deployment
         run: pulumi up -y
+      - name: Update cache
+        run: make update-cache

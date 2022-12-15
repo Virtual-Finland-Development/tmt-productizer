@@ -1,10 +1,14 @@
 using System.Net;
+using CodeGen.Api.TMT.Model;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Moq.Protected;
 using TMTProductizer.Models;
+using TMTProductizer.Models.Cache.TMT;
 using TMTProductizer.Services;
+using TMTProductizer.Services.AWS;
+using TMTProductizer.UnitTests.Mocks;
 using TMTProductizer.Utils;
 
 namespace TMTProductizer.UnitTests.Services;
@@ -14,7 +18,10 @@ public class JobServiceTests
     [Test]
     public void TryingToFindJob_WithTmtApiUp_ReturnsListWithData()
     {
-        string TmtJson = GetTMTTestResponse();
+        string tmtJson = MockUtils.GetTMTTestResponse();
+        Hakutulos tmtResults = StringUtils.JsonDeserializeObject<Hakutulos>(tmtJson);
+        CachedHakutulos cachedResults = new CachedHakutulos(tmtResults);
+
         var handler = new Mock<HttpMessageHandler>(MockBehavior.Strict);
         handler.Protected()
             .Setup<Task<HttpResponseMessage>>(
@@ -24,7 +31,7 @@ public class JobServiceTests
             .ReturnsAsync(new HttpResponseMessage
             {
                 StatusCode = HttpStatusCode.OK,
-                Content = new StringContent(TmtJson)
+                Content = new StringContent(tmtJson)
             });
         var httpClient = new HttpClient(handler.Object) { BaseAddress = new Uri("http://localhost/") };
         var proxyClientFactory = new Mock<IProxyHttpClientFactory>();
@@ -33,6 +40,9 @@ public class JobServiceTests
         var tmtAuthorizationService = new Mock<IAPIAuthorizationService>();
         tmtAuthorizationService.Setup(service => service.GetAPIAuthorizationPackage())
             .ReturnsAsync(new APIAuthorizationPackage());
+        var tmtApiResultsCacheService = new Mock<IS3BucketCache>();
+        var jobFetcher = new Mock<ITMTJobsFetcher>();
+        jobFetcher.Setup(service => service.FetchTMTAPIResults()).ReturnsAsync(cachedResults);
 
         var query = new JobsRequest
         {
@@ -46,11 +56,11 @@ public class JobServiceTests
             Paging = new PagingOptions
             {
                 Limit = 1,
-                Offset = 20
+                Offset = 0
             }
         };
 
-        var sut = new JobService(proxyClientFactory.Object, tmtAuthorizationService.Object, new Logger<JobService>(new LoggerFactory()));
+        var sut = new JobService(jobFetcher.Object, new Logger<JobService>(new LoggerFactory()));
 
         var result = sut.Find(query);
 
@@ -80,7 +90,7 @@ public class JobServiceTests
         var tmtAuthorizationService = new Mock<IAPIAuthorizationService>();
         tmtAuthorizationService.Setup(service => service.GetAPIAuthorizationPackage())
             .ReturnsAsync(new APIAuthorizationPackage());
-
+        var tmtApiResultsCacheService = new Mock<IS3BucketCache>();
 
         var query = new JobsRequest
         {
@@ -97,33 +107,13 @@ public class JobServiceTests
                 Offset = 20
             }
         };
-        var sut = new JobService(proxyClientFactory.Object, tmtAuthorizationService.Object, new Logger<JobService>(new LoggerFactory()));
+        var jobFetcher = new TMTJobsFetcher(proxyClientFactory.Object, tmtAuthorizationService.Object, tmtApiResultsCacheService.Object, new Logger<TMTJobsFetcher>(new LoggerFactory()));
+        var sut = new JobService(jobFetcher, new Logger<JobService>(new LoggerFactory()));
 
         var result = sut.Find(query);
 
         result.Should().NotBeNull();
         result.Result.Should().BeOfType<(List<Job>, long)>();
         result.Result.jobs.Count.Should().Be(0);
-    }
-
-
-    private string GetTMTTestResponse()
-    {
-        try
-        {
-            // Open the text file using a stream reader.
-            using (var sr = new StreamReader("../../src/TMTProductizer.UnitTests/Mocks/testTMTResponse.json"))
-            {
-                // Read the stream to a string, and write the string to the console.
-                var line = sr.ReadToEnd();
-                return line;
-            }
-        }
-        catch (IOException e)
-        {
-            Console.WriteLine("The file could not be read:");
-            Console.WriteLine(e.Message);
-            throw e;
-        }
     }
 }

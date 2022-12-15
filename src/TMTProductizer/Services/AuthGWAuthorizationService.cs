@@ -6,10 +6,12 @@ public class AuthGWAuthorizationService : IAuthorizationService
 {
     private readonly HttpClient _client;
     private readonly bool _skipAuthorizationCheck;
+    private readonly Uri _authGWEndpoint;
 
-    public AuthGWAuthorizationService(HttpClient client, IHostEnvironment env)
+    public AuthGWAuthorizationService(HttpClient client, IConfiguration configuration, IHostEnvironment env)
     {
         _client = client;
+        _authGWEndpoint = new Uri(configuration.GetSection("AuthGWEndpoint").Value);
         _skipAuthorizationCheck = env.IsEnvironment("Local") || env.IsEnvironment("Mock");
     }
 
@@ -29,7 +31,7 @@ public class AuthGWAuthorizationService : IAuthorizationService
 
         var authorizeRequest = new HttpRequestMessage
         {
-            RequestUri = new Uri($"{_client.BaseAddress}authorize"),
+            RequestUri = new Uri($"{_authGWEndpoint}authorize"),
             Method = HttpMethod.Post,
             Headers = {
                 { "authorization", originHeaders["authorization"] },

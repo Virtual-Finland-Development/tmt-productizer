@@ -7,6 +7,8 @@ using Pulumi.Aws.Lambda.Inputs;
 using Pulumi.Command.Local;
 
 using Deployment.Resources;
+using Pulumi.Aws.CloudWatch;
+using Pulumi.Aws.CloudWatch.Inputs;
 
 namespace Deployment.TmtProductizerStack;
 
@@ -63,6 +65,11 @@ public class TmtProductizerStack : Stack
         var dynamoDBCacheTable = dynamoDBCacheFactory.CreateDynamoDBTable(tags, role);
         DynamoDBCacheTableName = dynamoDBCacheTable.Name; // For pulumi output
 
+        // S3 Bucket for cache
+        var s3BucketCacheFactory = new S3BucketCacheFactory();
+        var s3BucketCache = s3BucketCacheFactory.CreateS3BucketCache(tags, role);
+        S3BucketCacheName = s3BucketCache.BucketName; // For pulumi output
+
         var rolePolicyAttachment = new RolePolicyAttachment($"{projectName}-lambda-role-attachment-{environment}",
             new RolePolicyAttachmentArgs
             {
@@ -75,8 +82,8 @@ public class TmtProductizerStack : Stack
             Role = role.Arn,
             Runtime = "dotnet6",
             Handler = "TMTProductizer",
-            Timeout = 15,
-            MemorySize = 1024,
+            Timeout = 30,
+            MemorySize = 3072,
             Environment = new FunctionEnvironmentArgs
             {
                 Variables =
@@ -84,19 +91,60 @@ public class TmtProductizerStack : Stack
                     { "ASPNETCORE_ENVIRONMENT", "Development" },
                     { "DynamoDBCacheName", DynamoDBCacheTableName }, // Override appsettings.json with staged value
                     { "TmtSecretsName", SecretsManagerSecretName },
+                    { "S3BucketCacheName", S3BucketCacheName },
                 }
             },
             Code = new FileArchive(artifactPath),
             Tags = tags
         });
 
+        // Create cache updating schedule
+        var cacheUpdatingLambdaFunction = new Function($"{projectName}-cache-updater-{environment}", new FunctionArgs
+        {
+            Role = role.Arn,
+            Runtime = "dotnet6",
+            Handler = "TMTCacheUpdater::TMTCacheUpdater.Function::FunctionHandler",
+            Timeout = 120,
+            MemorySize = 3072,
+            Environment = lambdaFunction.Environment.Apply(env => new FunctionEnvironmentArgs
+            {
+                Variables = env?.Variables ?? new InputMap<string>()
+            }),
+            Code = new FileArchive(artifactPath),
+            Tags = tags
+        });
+        var cacheUpdateScheduleRule = new EventRule($"{projectName}-cache-updater-schedule-{environment}", new EventRuleArgs
+        {
+            Description = "Schedule cache update",
+            ScheduleExpression = "cron(30 4 * * ? *)",
+            Tags = tags,
+        });
+        new EventTarget($"{projectName}-cache-updater-target-{environment}", new EventTargetArgs
+        {
+            Rule = cacheUpdateScheduleRule.Name,
+            Arn = cacheUpdatingLambdaFunction.Arn,
+            RetryPolicy = new EventTargetRetryPolicyArgs
+            {
+                MaximumEventAgeInSeconds = 120,
+                MaximumRetryAttempts = 0
+            }
+        });
+        new Permission($"{projectName}-cache-updater-permission-{environment}", new()
+        {
+            Action = "lambda:InvokeFunction",
+            Function = cacheUpdatingLambdaFunction.Name,
+            Principal = "events.amazonaws.com",
+            SourceArn = cacheUpdateScheduleRule.Arn,
+        });
+
+        // Lambda function URL
         var functionUrl = new FunctionUrl($"{projectName}-function-url-{environment}", new FunctionUrlArgs
         {
             FunctionName = lambdaFunction.Arn,
             AuthorizationType = "NONE"
         });
 
-        var command = new Command($"{projectName}-add-permissions-command-{environment}", new CommandArgs
+        new Command($"{projectName}-add-permissions-command-{environment}", new CommandArgs
         {
             Create = Output.Format(
                 $"aws lambda add-permission --function-name {lambdaFunction.Arn} --action lambda:InvokeFunctionUrl --principal '*' --function-url-auth-type NONE --statement-id FunctionUrlAllowAccess")
@@ -115,5 +163,6 @@ public class TmtProductizerStack : Stack
 
     [Output] public Output<string> ApplicationUrl { get; set; }
     [Output] public Output<string> DynamoDBCacheTableName { get; set; }
+    [Output] public Output<string> S3BucketCacheName { get; set; }
     [Output] public Output<string> SecretsManagerSecretName { get; set; }
 }

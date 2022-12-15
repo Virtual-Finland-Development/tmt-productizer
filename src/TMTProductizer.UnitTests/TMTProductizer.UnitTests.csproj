@@ -27,4 +27,8 @@
       <Compile Remove="Services\HakutulosBuilder.cs" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Update="Mocks/testTMTResponse.json" CopyToOutputDirectory="PreserveNewest" />
+    </ItemGroup>
+
 </Project>

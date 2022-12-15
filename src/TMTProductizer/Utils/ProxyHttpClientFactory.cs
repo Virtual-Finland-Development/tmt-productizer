@@ -6,9 +6,9 @@ namespace TMTProductizer.Utils;
 public class ProxyHttpClientFactory : IProxyHttpClientFactory
 {
     public Uri BaseAddress { get; set; }
-    public ProxyHttpClientFactory(Uri baseAddress)
+    public ProxyHttpClientFactory(IConfiguration configuration)
     {
-        BaseAddress = baseAddress;
+        BaseAddress = new Uri(configuration.GetSection("TmtApiEndpoint").Value);
     }
 
     public HttpClient GetProxyClient(APIAuthorizationPackage authorizationPackage)
