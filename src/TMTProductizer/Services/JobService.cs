@@ -122,34 +122,4 @@ public class JobService : IJobService
 
         return results;
     }
-    
-    /// <summary>
-    /// Transforms the TMT API results to a list of jobs.
-    /// </summary>
-    private List<Job> TransformTMTResultsToJobs(CachedHakutulos results)
-    {
-        var jobs = new List<Job>();
-
-        jobs.AddRange(results.Ilmoitukset.Select(ilmoitus => new Job
-        {
-            Employer = ilmoitus.IlmoittajanNimi.FirstOrDefault(x => x.KieliKoodi == "fi")?.Arvo.ToString() ?? string.Empty,
-            Location = new Location
-            {
-                Municipality = ilmoitus.Sijainti.Toimipaikka.Postitoimipaikka,
-                Postcode = ilmoitus.Sijainti.Toimipaikka.Postinumero
-            },
-            BasicInfo = new BasicInfo
-            {
-                Title = ilmoitus.Perustiedot.TyonOtsikko.FirstOrDefault(x => x.KieliKoodi == "fi")?.Arvo.ToString() ?? string.Empty,
-                Description =
-                    ilmoitus.Perustiedot.TyonKuvaus.FirstOrDefault(x => x.KieliKoodi == "fi")?.Arvo.ToString() ?? string.Empty,
-                WorkTimeType = ilmoitus.Perustiedot.TyoAika
-            },
-            PublishedAt = ilmoitus.Julkaisupvm,
-            ApplicationUrl = ilmoitus.Hakeminen.HakemuksenUrl,
-            ApplicationEndDate = ilmoitus.Hakeminen.HakuaikaPaattyy
-        }));
-
-        return jobs;
-    }
 }
