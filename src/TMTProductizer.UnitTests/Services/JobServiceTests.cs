@@ -7,7 +7,6 @@ using Moq.Protected;
 using TMTProductizer.Models;
 using TMTProductizer.Models.Cache.TMT;
 using TMTProductizer.Services;
-using TMTProductizer.Services.AWS;
 using TMTProductizer.UnitTests.Mocks;
 using TMTProductizer.Utils;
 
@@ -40,7 +39,7 @@ public class JobServiceTests
         var tmtAuthorizationService = new Mock<IAPIAuthorizationService>();
         tmtAuthorizationService.Setup(service => service.GetAPIAuthorizationPackage())
             .ReturnsAsync(new APIAuthorizationPackage());
-        var tmtApiResultsCacheService = new Mock<IS3BucketCache>();
+        var tmtApiResultsCacheService = new Mock<ITMTAPIResultsCacheService>();
         var jobFetcher = new Mock<ITMTJobsFetcher>();
         jobFetcher.Setup(service => service.FetchTMTAPIResults()).ReturnsAsync(cachedResults);
 
@@ -90,7 +89,7 @@ public class JobServiceTests
         var tmtAuthorizationService = new Mock<IAPIAuthorizationService>();
         tmtAuthorizationService.Setup(service => service.GetAPIAuthorizationPackage())
             .ReturnsAsync(new APIAuthorizationPackage());
-        var tmtApiResultsCacheService = new Mock<IS3BucketCache>();
+        var tmtApiResultsCacheService = new Mock<ITMTAPIResultsCacheService>();
 
         var query = new JobsRequest
         {
