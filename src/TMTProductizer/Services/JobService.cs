@@ -111,7 +111,7 @@ public class JobService : IJobService
         }
 
         // By requirements
-        if (query.Requirements != null && query.Requirements.Occupations.Any())
+        if (query.Requirements != null && query.Requirements.Occupations != null && query.Requirements.Occupations.Any())
         {
             results.Ilmoitukset = results.Ilmoitukset.FindAll(ilmoitus =>
             {
@@ -119,7 +119,7 @@ public class JobService : IJobService
                 return query.Requirements.Occupations.Intersect(ammattikoodit).Any();
             });
         }
-        if (query.Requirements != null && query.Requirements.Skills.Any())
+        if (query.Requirements != null && query.Requirements.Skills != null && query.Requirements.Skills.Any())
         {
             results.Ilmoitukset = results.Ilmoitukset.FindAll(ilmoitus =>
             {
