@@ -9,9 +9,9 @@ public class CachedDataContainer
     public Int64 UpdatedAt { get; set; } // Unix timestamp
     public Int64? TimeToLive { get; set; } // TTL timestamp
 
-    public static CachedDataContainer FromCacheItem<T>(string cacheKey, T cacheValue, int expiresInSeconds = 0, bool useNewtonsoftJsonSerializer = false)
+    public static CachedDataContainer FromCacheItem<T>(string cacheKey, T cacheValue, int expiresInSeconds = 0)
     {
-        var cacheTextValue = StringUtils.JsonSerializeObject<T>(cacheValue, useNewtonsoftJsonSerializer);
+        var cacheTextValue = StringUtils.JsonSerializeObject<T>(cacheValue);
         var typedCacheKey = CacheUtils.GetTypedCacheKey<T>(cacheKey);
         return new CachedDataContainer
         {

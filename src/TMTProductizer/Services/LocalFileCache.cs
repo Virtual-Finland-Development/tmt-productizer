@@ -62,7 +62,7 @@ public class LocalFileCache : ILocalFileCache
         _logger.LogInformation("Saving to local cache: {cacheFileName}", cacheFileName);
 
         // Transform data value to a known cache container type
-        var cachedDataContainer = CachedDataContainer.FromCacheItem<T>(cacheKey, cacheValue, expiresInSeconds, true);
+        var cachedDataContainer = CachedDataContainer.FromCacheItem<T>(cacheKey, cacheValue, expiresInSeconds);
         var cacheTextValue = StringUtils.JsonSerializeObject<CachedDataContainer>(cachedDataContainer);
         var cachePath = Path.Combine(Path.GetTempPath(), cacheFileName);
 

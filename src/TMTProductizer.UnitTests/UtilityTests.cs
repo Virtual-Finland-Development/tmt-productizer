@@ -39,8 +39,8 @@ public class UtilityTests
         Assert.AreEqual(tmtResults.IlmoituksienMaara, cachedResults.IlmoituksienMaara);
 
         // Test cached tulos json -> cached tulos object
-        string cachedTmtJson = StringUtils.JsonSerializeObject<CachedHakutulos>(cachedResults, true);
-        CachedHakutulos cachedResults2 = StringUtils.JsonDeserializeObject<CachedHakutulos>(cachedTmtJson, true);
+        string cachedTmtJson = StringUtils.JsonSerializeObject<CachedHakutulos>(cachedResults);
+        CachedHakutulos cachedResults2 = StringUtils.JsonDeserializeObject<CachedHakutulos>(cachedTmtJson);
         Assert.AreEqual(cachedResults.IlmoituksienMaara, cachedResults2.IlmoituksienMaara);
     }
 }

@@ -48,7 +48,7 @@ public static class CacheUtils
         {
             if (cacheItemContainer != null && (cacheItemContainer.TimeToLive == null || cacheItemContainer.TimeToLive > DateTimeOffset.UtcNow.ToUnixTimeSeconds()))
             {
-                return StringUtils.JsonDeserializeObject<T>(cacheItemContainer.CacheValue, true);
+                return StringUtils.JsonDeserializeObject<T>(cacheItemContainer.CacheValue);
             }
             return default(T);
         }
