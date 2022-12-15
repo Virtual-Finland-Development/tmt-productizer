@@ -25,6 +25,7 @@ public class Function
             services =>
                 services.AddScoped<IConfiguration>(i => configuration)
                     .AddScoped<ITMTJobsFetcher, TMTJobsFetcher>()
+                    .AddScoped<ITMTAPIResultsCacheService, TMTAPIResultsCacheService>()
                     .AddScoped<IAuthorizationService, AuthGWAuthorizationService>()
                     .AddScoped<ISecretsManager, SecretsManager>()
                     .AddScoped<IAPIAuthorizationService, TMTAPIAuthorizationService>()

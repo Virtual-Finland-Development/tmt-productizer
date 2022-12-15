@@ -9,39 +9,36 @@ namespace TMTProductizer.Services.AWS;
 public class S3BucketCache : IS3BucketCache
 {
     private readonly IAmazonS3 _s3client;
-    private readonly string _bucketName;
+    private string _bucketName;
     private readonly ILogger<S3BucketCache> _logger;
-    private readonly ILocalFileCache _localFileCache;
 
-    public S3BucketCache(IConfiguration configuration, ILogger<S3BucketCache> logger, ILocalFileCache localFileCache)
+    public S3BucketCache(IConfiguration configuration, ILogger<S3BucketCache> logger)
     {
-        _bucketName = configuration.GetSection("S3BucketCacheName").Value;
+        _bucketName = configuration.GetSection("DefaultS3BucketCacheName").Value;
         _logger = logger;
         _s3client = new AmazonS3Client();
-        _localFileCache = localFileCache;
     }
 
-    /// <summary>
-    /// Search cache by key, filter by TTL.
-    /// </summary>
-    public async Task<T?> GetCacheItem<T>(string cacheKey)
+    public void SetBucketName(string bucketName)
     {
-        // First try from the faster local cache
-        var response = await _localFileCache.GetCacheItem<T>(cacheKey);
-        if (response != null)
-        {
-            return response;
-        }
+        _bucketName = bucketName;
+    }
 
-        // If not found, try from S3
-        return await GetCacheItemFromS3Bucket<T>(cacheKey);
+    private void ValidateSelf()
+    {
+        if (string.IsNullOrEmpty(_bucketName))
+        {
+            throw new Exception("S3 bucket name is not set");
+        }
     }
 
     /// <summary>
     /// Fetch cache item from S3 bucket, store to local cache if success
     /// </summary>
-    private async Task<T?> GetCacheItemFromS3Bucket<T>(string cacheKey)
+    public async Task<T?> GetCacheItem<T>(string cacheKey)
     {
+        ValidateSelf();
+
         var typedCacheKey = CacheUtils.GetTypedCacheKey<T>(cacheKey);
         var cacheFileName = $"{typedCacheKey}.json.gz";
 
@@ -67,13 +64,7 @@ public class S3BucketCache : IS3BucketCache
                 var cacheContainer = CacheUtils.ReadCachedContentStream(response.ResponseStream);
                 if (cacheContainer != null)
                 {
-                    var cacheItem = CacheUtils.GetCacheItemFromContainer<T>(cacheContainer);
-                    if (cacheItem != null)
-                    {
-                        // Save to local cache for faster access next time
-                        await _localFileCache.SaveCacheItem<T>(cacheKey, cacheItem);
-                    }
-                    return cacheItem;
+                    return CacheUtils.GetCacheItemFromContainer<T>(cacheContainer);
                 }
 
                 return default(T);
@@ -91,6 +82,8 @@ public class S3BucketCache : IS3BucketCache
     /// </summary>
     public async Task SaveCacheItem<T>(string cacheKey, T cacheValue, int expiresInSeconds = 0)
     {
+        ValidateSelf();
+
         // Transform data value to a known cache container type
         var cachedDataContainer = CachedDataContainer.FromCacheItem<T>(cacheKey, cacheValue, expiresInSeconds, true);
         var cacheFileName = $"{cachedDataContainer.CacheKey}.json.gz";

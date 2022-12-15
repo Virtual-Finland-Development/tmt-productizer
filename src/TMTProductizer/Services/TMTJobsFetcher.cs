@@ -3,7 +3,6 @@ using CodeGen.Api.TMT.Model;
 using TMTProductizer.Exceptions;
 using TMTProductizer.Models;
 using TMTProductizer.Models.Cache.TMT;
-using TMTProductizer.Services.AWS;
 using TMTProductizer.Utils;
 
 namespace TMTProductizer.Services;
@@ -13,12 +12,10 @@ public class TMTJobsFetcher : ITMTJobsFetcher
 
     private readonly IProxyHttpClientFactory _clientFactory;
     private readonly IAPIAuthorizationService _tmtApiAuthorizationService;
-    private readonly IS3BucketCache _tmtApiResultsCacheService;
+    private readonly ITMTAPIResultsCacheService _tmtApiResultsCacheService;
     private readonly ILogger<TMTJobsFetcher> _logger;
-    private readonly string _tmtCacheKey = "TMTJobResults";
-    private readonly int _tmtCacheTTL = 24 * 60 * 60; // 24 h
 
-    public TMTJobsFetcher(IProxyHttpClientFactory clientFactory, IAPIAuthorizationService tmtApiAuthorizationService, IS3BucketCache tmtApiResultsCacheService, ILogger<TMTJobsFetcher> logger)
+    public TMTJobsFetcher(IProxyHttpClientFactory clientFactory, IAPIAuthorizationService tmtApiAuthorizationService, ITMTAPIResultsCacheService tmtApiResultsCacheService, ILogger<TMTJobsFetcher> logger)
     {
         _clientFactory = clientFactory;
         _tmtApiAuthorizationService = tmtApiAuthorizationService;
@@ -31,7 +28,7 @@ public class TMTJobsFetcher : ITMTJobsFetcher
     /// </summary>
     public async Task<CachedHakutulos> FetchTMTAPIResults()
     {
-        var cachedResults = await _tmtApiResultsCacheService.GetCacheItem<CachedHakutulos>(_tmtCacheKey);
+        var cachedResults = await _tmtApiResultsCacheService.GetCachedHakutulos();
         if (cachedResults != null)
         {
             _logger.LogInformation("Found TMT API results from cache");
@@ -55,7 +52,7 @@ public class TMTJobsFetcher : ITMTJobsFetcher
             // Transform the Hakutulos to CachedHakutulos
             var cachedResults = new CachedHakutulos(results);
             // Save the results to cache
-            await _tmtApiResultsCacheService.SaveCacheItem(_tmtCacheKey, cachedResults, _tmtCacheTTL);
+            await _tmtApiResultsCacheService.SaveCachedHakutulos(cachedResults);
             _logger.LogInformation("Saving complete");
         }
         else
