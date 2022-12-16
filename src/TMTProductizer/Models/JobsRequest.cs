@@ -4,6 +4,7 @@ public class JobsRequest
 {
     public string Query { get; set; } = null!;
     public LocationQuery Location { get; set; } = null!;
+    public RequirementsQuery Requirements { get; set; } = null!;
     public PagingOptions Paging { get; set; } = null!;
 }
 
@@ -12,6 +13,12 @@ public class LocationQuery
     public IEnumerable<string> Countries { get; set; } = null!;
     public IEnumerable<string> Regions { get; set; } = null!;
     public IEnumerable<string> Municipalities { get; set; } = null!;
+}
+
+public class RequirementsQuery
+{
+    public IEnumerable<string> Occupations { get; set; } = null!;
+    public IEnumerable<string> Skills { get; set; } = null!;
 }
 
 public class PagingOptions

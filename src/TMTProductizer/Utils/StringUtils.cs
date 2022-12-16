@@ -1,7 +1,6 @@
-using System.Text.Json;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using TMTProductizer.Exceptions;
-using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace TMTProductizer.Utils;
 
@@ -10,37 +9,17 @@ public static class StringUtils
     /// <summary>
     /// JSON serialize object using newtonsoft tools.
     /// </summary>
-    public static string JsonSerializeObject<T>(T obj, bool useNewtonsoftJsonSerializer = false)
+    public static string JsonSerializeObject<T>(T obj)
     {
-        if (useNewtonsoftJsonSerializer)
-        {
-            return JsonConvert.SerializeObject(obj, typeof(T), GetNewtonsoftJsonSerializerSettings());
-        }
-        return JsonSerializer.Serialize<T>(obj, GetJsonSerializerOptions());
+        return JsonConvert.SerializeObject(obj, typeof(T), GetNewtonsoftJsonSerializerSettings());
     }
 
     /// <summary>
     /// JSON deserialize using newtonsoft tools.
     /// </summary>
-    public static T JsonDeserializeObject<T>(string json, bool useNewtonsoftJsonSerializer = false)
+    public static T JsonDeserializeObject<T>(string json)
     {
-        if (useNewtonsoftJsonSerializer)
-        {
-            return JsonConvert.DeserializeObject<T>(json, GetNewtonsoftJsonSerializerSettings()) ?? throw new JSONParseException("Failed to deserialize json");
-        }
-        return JsonSerializer.Deserialize<T>(json, GetJsonSerializerOptions()) ?? throw new JSONParseException("Failed to deserialize json");
-    }
-
-    /// <summary>
-    /// Get shared newjson serialization settings
-    /// </summary>
-    public static JsonSerializerOptions GetJsonSerializerOptions()
-    {
-        return new JsonSerializerOptions
-        {
-            WriteIndented = false,
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        };
+        return JsonConvert.DeserializeObject<T>(json, GetNewtonsoftJsonSerializerSettings()) ?? throw new JSONParseException("Failed to deserialize json");
     }
 
     /// <summary>
@@ -50,11 +29,13 @@ public static class StringUtils
     {
         return new JsonSerializerSettings
         {
-            Error = (sender, args) =>
+            ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor,
+            MissingMemberHandling = MissingMemberHandling.Ignore,
+            ContractResolver = new DefaultContractResolver
             {
-                if (System.Diagnostics.Debugger.IsAttached)
+                NamingStrategy = new CamelCaseNamingStrategy
                 {
-                    System.Diagnostics.Debugger.Break();
+                    OverrideSpecifiedNames = false
                 }
             }
         };

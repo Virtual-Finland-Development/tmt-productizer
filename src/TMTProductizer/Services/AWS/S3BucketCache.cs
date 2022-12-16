@@ -92,7 +92,7 @@ public class S3BucketCache : IS3BucketCache
     public async Task SaveCacheItem<T>(string cacheKey, T cacheValue, int expiresInSeconds = 0)
     {
         // Transform data value to a known cache container type
-        var cachedDataContainer = CachedDataContainer.FromCacheItem<T>(cacheKey, cacheValue, expiresInSeconds, true);
+        var cachedDataContainer = CachedDataContainer.FromCacheItem<T>(cacheKey, cacheValue, expiresInSeconds);
         var cacheFileName = $"{cachedDataContainer.CacheKey}.json.gz";
         var cacheTextValue = StringUtils.JsonSerializeObject<CachedDataContainer>(cachedDataContainer);
 

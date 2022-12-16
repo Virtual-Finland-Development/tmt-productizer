@@ -1,33 +1,35 @@
-using System.Text.Json.Serialization;
+using System.Runtime.Serialization;
 
 namespace TMTProductizer.Models;
 
+[DataContract(Name = "TMTSecrets")]
 public class TMTSecrets
 {
-    [JsonPropertyName("CLIENT_ID")]
+    [DataMember(Name = "CLIENT_ID")]
     public string ClientId { get; set; } = null!;
-    [JsonPropertyName("CLIENT_SECRET")]
+    [DataMember(Name = "CLIENT_SECRET")]
     public string ClientSecret { get; set; } = null!;
-    [JsonPropertyName("PROXY_ADDRESS")]
+    [DataMember(Name = "PROXY_ADDRESS")]
     public string ProxyAddress { get; set; } = null!;
-    [JsonPropertyName("PROXY_USER")]
+    [DataMember(Name = "PROXY_USER")]
     public string ProxyUser { get; set; } = null!;
-    [JsonPropertyName("PROXY_PASSWORD")]
+    [DataMember(Name = "PROXY_PASSWORD")]
     public string ProxyPassword { get; set; } = null!;
 }
 
+[DataContract(Name = "TMTAPIAuthorizationResponse")]
 public class TMTAPIAuthorizationResponse
 {
-    [JsonPropertyName("access_token")]
+    [DataMember(Name = "access_token")]
     public string? AccessToken { get; set; }
-    [JsonPropertyName("token_type")]
+    [DataMember(Name = "token_type")]
     public string? TokenType { get; set; }
-    [JsonPropertyName("expires_in")]
+    [DataMember(Name = "expires_in")]
     public int ExpiresIn { get; set; }
-    [JsonPropertyName("expires_on")]
+    [DataMember(Name = "expires_on")]
     public int ExpiresOn { get; set; }
-    [JsonPropertyName("not_before")]
+    [DataMember(Name = "not_before")]
     public int NotBefore { get; set; }
-    [JsonPropertyName("resource")]
+    [DataMember(Name = "resource")]
     public string? Resource { get; set; }
 }

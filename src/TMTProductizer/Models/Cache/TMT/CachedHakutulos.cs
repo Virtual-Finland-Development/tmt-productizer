@@ -9,8 +9,7 @@ public class CachedHakutulos
     /// </summary>
     public CachedHakutulos()
     {
-        Ilmoitukset = new List<CachedTyopaikkailmoitus>();
-        IlmoituksienMaara = 0;
+
     }
 
     public CachedHakutulos(Hakutulos hakutulos)
@@ -25,6 +24,6 @@ public class CachedHakutulos
         Ilmoitukset = hakutulos.Ilmoitukset;
     }
 
-    public long IlmoituksienMaara { get; set; }
-    public List<CachedTyopaikkailmoitus> Ilmoitukset { get; set; }
+    public long IlmoituksienMaara { get; set; } = 0;
+    public List<CachedTyopaikkailmoitus> Ilmoitukset { get; set; } = new List<CachedTyopaikkailmoitus>();
 }

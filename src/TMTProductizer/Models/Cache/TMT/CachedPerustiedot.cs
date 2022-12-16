@@ -10,9 +10,7 @@ public class CachedPerustiedot
     /// </summary>
     public CachedPerustiedot()
     {
-        TyonOtsikko = new List<LokalisoituArvo>();
-        TyonKuvaus = new List<LokalisoituArvo>();
-        TyoAika = string.Empty;
+
     }
 
     public CachedPerustiedot(Perustiedot perustiedot)
@@ -31,11 +29,11 @@ public class CachedPerustiedot
 
 
     [DataMember(Name = "tyonOtsikko")]
-    public List<LokalisoituArvo> TyonOtsikko { get; set; }
+    public List<LokalisoituArvo> TyonOtsikko { get; set; } = new List<LokalisoituArvo>();
 
     [DataMember(Name = "tyonKuvaus")]
-    public List<LokalisoituArvo> TyonKuvaus { get; set; }
+    public List<LokalisoituArvo> TyonKuvaus { get; set; } = new List<LokalisoituArvo>();
 
     [DataMember(Name = "tyoAika")]
-    public string TyoAika { get; set; }
+    public string TyoAika { get; set; } = string.Empty;
 }

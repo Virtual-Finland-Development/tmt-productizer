@@ -1,4 +1,5 @@
 using CodeGen.Api.TMT.Model;
+using TMTProductizer.Models;
 using TMTProductizer.Models.Cache.TMT;
 using TMTProductizer.UnitTests.Mocks;
 using TMTProductizer.Utils;
@@ -27,6 +28,10 @@ public class UtilityTests
         string TmtJson = MockUtils.GetTMTTestResponse();
         var tmtDeserialized = StringUtils.JsonDeserializeObject<Hakutulos>(TmtJson);
         Assert.AreEqual(tmtDeserialized?.IlmoituksienMaara, tmtDeserialized?.Ilmoitukset?.Count);
+
+        var foo = "{\"CLIENT_ID\":\"id-of-client\",\"CLIENT_SECRET\":\"secret\",\"PROXY_ADDRESS\":\"http://url\",\"PROXY_USER\":\"user\",\"PROXY_PASSWORD\":\"pass\"}";
+        var tmtSecrets = StringUtils.JsonDeserializeObject<TMTSecrets>(foo);
+        Assert.AreEqual("id-of-client", tmtSecrets?.ClientId);
     }
 
     [Test]
@@ -39,8 +44,8 @@ public class UtilityTests
         Assert.AreEqual(tmtResults.IlmoituksienMaara, cachedResults.IlmoituksienMaara);
 
         // Test cached tulos json -> cached tulos object
-        string cachedTmtJson = StringUtils.JsonSerializeObject<CachedHakutulos>(cachedResults, true);
-        CachedHakutulos cachedResults2 = StringUtils.JsonDeserializeObject<CachedHakutulos>(cachedTmtJson, true);
+        string cachedTmtJson = StringUtils.JsonSerializeObject<CachedHakutulos>(cachedResults);
+        CachedHakutulos cachedResults2 = StringUtils.JsonDeserializeObject<CachedHakutulos>(cachedTmtJson);
         Assert.AreEqual(cachedResults.IlmoituksienMaara, cachedResults2.IlmoituksienMaara);
     }
 }
