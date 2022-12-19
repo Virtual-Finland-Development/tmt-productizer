@@ -1,9 +1,9 @@
 openapi: 3.1.0
 info:
   title: TMTProductizer
-  version: '1.0'
+  version: "1.0"
 servers:
-  - url: 'http://localhost:3000'
+  - url: "http://localhost:3000"
 paths:
   /jobs:
     get:
@@ -13,5 +13,12 @@ paths:
       responses: {}
       operationId: get-jobs
       description: Productizer endpoint for retrieving job posting information
+  /wake-up:
+    get:
+      summary: warmup the service
+      tags:
+        - lambda
+      operationId: wake-up
+      description: A wake signal handler
 components:
   schemas: {}

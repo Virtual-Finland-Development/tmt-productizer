@@ -79,4 +79,12 @@ app.MapPost("/test/lassipatanen/Job/JobPosting", async (HttpRequest request, Job
     .Produces(500)
     .WithName("FindJobPostings");
 
+app.MapGet("/wake-up", async ([FromServices] IJobService service) =>
+{
+    await service.WakeUp();
+    return Results.Ok();
+})
+    .Produces(200)
+    .WithName("WakeUp");
+
 app.Run();

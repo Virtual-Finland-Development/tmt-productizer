@@ -140,4 +140,12 @@ public class JobService : IJobService
 
         return results;
     }
+
+    /// <summary>
+    /// Wakes up th service
+    /// </summary>
+    public async Task WakeUp()
+    {
+        await _jobsFetcher.FetchTMTAPIResults();
+    }
 }
