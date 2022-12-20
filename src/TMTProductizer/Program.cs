@@ -46,7 +46,7 @@ app.MapPost("/test/lassipatanen/Job/JobPosting", async (HttpRequest request, Job
         }
         catch (HttpRequestException)
         {
-            return Results.StatusCode(401);
+            return Results.Problem("Access denied", statusCode: 401);
         }
 
         IReadOnlyList<Job> jobs;
@@ -62,7 +62,7 @@ app.MapPost("/test/lassipatanen/Job/JobPosting", async (HttpRequest request, Job
             {
                 statusCode = (int)e.StatusCode;
             }
-            return Results.StatusCode(statusCode);
+            return Results.Problem(e.ToString(), statusCode: statusCode);
         }
 
 
@@ -78,5 +78,13 @@ app.MapPost("/test/lassipatanen/Job/JobPosting", async (HttpRequest request, Job
     .Produces(401)
     .Produces(500)
     .WithName("FindJobPostings");
+
+app.MapGet("/wake-up", async ([FromServices] IJobService service) =>
+{
+    await service.WakeUp();
+    return Results.Ok();
+})
+    .Produces(200)
+    .WithName("WakeUp");
 
 app.Run();

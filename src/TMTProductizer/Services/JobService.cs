@@ -110,6 +110,24 @@ public class JobService : IJobService
             results.Ilmoitukset = results.Ilmoitukset.FindAll(ilmoitus => query.Location.Countries.Intersect(ilmoitus.Sijainti.Maa).Any());
         }
 
+        // By requirements
+        if (query.Requirements != null && query.Requirements.Occupations != null && query.Requirements.Occupations.Any())
+        {
+            results.Ilmoitukset = results.Ilmoitukset.FindAll(ilmoitus =>
+            {
+                var ammattikoodit = ilmoitus.Osaamisvaatimukset.Ammatit.Select(ammatti => ammatti._LuokiteltuArvo).ToArray();
+                return query.Requirements.Occupations.Intersect(ammattikoodit).Any();
+            });
+        }
+        if (query.Requirements != null && query.Requirements.Skills != null && query.Requirements.Skills.Any())
+        {
+            results.Ilmoitukset = results.Ilmoitukset.FindAll(ilmoitus =>
+            {
+                var ammattikoodit = ilmoitus.Osaamisvaatimukset.Osaamiset.Select(osaaminen => osaaminen._LuokiteltuArvo).ToArray();
+                return query.Requirements.Skills.Intersect(ammattikoodit).Any();
+            });
+        }
+
         // Paginate the jobs
         if (query.Paging.Offset != 0)
         {
@@ -121,5 +139,13 @@ public class JobService : IJobService
         }
 
         return results;
+    }
+
+    /// <summary>
+    /// Wakes up th service
+    /// </summary>
+    public async Task WakeUp()
+    {
+        await _jobsFetcher.FetchTMTAPIResults();
     }
 }

@@ -10,10 +10,7 @@ public class CachedSijainti
     /// </summary>
     public CachedSijainti()
     {
-        Kunta = new List<string>();
-        Maa = new List<string>();
-        Maakunta = new List<string>();
-        Toimipaikka = new CachedToimipaikka();
+
     }
 
     public CachedSijainti(Sijainti sijainti)
@@ -33,14 +30,14 @@ public class CachedSijainti
     }
 
     [DataMember(Name = "kunta")]
-    public List<string> Kunta { get; set; }
+    public List<string> Kunta { get; set; } = new List<string>();
 
     [DataMember(Name = "maa")]
-    public List<string> Maa { get; set; }
+    public List<string> Maa { get; set; } = new List<string>();
 
     [DataMember(Name = "maakunta")]
-    public List<string> Maakunta { get; set; }
+    public List<string> Maakunta { get; set; } = new List<string>();
 
     [DataMember(Name = "toimipaikka", EmitDefaultValue = false)]
-    public CachedToimipaikka Toimipaikka { get; set; }
+    public CachedToimipaikka Toimipaikka { get; set; } = new CachedToimipaikka();
 }

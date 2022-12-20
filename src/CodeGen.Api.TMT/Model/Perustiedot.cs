@@ -9,17 +9,11 @@
 
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
-using System.IO;
 using System.Runtime.Serialization;
 using System.Text;
-using System.Text.RegularExpressions;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using Newtonsoft.Json.Linq;
 using System.ComponentModel.DataAnnotations;
 using OpenAPIDateConverter = CodeGen.Api.TMT.Client.OpenAPIDateConverter;
 
@@ -41,7 +35,6 @@ namespace CodeGen.Api.TMT.Model
         /// <param name="paikkojenMaara">**fi:** Työpaikkailmoituksen avoimien paikkojen kokonaismäärä | **en:** Quantity of open positions.</param>
         /// <param name="palkanLisatieto">**fi:** Palkan lisätieto | **en:** Additional information on wage principle.</param>
         /// <param name="palkanPeruste">**fi:** Palkanperuste | **en:** Principle of wage&lt;details&gt;&lt;summary&gt;Koodit | Codes&lt;/summary&gt;&lt;pre&gt;01 &#x3D; Aikapalkka | Time rate 02 &#x3D; Kiinteä palkka | Fixed salary 03 &#x3D; Provisiopalkka | Bonus-based 04 &#x3D; Kiinteä palkka + provisio | Fixed salary + bonus 05 &#x3D; Aikapalkka + provisio | Time rate + bonus 06 &#x3D; Urakkapalkka | Piece work pay 07 &#x3D; Muu | Other&lt;/pre&gt;&lt;/details&gt;.</param>
-        /// <param name="palvelussuhde">palvelussuhde.</param>
         /// <param name="tyoAika">**fi:** Työaika | **en:** Type of work time&lt;details&gt;&lt;summary&gt;Koodit | Codes&lt;/summary&gt;&lt;pre&gt;01 &#x3D; Kokoaikatyö | Full-time  02 &#x3D; Osa-aikatyö | Part-time&lt;/pre&gt;.</param>
         /// <param name="tyoAlkaa">**fi:** Työn alkamisen tyyppi | **en:** Type of start of work&lt;details&gt;&lt;summary&gt;Koodit | Codes&lt;/summary&gt;&lt;pre&gt;01 &#x3D; Mahdollisimman pian | As soon as possible 02 &#x3D; Alkaen | Starting on 03 &#x3D; Sopimuksen mukaan | According to agreement&lt;/pre&gt;&lt;/details&gt;.</param>
         /// <param name="tyoAlkaaLisatieto">**fi:** Työn aloituksen lisätieto | **en:** Additional information on start of work.</param>
@@ -54,7 +47,7 @@ namespace CodeGen.Api.TMT.Model
         /// <param name="tyonOtsikko">**fi:** Työpaikkailmoituksen otsikko | **en:** Title of the job posting.</param>
         /// <param name="tyonTiivistelma">**fi:** Työpaikkailmoituksen kuvauksen tiivistelmä | **en:** Short description of the job posting.</param>
         /// <param name="tyoskentely">tyoskentely.</param>
-        public Perustiedot(bool kutsutaanTarvittaessa = default(bool), bool kuuluuMatkustamista = default(bool), DateTime maaraaikaisuudenPaattymisPvm = default(DateTime), List<LokalisoituArvo> maaraaikaisuudenSyy = default(List<LokalisoituArvo>), int paikkojenMaara = default(int), List<LokalisoituArvo> palkanLisatieto = default(List<LokalisoituArvo>), string palkanPeruste = default(string), Palvelussuhde palvelussuhde = default(Palvelussuhde), string tyoAika = default(string), string tyoAlkaa = default(string), List<LokalisoituArvo> tyoAlkaaLisatieto = default(List<LokalisoituArvo>), DateTime tyoAlkaaPvm = default(DateTime), string tyoTunnitAjanjakso = default(string), double tyoTunnitMaksimi = default(double), double tyoTunnitMinimi = default(double), string tyonJatkuvuus = default(string), List<LokalisoituArvo> tyonKuvaus = default(List<LokalisoituArvo>), List<LokalisoituArvo> tyonOtsikko = default(List<LokalisoituArvo>), List<LokalisoituArvo> tyonTiivistelma = default(List<LokalisoituArvo>), Tyoskentely tyoskentely = default(Tyoskentely))
+        public Perustiedot(bool kutsutaanTarvittaessa = default(bool), bool kuuluuMatkustamista = default(bool), DateTime maaraaikaisuudenPaattymisPvm = default(DateTime), List<LokalisoituArvo> maaraaikaisuudenSyy = default(List<LokalisoituArvo>), int paikkojenMaara = default(int), List<LokalisoituArvo> palkanLisatieto = default(List<LokalisoituArvo>), string palkanPeruste = default(string), /*Palvelussuhde palvelussuhde = default(Palvelussuhde),*/ string tyoAika = default(string), string tyoAlkaa = default(string), List<LokalisoituArvo> tyoAlkaaLisatieto = default(List<LokalisoituArvo>), DateTime tyoAlkaaPvm = default(DateTime), string tyoTunnitAjanjakso = default(string), double tyoTunnitMaksimi = default(double), double tyoTunnitMinimi = default(double), string tyonJatkuvuus = default(string), List<LokalisoituArvo> tyonKuvaus = default(List<LokalisoituArvo>), List<LokalisoituArvo> tyonOtsikko = default(List<LokalisoituArvo>), List<LokalisoituArvo> tyonTiivistelma = default(List<LokalisoituArvo>), Tyoskentely tyoskentely = default(Tyoskentely))
         {
             this.KutsutaanTarvittaessa = kutsutaanTarvittaessa;
             this.KuuluuMatkustamista = kuuluuMatkustamista;
@@ -63,7 +56,7 @@ namespace CodeGen.Api.TMT.Model
             this.PaikkojenMaara = paikkojenMaara;
             this.PalkanLisatieto = palkanLisatieto;
             this.PalkanPeruste = palkanPeruste;
-            this.Palvelussuhde = palvelussuhde;
+            //this.Palvelussuhde = palvelussuhde;
             this.TyoAika = tyoAika;
             this.TyoAlkaa = tyoAlkaa;
             this.TyoAlkaaLisatieto = tyoAlkaaLisatieto;
@@ -131,8 +124,8 @@ namespace CodeGen.Api.TMT.Model
         /// <summary>
         /// Gets or Sets Palvelussuhde
         /// </summary>
-        [DataMember(Name = "palvelussuhde", EmitDefaultValue = false)]
-        public Palvelussuhde Palvelussuhde { get; set; }
+        //[DataMember(Name = "palvelussuhde", EmitDefaultValue = false)]
+        //public Palvelussuhde Palvelussuhde { get; set; }
 
         /// <summary>
         /// **fi:** Työaika | **en:** Type of work time&lt;details&gt;&lt;summary&gt;Koodit | Codes&lt;/summary&gt;&lt;pre&gt;01 &#x3D; Kokoaikatyö | Full-time  02 &#x3D; Osa-aikatyö | Part-time&lt;/pre&gt;
@@ -233,7 +226,7 @@ namespace CodeGen.Api.TMT.Model
             sb.Append("  PaikkojenMaara: ").Append(PaikkojenMaara).Append("\n");
             sb.Append("  PalkanLisatieto: ").Append(PalkanLisatieto).Append("\n");
             sb.Append("  PalkanPeruste: ").Append(PalkanPeruste).Append("\n");
-            sb.Append("  Palvelussuhde: ").Append(Palvelussuhde).Append("\n");
+            //sb.Append("  Palvelussuhde: ").Append(Palvelussuhde).Append("\n");
             sb.Append("  TyoAika: ").Append(TyoAika).Append("\n");
             sb.Append("  TyoAlkaa: ").Append(TyoAlkaa).Append("\n");
             sb.Append("  TyoAlkaaLisatieto: ").Append(TyoAlkaaLisatieto).Append("\n");
@@ -280,103 +273,103 @@ namespace CodeGen.Api.TMT.Model
             {
                 return false;
             }
-            return 
+            return
                 (
                     this.KutsutaanTarvittaessa == input.KutsutaanTarvittaessa ||
                     this.KutsutaanTarvittaessa.Equals(input.KutsutaanTarvittaessa)
-                ) && 
+                ) &&
                 (
                     this.KuuluuMatkustamista == input.KuuluuMatkustamista ||
                     this.KuuluuMatkustamista.Equals(input.KuuluuMatkustamista)
-                ) && 
+                ) &&
                 (
                     this.MaaraaikaisuudenPaattymisPvm == input.MaaraaikaisuudenPaattymisPvm ||
                     (this.MaaraaikaisuudenPaattymisPvm != null &&
                     this.MaaraaikaisuudenPaattymisPvm.Equals(input.MaaraaikaisuudenPaattymisPvm))
-                ) && 
+                ) &&
                 (
                     this.MaaraaikaisuudenSyy == input.MaaraaikaisuudenSyy ||
                     this.MaaraaikaisuudenSyy != null &&
                     input.MaaraaikaisuudenSyy != null &&
                     this.MaaraaikaisuudenSyy.SequenceEqual(input.MaaraaikaisuudenSyy)
-                ) && 
+                ) &&
                 (
                     this.PaikkojenMaara == input.PaikkojenMaara ||
                     this.PaikkojenMaara.Equals(input.PaikkojenMaara)
-                ) && 
+                ) &&
                 (
                     this.PalkanLisatieto == input.PalkanLisatieto ||
                     this.PalkanLisatieto != null &&
                     input.PalkanLisatieto != null &&
                     this.PalkanLisatieto.SequenceEqual(input.PalkanLisatieto)
-                ) && 
+                ) &&
                 (
                     this.PalkanPeruste == input.PalkanPeruste ||
                     (this.PalkanPeruste != null &&
                     this.PalkanPeruste.Equals(input.PalkanPeruste))
-                ) && 
-                (
-                    this.Palvelussuhde == input.Palvelussuhde ||
-                    (this.Palvelussuhde != null &&
-                    this.Palvelussuhde.Equals(input.Palvelussuhde))
-                ) && 
+                ) &&
+                /*  (
+                     this.Palvelussuhde == input.Palvelussuhde ||
+                     (this.Palvelussuhde != null &&
+                     this.Palvelussuhde.Equals(input.Palvelussuhde))
+                 ) && */
                 (
                     this.TyoAika == input.TyoAika ||
                     (this.TyoAika != null &&
                     this.TyoAika.Equals(input.TyoAika))
-                ) && 
+                ) &&
                 (
                     this.TyoAlkaa == input.TyoAlkaa ||
                     (this.TyoAlkaa != null &&
                     this.TyoAlkaa.Equals(input.TyoAlkaa))
-                ) && 
+                ) &&
                 (
                     this.TyoAlkaaLisatieto == input.TyoAlkaaLisatieto ||
                     this.TyoAlkaaLisatieto != null &&
                     input.TyoAlkaaLisatieto != null &&
                     this.TyoAlkaaLisatieto.SequenceEqual(input.TyoAlkaaLisatieto)
-                ) && 
+                ) &&
                 (
                     this.TyoAlkaaPvm == input.TyoAlkaaPvm ||
                     (this.TyoAlkaaPvm != null &&
                     this.TyoAlkaaPvm.Equals(input.TyoAlkaaPvm))
-                ) && 
+                ) &&
                 (
                     this.TyoTunnitAjanjakso == input.TyoTunnitAjanjakso ||
                     (this.TyoTunnitAjanjakso != null &&
                     this.TyoTunnitAjanjakso.Equals(input.TyoTunnitAjanjakso))
-                ) && 
+                ) &&
                 (
                     this.TyoTunnitMaksimi == input.TyoTunnitMaksimi ||
                     this.TyoTunnitMaksimi.Equals(input.TyoTunnitMaksimi)
-                ) && 
+                ) &&
                 (
                     this.TyoTunnitMinimi == input.TyoTunnitMinimi ||
                     this.TyoTunnitMinimi.Equals(input.TyoTunnitMinimi)
-                ) && 
+                ) &&
                 (
                     this.TyonJatkuvuus == input.TyonJatkuvuus ||
                     (this.TyonJatkuvuus != null &&
                     this.TyonJatkuvuus.Equals(input.TyonJatkuvuus))
-                ) && 
+                ) &&
                 (
                     this.TyonKuvaus == input.TyonKuvaus ||
                     this.TyonKuvaus != null &&
                     input.TyonKuvaus != null &&
                     this.TyonKuvaus.SequenceEqual(input.TyonKuvaus)
-                ) && 
+                ) &&
                 (
                     this.TyonOtsikko == input.TyonOtsikko ||
                     this.TyonOtsikko != null &&
                     input.TyonOtsikko != null &&
                     this.TyonOtsikko.SequenceEqual(input.TyonOtsikko)
-                ) && 
+                ) &&
                 (
                     this.TyonTiivistelma == input.TyonTiivistelma ||
                     this.TyonTiivistelma != null &&
                     input.TyonTiivistelma != null &&
                     this.TyonTiivistelma.SequenceEqual(input.TyonTiivistelma)
-                ) && 
+                ) &&
                 (
                     this.Tyoskentely == input.Tyoskentely ||
                     (this.Tyoskentely != null &&
@@ -412,10 +405,10 @@ namespace CodeGen.Api.TMT.Model
                 {
                     hashCode = (hashCode * 59) + this.PalkanPeruste.GetHashCode();
                 }
-                if (this.Palvelussuhde != null)
+                /* if (this.Palvelussuhde != null)
                 {
                     hashCode = (hashCode * 59) + this.Palvelussuhde.GetHashCode();
-                }
+                } */
                 if (this.TyoAika != null)
                 {
                     hashCode = (hashCode * 59) + this.TyoAika.GetHashCode();

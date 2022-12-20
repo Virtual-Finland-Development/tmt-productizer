@@ -11,8 +11,8 @@ public class CachedHakeminen
 
     public CachedHakeminen()
     {
-        HakemuksenUrl = string.Empty;
-        HakuaikaPaattyy = DateTime.MinValue;
+
+
     }
 
     public CachedHakeminen(Hakeminen hakeminen)
@@ -28,8 +28,8 @@ public class CachedHakeminen
     }
 
     [DataMember(Name = "hakemuksenUrl")]
-    public string HakemuksenUrl { get; set; }
+    public string HakemuksenUrl { get; set; } = string.Empty;
 
     [DataMember(Name = "hakuaikaPaattyy")]
-    public DateTime HakuaikaPaattyy { get; set; }
+    public DateTime HakuaikaPaattyy { get; set; } = DateTime.MinValue;
 }
