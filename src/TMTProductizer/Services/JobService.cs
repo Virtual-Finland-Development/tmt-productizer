@@ -64,7 +64,7 @@ public class JobService : IJobService
             ApplicationUrl = GenerateApplicationUrl(ilmoitus, requestedKielikoodi),
             ApplicationEndDate = ilmoitus.Hakeminen.HakuaikaPaattyy
         }));
-
+        
         return jobs;
     }
 
