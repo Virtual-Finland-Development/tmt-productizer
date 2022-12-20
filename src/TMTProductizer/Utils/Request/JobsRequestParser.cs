@@ -56,6 +56,6 @@ public class JobsRequestParser : IRequestParser<JobsRequest>
                 subOccupations.AddRange(subSubOccupations);
             }
         }
-        return (List<string>)subOccupations.Distinct();
+        return subOccupations;
     }
 }
