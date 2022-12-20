@@ -25,7 +25,7 @@ public class JobsRequestParser : IRequestParser<JobsRequest>
             var extendedOccupations = new List<String>();
             foreach (var occupationUri in request.Requirements.Occupations)
             {
-                // If a parent occupation is given, add all sub-occupations
+                // If URI an occupation group, add all sub-occupations
                 if (!occupationUri.Contains("://data.europa.eu/esco/occupation/"))
                 {
                     var subOccupationUris = GetSubOccupationURIs(occupationUri, occupations);
@@ -36,7 +36,6 @@ public class JobsRequestParser : IRequestParser<JobsRequest>
             foreach (var subUri in extendedOccupations.Distinct())
             {
                 request.Requirements.Occupations.Add(subUri);
-                _logger.LogInformation("MORO {}", subUri);
             }
 
         }
@@ -53,12 +52,10 @@ public class JobsRequestParser : IRequestParser<JobsRequest>
             if (occupation.Broader.Contains(parentOccupationURI))
             {
                 subOccupations.Add(occupation.Uri);
-                /* foreach (var broaderUri in occupation.Broader)
-                {
-                    subOccupations.AddRange(GetSubOccupationURIs(broaderUri, occupations));
-                } */
+                var subSubOccupations = GetSubOccupationURIs(occupation.Uri, occupations);
+                subOccupations.AddRange(subSubOccupations);
             }
         }
-        return subOccupations;
+        return (List<string>)subOccupations.Distinct();
     }
 }
