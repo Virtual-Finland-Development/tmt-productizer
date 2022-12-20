@@ -66,11 +66,16 @@ app.MapPost("/test/lassipatanen/Job/JobPosting", async (HttpRequest request, Job
         }
 
         // Fetch jobs
-        IReadOnlyList<Job> jobs;
-        long totalCount;
         try
         {
-            (jobs, totalCount) = await service.Find(jobsRequest);
+            IReadOnlyList<Job> jobs;
+            (jobs, _) = await service.Find(jobsRequest);
+
+            return Results.Ok(new
+            {
+                Results = jobs,
+                TotalCount = jobs.Count,
+            });
         }
         catch (HttpRequestException e)
         {
@@ -81,15 +86,6 @@ app.MapPost("/test/lassipatanen/Job/JobPosting", async (HttpRequest request, Job
             }
             return Results.Problem(e.ToString(), statusCode: statusCode);
         }
-
-
-        var response = new
-        {
-            Results = jobs,
-            TotalCount = totalCount
-        };
-
-        return Results.Ok(response);
     })
     .Produces(200)
     .Produces(401)
