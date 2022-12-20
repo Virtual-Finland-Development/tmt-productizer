@@ -17,8 +17,8 @@ public class LocationQuery
 
 public class RequirementsQuery
 {
-    public IEnumerable<string> Occupations { get; set; } = null!;
-    public IEnumerable<string> Skills { get; set; } = null!;
+    public ICollection<string> Occupations { get; set; } = null!;
+    public ICollection<string> Skills { get; set; } = null!;
 }
 
 public class PagingOptions

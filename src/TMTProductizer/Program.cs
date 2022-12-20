@@ -3,6 +3,8 @@ using TMTProductizer.Models;
 using TMTProductizer.Services;
 using TMTProductizer.Services.AWS;
 using TMTProductizer.Utils;
+using TMTProductizer.Data.Repositories;
+using TMTProductizer.Utils.Request;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSingleton<IJobService, JobService>();
@@ -16,6 +18,8 @@ builder.Services.AddSingleton<IS3BucketCache, S3BucketCache>();
 builder.Services.AddSingleton<ILocalFileCache, LocalFileCache>();
 builder.Services.AddSingleton<IProxyHttpClientFactory, ProxyHttpClientFactory>();
 builder.Services.AddSingleton<HttpClient>(sp => new HttpClient());
+builder.Services.AddSingleton<IOccupationCodeSetRepository, OccupationCodeSetRepository>();
+builder.Services.AddSingleton<IRequestParser<JobsRequest>, JobsRequestParser>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -39,8 +43,9 @@ if (app.Environment.IsDevelopment())
 }
 
 
-app.MapPost("/test/lassipatanen/Job/JobPosting", async (HttpRequest request, JobsRequest requestModel, [FromServices] IJobService service, [FromServices] IAuthorizationService authorizationService) =>
+app.MapPost("/test/lassipatanen/Job/JobPosting", async (HttpRequest request, JobsRequest jobsRequest, [FromServices] IRequestParser<JobsRequest> JobsRequestParser, [FromServices] IJobService service, [FromServices] IAuthorizationService authorizationService) =>
     {
+        // Authorize the request
         try
         {
             await authorizationService.Authorize(request);
@@ -50,11 +55,22 @@ app.MapPost("/test/lassipatanen/Job/JobPosting", async (HttpRequest request, Job
             return Results.Problem("Access denied", statusCode: 401);
         }
 
+        // Parse job request input data
+        try
+        {
+            jobsRequest = await JobsRequestParser.Parse(jobsRequest);
+        }
+        catch (HttpRequestException)
+        {
+            return Results.Problem("Validation error", statusCode: 442);
+        }
+
+        // Fetch jobs
         IReadOnlyList<Job> jobs;
         long totalCount;
         try
         {
-            (jobs, totalCount) = await service.Find(requestModel);
+            (jobs, totalCount) = await service.Find(jobsRequest);
         }
         catch (HttpRequestException e)
         {
