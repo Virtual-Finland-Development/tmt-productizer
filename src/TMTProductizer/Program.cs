@@ -43,7 +43,7 @@ if (app.Environment.IsDevelopment())
 }
 
 
-app.MapPost("/test/lassipatanen/Job/JobPosting", async (HttpRequest request, JobsRequest jobsRequest, [FromServices] IRequestParser<JobsRequest> JobsRequestParser, [FromServices] IJobService service, [FromServices] IAuthorizationService authorizationService) =>
+app.MapPost("/test/lassipatanen/Job/JobPosting", async (HttpRequest request, JobsRequest jobsRequest, [FromServices] IRequestParser<JobsRequest> JobsRequestParser, [FromServices] IJobService jobService, [FromServices] IAuthorizationService authorizationService) =>
     {
         // Authorize the request
         try
@@ -71,7 +71,7 @@ app.MapPost("/test/lassipatanen/Job/JobPosting", async (HttpRequest request, Job
         {
             IReadOnlyList<Job> jobs;
             long totalCount;
-            (jobs, totalCount) = await service.Find(parsedJobsRequest);
+            (jobs, totalCount) = await jobService.Find(parsedJobsRequest);
 
             return Results.Ok(new
             {
