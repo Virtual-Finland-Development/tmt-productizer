@@ -1,3 +1,5 @@
+using System.Text.Json;
+
 namespace TMTProductizer.Models;
 
 public class JobsRequest
@@ -6,6 +8,15 @@ public class JobsRequest
     public LocationQuery Location { get; set; } = null!;
     public RequirementsQuery Requirements { get; set; } = null!;
     public PagingOptions Paging { get; set; } = null!;
+
+    /// <summary>
+    /// Deep copy
+    /// </summary>
+    public JobsRequest Clone()
+    {
+        string serialized = JsonSerializer.Serialize(this);
+        return JsonSerializer.Deserialize<JobsRequest>(serialized)!;
+    }
 }
 
 public class LocationQuery

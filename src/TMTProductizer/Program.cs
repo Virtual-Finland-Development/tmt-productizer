@@ -56,9 +56,10 @@ app.MapPost("/test/lassipatanen/Job/JobPosting", async (HttpRequest request, Job
         }
 
         // Parse job request input data
+        JobsRequest parsedJobsRequest;
         try
         {
-            jobsRequest = await JobsRequestParser.Parse(jobsRequest);
+            parsedJobsRequest = await JobsRequestParser.Parse(jobsRequest);
         }
         catch (HttpRequestException)
         {
@@ -70,7 +71,7 @@ app.MapPost("/test/lassipatanen/Job/JobPosting", async (HttpRequest request, Job
         {
             IReadOnlyList<Job> jobs;
             long totalCount;
-            (jobs, totalCount) = await service.Find(jobsRequest);
+            (jobs, totalCount) = await service.Find(parsedJobsRequest);
 
             return Results.Ok(new
             {

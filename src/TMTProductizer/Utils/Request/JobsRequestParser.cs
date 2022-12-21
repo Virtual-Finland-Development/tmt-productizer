@@ -7,23 +7,25 @@ namespace TMTProductizer.Utils.Request;
 
 public class JobsRequestParser : IRequestParser<JobsRequest>
 {
-    private readonly ILogger<IRequestParser<JobsRequest>> _logger;
     private readonly IOccupationCodeSetRepository _occupationCodeSetRepository;
 
-    public JobsRequestParser(ILogger<JobsRequestParser> logger, IOccupationCodeSetRepository occupationCodeSetRepository)
+    public JobsRequestParser(IOccupationCodeSetRepository occupationCodeSetRepository)
     {
-        _logger = logger;
         _occupationCodeSetRepository = occupationCodeSetRepository;
     }
 
+    /// <summary>
+    /// Parses the request and expands the occupation groups to their sub-occupations
+    /// </summary>
     public async Task<JobsRequest> Parse(JobsRequest request)
     {
-        if (request.Requirements != null && request.Requirements.Occupations != null && request.Requirements.Occupations.Any())
+        JobsRequest parsedRequest = request.Clone();
+        if (parsedRequest.Requirements.Occupations.Any())
         {
             var occupations = await _occupationCodeSetRepository.GetAllOccupations();
 
             var extendedOccupations = new List<String>();
-            foreach (var occupationUri in request.Requirements.Occupations)
+            foreach (var occupationUri in parsedRequest.Requirements.Occupations)
             {
                 // If URI an occupation group, add all sub-occupations
                 if (!occupationUri.Contains("://data.europa.eu/esco/occupation/"))
@@ -35,12 +37,12 @@ public class JobsRequestParser : IRequestParser<JobsRequest>
 
             foreach (var subUri in extendedOccupations.Distinct())
             {
-                request.Requirements.Occupations.Add(subUri);
+                parsedRequest.Requirements.Occupations.Add(subUri);
             }
 
         }
 
-        return request;
+        return parsedRequest;
     }
 
     private List<string> GetSubOccupationURIs(string parentOccupationURI, List<OccupationCodeSet.Occupation> occupations)
