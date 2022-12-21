@@ -10,10 +10,11 @@ public class JobsRequest
     public PagingOptions Paging { get; set; } = null!;
 
     /// <summary>
-    /// Deep copy
+    /// Deep copy of the request
     /// </summary>
     public JobsRequest Clone()
     {
+        // Note: maybe there would be a dotnet core way to this? Needs to be simple and fast.
         string serialized = JsonSerializer.Serialize(this);
         return JsonSerializer.Deserialize<JobsRequest>(serialized)!;
     }
