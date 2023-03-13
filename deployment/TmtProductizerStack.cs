@@ -55,6 +55,10 @@ public class TmtProductizerStack : Stack
             })
         });
 
+        // Get AuthGW endpoint
+        var authGwStackReference = new StackReference($"{Pulumi.Deployment.Instance.OrganizationName}/authentication-gw/{environment}");
+        var authenticationGwEndpointUrl = authGwStackReference.GetOutput("endpoint");
+
         // AWS Secrets Manager
         var secretsManagerFactory = new SecretsManagerFactory();
         var tmtSecretsManager = secretsManagerFactory.CreateTMTSecretManagerItem(tags, role);
@@ -92,6 +96,7 @@ public class TmtProductizerStack : Stack
                     { "DynamoDBCacheName", DynamoDBCacheTableName }, // Override appsettings.json with staged value
                     { "TmtSecretsName", SecretsManagerSecretName },
                     { "S3BucketCacheName", S3BucketCacheName },
+                    { "AuthGWEndpoint", Output.Format($"{authenticationGwEndpointUrl}") }
                 }
             },
             Code = new FileArchive(artifactPath),
