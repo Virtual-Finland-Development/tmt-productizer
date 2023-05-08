@@ -102,6 +102,7 @@ public class TmtProductizerStack : Stack
             Code = new FileArchive(artifactPath),
             Tags = tags
         });
+        LambdaId = lambdaFunction.Name;
 
         // Create cache updating schedule
         var cacheUpdatingLambdaFunction = new Function($"{projectName}-cache-updater-{environment}", new FunctionArgs
@@ -118,6 +119,8 @@ public class TmtProductizerStack : Stack
             Code = new FileArchive(artifactPath),
             Tags = tags
         });
+        CacheUpdaterLambdaId = cacheUpdatingLambdaFunction.Name;
+        
         var cacheUpdateScheduleRule = new EventRule($"{projectName}-cache-updater-schedule-{environment}", new EventRuleArgs
         {
             Description = "Schedule cache update",
@@ -170,4 +173,6 @@ public class TmtProductizerStack : Stack
     [Output] public Output<string> DynamoDBCacheTableName { get; set; }
     [Output] public Output<string> S3BucketCacheName { get; set; }
     [Output] public Output<string> SecretsManagerSecretName { get; set; }
+    [Output] public Output<string> LambdaId { get; set; }
+    [Output] public Output<string> CacheUpdaterLambdaId { get; set; }
 }
